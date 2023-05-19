@@ -1,0 +1,13 @@
+
+[project]
+name = "vocana"
+version = "0.0.1"
+description = ""
+authors = [
+    {name = "l1shen", email = "lishen1635@gmail.com"},
+]
+dependencies = [
+    "pyzmq>=25.0.2",
+]
+requires-python = ">=3.7"
+license = {text = "MIT"}

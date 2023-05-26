@@ -7,13 +7,13 @@ class VocanaSDK:
     __props: dict
     __options: dict
 
-    def __init__(self, props: dict, options: dict, mainframe: Mainframe) -> None:
-        self.__props = props
-        self.__options = options
+    def __init__(self, node_props, mainframe: Mainframe) -> None:
+        self.__props = node_props.get('props')
+        self.__options = node_props.get('options')
         self.__mainframe = mainframe
-        self.__graph_task_id = props.get('graph_task_id')
-        self.__node_task_id = props.get('node_task_id')
-        self.__node_id = props.get('node_id')
+        self.__graph_task_id = node_props.get('graph_task_id')
+        self.__node_task_id = node_props.get('node_task_id')
+        self.__node_id = node_props.get('node_id')
 
     @property
     def graph_task_id(self):
@@ -36,7 +36,7 @@ class VocanaSDK:
         return self.__options
 
     def result(self, result: any, handle_id: str, done: bool = False):
-        self.__mainframe.send({
+        node_result = {
             'type': 'NodeResult',
             'graph_task_id': self.__graph_task_id,
             'node_task_id': self.__node_task_id,
@@ -44,8 +44,8 @@ class VocanaSDK:
             'handle_id': handle_id,
             'result': result,
             'done': done,
-        })
-
+        }
+        self.__mainframe.send(node_result)
         if done:
             self.__mainframe.disconnect()
 

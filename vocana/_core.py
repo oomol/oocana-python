@@ -15,4 +15,4 @@ def setup_vocana_sdk():
         'node_id': args.get('node_id'),
     })
 
-    return VocanaSDK(node_props.get("props"), node_props.get("options"), mainframe)
+    return VocanaSDK(node_props, mainframe)

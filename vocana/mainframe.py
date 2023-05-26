@@ -19,7 +19,7 @@ class Mainframe:
 
     def send_ready(self, msg):
         self.send(msg)
-        messageBytes = self.sock.recv()
+        messageBytes = self.recv()
         return json.loads(messageBytes)
     
     def disconnect(self):

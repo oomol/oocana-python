@@ -57,3 +57,13 @@ class VocanaSDK:
             'node_id': self.__node_id,
         })
         self.__mainframe.disconnect()
+
+    def send_error(self, error: str):
+        self.__mainframe.send({
+            'type': 'NodeError',
+            'graph_task_id': self.__graph_task_id,
+            'node_task_id': self.__node_task_id,
+            'node_id': self.__node_id,
+            'error': error,
+        })
+        self.__mainframe.disconnect()

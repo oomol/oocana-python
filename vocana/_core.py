@@ -14,4 +14,5 @@ def setup_vocana_sdk():
         'node_task_id': args.get('node_task_id'),
         'node_id': args.get('node_id'),
     })
-    return VocanaSDK(node_props, mainframe)
+
+    return VocanaSDK(node_props.get("props"), node_props.get("options"), mainframe)

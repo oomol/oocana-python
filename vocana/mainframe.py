@@ -13,7 +13,7 @@ class Mainframe:
    
     def send(self, msg):
         self.sock.send_json(msg)
-    
+
     def recv(self):
         return self.sock.recv()
 

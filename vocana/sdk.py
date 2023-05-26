@@ -7,8 +7,9 @@ class VocanaSDK:
     __props: dict
     __options: dict
 
-    def __init__(self, props: dict, mainframe: Mainframe) -> None:
+    def __init__(self, props: dict, options: dict, mainframe: Mainframe) -> None:
         self.__props = props
+        self.__options = options
         self.__mainframe = mainframe
         self.__graph_task_id = props.get('graph_task_id')
         self.__node_task_id = props.get('node_task_id')

@@ -14,3 +14,4 @@ license = {text = "MIT"}
 
 [tool.pdm.scripts]
 publish_npm = { shell = "./scripts/publish_npm.sh" }
+publish_executor = { shell = "./scripts/publish_executor.sh" }

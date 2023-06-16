@@ -17,3 +17,16 @@ pdm install
 ```
 pdm build
 ```
+
+## 发布项目
+
+因为 github registry 并不支持 pypi 所以这里是发布到 npm 的 registry 再执行手动安装 whl 来进行发包和安装
+
+```shell
+pdm run publish_npm
+```
+## 发布 executor
+
+```shell
+pdm run publish_executor
+```

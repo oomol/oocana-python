@@ -17,4 +17,4 @@ publish_vocana = { shell = "./scripts/publish_vocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
 
 [tool.setuptools.packages.find]
-where = ["vocana"]
+where = ["src"]

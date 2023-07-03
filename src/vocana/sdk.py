@@ -35,13 +35,13 @@ class VocanaSDK:
     def options(self):
         return self.__options
 
-    def result(self, result: any, handle_id: str, done: bool = False):
+    def result(self, result: any, handle_key: str, done: bool = False):
         node_result = {
             'type': 'NodeResult',
             'flow_task_id': self.__flow_task_id,
             'node_task_id': self.__node_task_id,
             'node_id': self.__node_id,
-            'handle_id': handle_id,
+            'handle_key': handle_key,
             'result': result,
             'done': done,
         }

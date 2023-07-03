@@ -1,0 +1,12 @@
+{
+  "name": "@vocana/executor-python",
+  "version": "0.0.1",
+  "files": ["bin.py"],
+  "bin": {
+    "vocana-executor-python": "bin.py"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": "vocana/vocana-sdk-python"
+}

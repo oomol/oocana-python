@@ -1,7 +1,7 @@
 from .mainframe import Mainframe
 
 class VocanaSDK:
-    __graph_task_id: str
+    __flow_task_id: str
     __node_task_id: str
     __node_id: str
     __props: dict
@@ -11,13 +11,13 @@ class VocanaSDK:
         self.__props = node_props.get('props')
         self.__options = node_props.get('options')
         self.__mainframe = mainframe
-        self.__graph_task_id = node_props.get('graph_task_id')
+        self.__flow_task_id = node_props.get('flow_task_id')
         self.__node_task_id = node_props.get('node_task_id')
         self.__node_id = node_props.get('node_id')
 
     @property
-    def graph_task_id(self):
-        return self.__graph_task_id
+    def flow_task_id(self):
+        return self.__flow_task_id
     
     @property
     def node_task_id(self):
@@ -35,13 +35,13 @@ class VocanaSDK:
     def options(self):
         return self.__options
 
-    def result(self, result: any, handle_id: str, done: bool = False):
+    def result(self, result: any, handle_key: str, done: bool = False):
         node_result = {
             'type': 'NodeResult',
-            'graph_task_id': self.__graph_task_id,
+            'flow_task_id': self.__flow_task_id,
             'node_task_id': self.__node_task_id,
             'node_id': self.__node_id,
-            'handle_id': handle_id,
+            'handle_key': handle_key,
             'result': result,
             'done': done,
         }
@@ -52,7 +52,7 @@ class VocanaSDK:
     def done(self):
         self.__mainframe.send({
             'type': 'NodeDone',
-            'graph_task_id': self.__graph_task_id,
+            'flow_task_id': self.__flow_task_id,
             'node_task_id': self.__node_task_id,
             'node_id': self.__node_id,
         })
@@ -61,7 +61,7 @@ class VocanaSDK:
     def send_error(self, error: str):
         self.__mainframe.send({
             'type': 'NodeError',
-            'graph_task_id': self.__graph_task_id,
+            'flow_task_id': self.__flow_task_id,
             'node_task_id': self.__node_task_id,
             'node_id': self.__node_id,
             'error': error,

@@ -10,7 +10,7 @@ def setup_vocana_sdk():
 
     node_props = mainframe.send_ready({
         'type': 'NodeReady',
-        'graph_task_id': args.get('graph_task_id'),
+        'flow_task_id': args.get('flow_task_id'),
         'node_task_id': args.get('node_task_id'),
         'node_id': args.get('node_id'),
     })

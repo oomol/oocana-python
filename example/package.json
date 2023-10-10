@@ -1,0 +1,8 @@
+{
+  "name": "example",
+  "private": true,
+  "dependencies": {
+    "@vocana/executor-python": "^0.0.1",
+    "@vocana/vocana": "^0.4.0"
+  }
+}

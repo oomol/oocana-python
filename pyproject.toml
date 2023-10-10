@@ -1,13 +1,13 @@
 
 [project]
 name = "vocana"
-version = "0.0.6"
+version = "0.1.0"
 description = ""
 authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},
 ]
 dependencies = [
-    "pyzmq>=25.0.2",
+    "paho-mqtt>=1.6.1",
 ]
 requires-python = ">=3.7"
 license = {text = "MIT"}

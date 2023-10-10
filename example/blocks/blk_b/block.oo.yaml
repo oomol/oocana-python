@@ -1,0 +1,12 @@
+entry:
+  bin: ../../node_modules/.bin/vocana-executor-python
+  args:
+    - ./index.py
+props:
+  my_count:
+    optional: true
+results:
+  my_output:
+options:
+  default_count:
+    default: 1

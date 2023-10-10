@@ -1,26 +1,73 @@
-import zmq
 import json
+import paho.mqtt.client as mqtt
+import operator
+from urllib.parse import urlparse
+import uuid
 
 class Mainframe:
+    address: str
+    client: mqtt.Client
+    on_ready: bool
 
     def __init__(self, address: str) -> None:
         self.address = address
-        context = zmq.Context()
-        self.sock = context.socket(zmq.REQ)
-    
-    def connect(self):
-        self.sock.connect(self.address)
-   
-    def send(self, msg):
-        self.sock.send_json(msg)
+        self.on_ready = False
 
-    def recv(self):
-        return self.sock.recv()
+    def connect(self):
+        connect_address = self.address if operator.contains(self.address, "://") else operator.concat("mqtt://", self.address)
+        url = urlparse(connect_address)
+
+        self.client = mqtt.Client(client_id=str(uuid.uuid4()))
+        self.client.on_disconnect = self.on_disconnect
+        self.client.on_connect_fail = self.on_connect_fail
+        self.client.connect(host=url.hostname, port=url.port)
+        self.client.loop_start()
+        return self.client
+
+    def on_connect_fail(self, client, userdata, flags, rc):
+        print('on_connect_fail')
+
+    def on_disconnect(self, client, userdata, rc):
+        self.on_ready = False
+
+    def send(self, msg):
+        if self.on_ready == False:
+            raise Exception('SDK is not ready')
+        session_id = msg.get('session_id')
+
+        info = self.client.publish(
+            f'session/{session_id}',
+            json.dumps(msg),
+            qos=1
+        )
+        info.wait_for_publish()
 
     def send_ready(self, msg):
-        self.send(msg)
-        messageBytes = self.recv()
-        return json.loads(messageBytes)
-    
+        session_id = msg.get('session_id')
+        task_id = msg.get('task_id')
+        topic = f'props/{session_id}/{task_id}'
+        replay = None
+
+        def on_message_once(_client, _userdata, message):
+            nonlocal replay
+            self.on_ready = True
+            self.client.unsubscribe(topic)
+            replay = json.loads(message.payload)
+
+        self.client.on_message = on_message_once
+        self.client.subscribe(topic, qos=1)
+
+        self.client.publish(
+            f'session/{session_id}',
+            json.dumps(msg),
+            qos=1
+        )
+
+        while True:
+            if replay is not None:
+                break
+
+        return replay
+
     def disconnect(self):
-        self.sock.disconnect(self.address)
+        self.client.disconnect()

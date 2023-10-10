@@ -10,13 +10,13 @@ from vocana import setup_vocana_sdk
 def run():
     sdk = setup_vocana_sdk()
     try:
-        index_module = load_module(get_srouce())
+        index_module = load_module(get_source())
         index_module.main(sdk.props, sdk)
     except Exception as e:
         sdk.send_error(repr(e))
         sys.exit(1)
 
-def get_srouce():
+def get_source():
     source = sys.argv[1]
     if source is None or source == "":
         raise Exception("source file path is empty")

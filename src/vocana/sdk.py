@@ -3,15 +3,19 @@ from .mainframe import Mainframe
 class VocanaSDK:
     __session_id: str
     __task_id: str
+    __block_path: str
     __props: dict
+    __stacks: any
     __options: dict
 
     def __init__(self, node_props, mainframe: Mainframe) -> None:
         self.__props = node_props.get('props')
         self.__options = node_props.get('options')
-        self.__mainframe = mainframe
         self.__session_id = node_props.get('session_id')
         self.__task_id = node_props.get('task_id')
+        self.__block_path = node_props.get('block_path')
+        self.__stacks = node_props.get('stacks')
+        self.__mainframe = mainframe
 
     @property
     def session_id(self):
@@ -49,6 +53,26 @@ class VocanaSDK:
             'task_id': self.__task_id,
         })
         self.__mainframe.disconnect()
+
+    def send_message(self, payload):
+        self.__mainframe.send_report({
+            'type': 'BlockMessage',
+            'session_id': self.__session_id,
+            'block_task_id': self.__task_id,
+            'block_path': self.__block_path,
+            'stacks': self.__stacks,
+            'payload': payload,
+        })
+
+    def log_json(self, payload):
+        self.__mainframe.send_report({
+            'type': 'BlockLogJSON',
+            'session_id': self.__session_id,
+            'block_task_id': self.__task_id,
+            'block_path': self.__block_path,
+            'stacks': self.__stacks,
+            'json': payload,
+        })
 
     def send_error(self, error: str):
         self.__mainframe.send({

@@ -7,9 +7,7 @@ const path = require("node:path");
 
 const vocana = new Vocana();
 
-for (const type of eventTypes) {
-  vocana.events.on(vocana.events.ANY_EVENT, m => console.log(type, m));
-}
+vocana.events.on(vocana.events.ANY_EVENT, m => console.log(type, m));
 
 async function main() {
   await vocana.connect();

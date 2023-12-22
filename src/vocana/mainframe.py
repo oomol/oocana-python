@@ -42,6 +42,16 @@ class Mainframe:
         )
         info.wait_for_publish()
 
+    def send_report(self, msg):
+        if self.on_ready == False:
+            raise Exception('SDK is not ready')
+        info = self.client.publish(
+            f'report',
+            json.dumps(msg),
+            qos=1
+        )
+        info.wait_for_publish()
+
     def send_ready(self, msg):
         session_id = msg.get('session_id')
         task_id = msg.get('task_id')

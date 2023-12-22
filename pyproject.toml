@@ -16,5 +16,10 @@ license = {text = "MIT"}
 publish_vocana = { shell = "./scripts/publish_vocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
 
+[tool.pdm.dev-dependencies]
+dev = [
+    "amqtt>=0.11.0b1",
+    "setuptools>=68.0.0",
+]
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -9,8 +9,8 @@ dependencies:
     specifier: ^0.0.1
     version: 0.0.1
   '@vocana/vocana':
-    specifier: ^0.4.0
-    version: 0.4.0
+    specifier: ^0.4.8
+    version: 0.4.8
 
 packages:
 
@@ -38,8 +38,8 @@ packages:
     hasBin: true
     dev: false
 
-  /@vocana/vocana-cli-aarch64-apple-darwin@0.4.0:
-    resolution: {integrity: sha512-jjUedXwbk5jg5XUhuwRlO+dhJkb5NK4YKQu6fBEjtiPxHRfkgft4WgdIhsB80oACxOGqhCpbYYv14QdZ5RGf4Q==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-aarch64-apple-darwin/0.4.0/dfa4e7fbc6e61a4462b1eb8af09373c57cb4387a}
+  /@vocana/vocana-cli-aarch64-apple-darwin@0.4.6:
+    resolution: {integrity: sha512-G4hFRux42uSrmZPc6gzu9KPMrmewLSpPDr1GsYm6hLkwWBbsS8mdY6rJvrjEsyQJ4f8s2uun8L18d+AkCm3fHQ==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-aarch64-apple-darwin/0.4.6/6e69dfb507abe9951934d621ae56defb1feaa2a8}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [darwin]
@@ -47,8 +47,8 @@ packages:
     dev: false
     optional: true
 
-  /@vocana/vocana-cli-aarch64-unknown-linux-gnu@0.4.0:
-    resolution: {integrity: sha512-GxpMx9F518bpm5F1j5xQeH3GWYp9MtTHRWYbuCkko3XjsrTp1D2Jane/4zvfdgACzs7sbSlnEVIQ+d6mnNk0pw==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-aarch64-unknown-linux-gnu/0.4.0/e194e75054970b7632ae9a6088da2e07275b787e}
+  /@vocana/vocana-cli-aarch64-unknown-linux-gnu@0.4.6:
+    resolution: {integrity: sha512-s2U6sEedqyy6EIkWQRLn9nd2wylMOn8GCYys6OsX/nVSDYsLUwFju+fWrN5DxUdXCJsqcKzdesqG35GMRPWigQ==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-aarch64-unknown-linux-gnu/0.4.6/035ee581d3ed1ae067db728f80dc09f42f1f669f}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [linux]
@@ -56,8 +56,8 @@ packages:
     dev: false
     optional: true
 
-  /@vocana/vocana-cli-x86_64-apple-darwin@0.4.0:
-    resolution: {integrity: sha512-4ll+m+i9kpzsOacLIsjfGgDTKIITJwMtxBSv4QPcEA6kg3TbFL8cveTPf2kiTeVCsEUZzTACXLunqw3HY+/Ndw==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-x86_64-apple-darwin/0.4.0/fe683291f8d3117ce87bf9389ff64fbfe4493dbd}
+  /@vocana/vocana-cli-x86_64-apple-darwin@0.4.6:
+    resolution: {integrity: sha512-fBgUtV8KYcrziLdAcJkWiPMxvPyKrsFHj+p0RvhUp1//85qQG9kaUaY6QBNe9eBgRIFyyadtxaoXh8aAecG1kA==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-x86_64-apple-darwin/0.4.6/bf1dd2766b94caaf30b3b010b38893c9b1a32865}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [darwin]
@@ -65,8 +65,8 @@ packages:
     dev: false
     optional: true
 
-  /@vocana/vocana-cli-x86_64-unknown-linux-gnu@0.4.0:
-    resolution: {integrity: sha512-6Nm3mezfxp1BhXtyMuXscyyPPtN9Mrme+XD39UdnBw0sOin9qUfRtivRj8BxBG97Oxp7UZUctnULdz8YXKD7+Q==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-x86_64-unknown-linux-gnu/0.4.0/dfc4caf431c1c43cc6c21f33127552bc13c283ea}
+  /@vocana/vocana-cli-x86_64-unknown-linux-gnu@0.4.6:
+    resolution: {integrity: sha512-r0/bKm0HlYyLu25bBnSefEPTYM7B1MvCCJsLbaOuOrBTRsbW4xxRfVLB7MpOS9/XmnnGqAZlqR1XZ2KPYo4K0w==, tarball: https://npm.pkg.github.com/download/@vocana/vocana-cli-x86_64-unknown-linux-gnu/0.4.6/4966fbe98331074b93e4ef12024d1193d3a55c03}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [linux]
@@ -74,22 +74,27 @@ packages:
     dev: false
     optional: true
 
-  /@vocana/vocana@0.4.0:
-    resolution: {integrity: sha512-KBVZHXT3yD4izmQKxr0QJM9UWhMRn6opz9q2RIJgb9TRIpPWIXf4I43xlE0sKELU5Lzy+2N58Lb2Objj5T+gcQ==, tarball: https://npm.pkg.github.com/download/@vocana/vocana/0.4.0/82518a8213452bbb5db83e07102a35cbe4af6612}
+  /@vocana/vocana@0.4.8:
+    resolution: {integrity: sha512-1W9k3v24KmjncZCfEXFE2Dh4CErKfaSI/ElIBRBpRnXBNKlptp5pYAeqaDS7Z5Omt6HcfjM1C5Buptl2VWzuog==, tarball: https://npm.pkg.github.com/download/@vocana/vocana/0.4.8/f6a87feb2adc9cd913f4701296a65261dc5920f8}
     requiresBuild: true
     dependencies:
+      '@wopjs/disposable': 0.1.3
       mqtt: 5.1.1
-      remitter: 0.2.17
+      remitter: 0.3.3
       which: 3.0.1
     optionalDependencies:
-      '@vocana/vocana-cli-aarch64-apple-darwin': 0.4.0
-      '@vocana/vocana-cli-aarch64-unknown-linux-gnu': 0.4.0
-      '@vocana/vocana-cli-x86_64-apple-darwin': 0.4.0
-      '@vocana/vocana-cli-x86_64-unknown-linux-gnu': 0.4.0
+      '@vocana/vocana-cli-aarch64-apple-darwin': 0.4.6
+      '@vocana/vocana-cli-aarch64-unknown-linux-gnu': 0.4.6
+      '@vocana/vocana-cli-x86_64-apple-darwin': 0.4.6
+      '@vocana/vocana-cli-x86_64-unknown-linux-gnu': 0.4.6
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: false
+
+  /@wopjs/disposable@0.1.3:
+    resolution: {integrity: sha512-JttwruZmS5rhhK8/eomYxJc5TQxMnHlkasIa8kj/TxxmO1CKB7Ff0ZCNLBpdHKzeNC056RPRwoii/XGMeUl5ZA==}
     dev: false
 
   /abort-controller@3.0.0:
@@ -333,8 +338,8 @@ packages:
     resolution: {integrity: sha512-QIRet3SYrGp0HUHO88jVskiG6seqUGC5iAG7AwI/BV4ypGcuqk9Du6YQBUOUqm9c8pw1eyLoIaONifRua1lsEQ==}
     dev: false
 
-  /remitter@0.2.17:
-    resolution: {integrity: sha512-aKcMDxoRTrrpKNO5ZSk+zSUbsy7+bH2BsgiLaC78m91eip9R/VdGZfemBNfjXL6XE2krS+vA7on7SvETGRxwvQ==}
+  /remitter@0.3.3:
+    resolution: {integrity: sha512-JrY08EVUvfjzWJD5i2cPs/1xfvRRWqtkSuVjUbR7frO0HIe24Tko6P4W+PkTv608pKiVx6OkXRVMkC4YyRp8YA==}
     dev: false
 
   /rfdc@1.3.0:

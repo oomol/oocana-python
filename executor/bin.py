@@ -4,6 +4,7 @@ import sys
 import importlib
 import importlib.util
 import os
+import traceback
 
 from vocana import setup_vocana_sdk
 
@@ -12,8 +13,9 @@ def run():
     try:
         index_module = load_module(get_source())
         index_module.main(sdk.props, sdk)
-    except Exception as e:
-        sdk.send_error(repr(e))
+    except Exception:
+        traceback_str = traceback.format_exc()
+        sdk.send_error(traceback_str)
         sys.exit(1)
 
 def get_source():

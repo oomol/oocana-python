@@ -31,6 +31,7 @@ def load_module(source):
         source_abs_path = os.path.join(os.getcwd(), source)
 
     module_name = os.path.basename(source_abs_path).replace('.py', '')
+    sys.path.append(os.path.dirname(source_abs_path))
     file_spec = importlib.util.spec_from_file_location(module_name, source_abs_path)
     module = importlib.util.module_from_spec(file_spec)
     file_spec.loader.exec_module(module)

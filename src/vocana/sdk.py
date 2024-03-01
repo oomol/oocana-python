@@ -53,7 +53,7 @@ class VocanaSDK:
         # self.__mainframe.disconnect()
 
     def send_message(self, payload):
-        self.__mainframe.send_report({
+        self.__mainframe.report({
             'type': 'BlockMessage',
             'session_id': self.__session_id,
             'block_job_id': self.__job_id,
@@ -63,7 +63,7 @@ class VocanaSDK:
         })
 
     def log_json(self, payload):
-        self.__mainframe.send_report({
+        self.__mainframe.report({
             'type': 'BlockLogJSON',
             'session_id': self.__session_id,
             'block_job_id': self.__job_id,

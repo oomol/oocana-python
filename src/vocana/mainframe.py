@@ -21,7 +21,7 @@ class Mainframe:
         self.client.on_disconnect = self.on_disconnect
         self.client.on_connect_fail = self.on_connect_fail
         self.client.connect(host=url.hostname, port=url.port)
-        # self.client.loop_start()
+        self.client.loop_start()
         return self.client
 
     def on_connect_fail(self, client, userdata, flags, rc):
@@ -42,7 +42,7 @@ class Mainframe:
         )
         info.wait_for_publish()
 
-    def send_report(self, msg):
+    def report(self, msg):
         if self.on_ready == False:
             raise Exception('SDK is not ready')
         info = self.client.publish(
@@ -52,7 +52,8 @@ class Mainframe:
         )
         info.wait_for_publish()
 
-    def send_ready(self, msg):
+    def notify_ready(self, msg):
+
         session_id = msg.get('session_id')
         job_id = msg.get('job_id')
         topic = f'input/{session_id}/{job_id}'
@@ -79,7 +80,7 @@ class Mainframe:
 
         return replay
     
-    def subscribe_execute(self, name, callback):
+    def subscribe_executor(self, name, callback):
         def on_message(_client, _userdata, message):
             payload = json.loads(message.payload)
             callback(payload)

@@ -87,5 +87,8 @@ class Mainframe:
         self.client.subscribe(f'execute/{name}', qos=1)
         self.client.message_callback_add('execute', on_message)
 
+    def loop(self):
+        self.client.loop_forever()
+
     def disconnect(self):
         self.client.disconnect()

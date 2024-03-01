@@ -8,8 +8,6 @@ import importlib
 import importlib.util
 from vocana import setup_vocana_sdk, Mainframe
 
-mainframe
-
 def load_module(source):
     if (os.path.isabs(source)):
         source_abs_path = source
@@ -25,9 +23,8 @@ def load_module(source):
 
 def setup():
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
-    address = os.environ.get('VOCANA_ADDRESS') if os.environ.get('VOCANA_ADDRESS') else 'mqtt://127.0.0.1:8080'
+    address = os.environ.get('VOCANA_ADDRESS') if os.environ.get('VOCANA_ADDRESS') else 'mqtt://127.0.0.1:47688'
     executor = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python-executor'
-    global mainframe
     mainframe = Mainframe(address)
     mainframe.connect()
 
@@ -42,7 +39,10 @@ def setup():
             mainframe.send_error(traceback_str)
             sys.exit(1)
 
-    mainframe.subscribe(f'{executor}', run)
+    mainframe.subscribe_execute(f'{executor}', run)
 
+    mainframe.loop()
+        
 
-setup()
+if __name__ == '__main__':
+    setup()

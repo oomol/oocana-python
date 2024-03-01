@@ -54,8 +54,8 @@ class Mainframe:
 
     def send_ready(self, msg):
         session_id = msg.get('session_id')
-        task_id = msg.get('task_id')
-        topic = f'input/{session_id}/{task_id}'
+        job_id = msg.get('job_id')
+        topic = f'input/{session_id}/{job_id}'
         replay = None
 
         def on_message_once(_client, _userdata, message):

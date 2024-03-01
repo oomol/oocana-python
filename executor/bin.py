@@ -8,6 +8,7 @@ import importlib
 import importlib.util
 import asyncio
 from vocana import setup_vocana_sdk, Mainframe
+import queue
 
 def load_module(source):
     if (os.path.isabs(source)):
@@ -30,22 +31,22 @@ async def setup(loop):
     mainframe = Mainframe(address)
     mainframe.connect()
 
-    future = None
-    # 直接在 run 的 function 里面，publish message，在这个 mqtt 库里面，会一直发送不成功。目前是在主线程拿到 future 对象，绕过
-    # FIXME: 问题是，如果连续 receive 两次，那么 future 可能会丢失，需要再兼容。
+    fs = queue.Queue()
     def run(message):
-        nonlocal future
-        future = loop.create_future()
-        future.set_result(message)
+        nonlocal fs
+        f = loop.create_future()
+        fs.put(f)
+        f.set_result(message)
         
     mainframe.subscribe_executor(f'{name}', run)
 
     while True:
         await asyncio.sleep(1)
-        if future is not None:
-            message = await future
+        if not fs.empty():
+            f = fs.get()
+            message = await f
             setup_sdk(message, mainframe)
-            future = None
+
         
 
 def setup_sdk(message, mainframe):

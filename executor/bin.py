@@ -24,11 +24,12 @@ def load_module(source):
 def setup():
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
     address = os.environ.get('VOCANA_ADDRESS') if os.environ.get('VOCANA_ADDRESS') else 'mqtt://127.0.0.1:47688'
-    executor = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python-executor'
+    name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python-executor'
     mainframe = Mainframe(address)
     mainframe.connect()
 
     def run(message):
+        print('run')
         try:
             start_args = json.loads(message.payload)
             sdk = setup_vocana_sdk(mainframe, start_args['session_id'], start_args['job_id'])
@@ -39,7 +40,7 @@ def setup():
             mainframe.send_error(traceback_str)
             sys.exit(1)
 
-    mainframe.subscribe_execute(f'{executor}', run)
+    mainframe.subscribe_execute(f'{name}', run)
 
     mainframe.loop()
         

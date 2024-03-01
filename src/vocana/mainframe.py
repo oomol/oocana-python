@@ -21,7 +21,7 @@ class Mainframe:
         self.client.on_disconnect = self.on_disconnect
         self.client.on_connect_fail = self.on_connect_fail
         self.client.connect(host=url.hostname, port=url.port)
-        self.client.loop_start()
+        # self.client.loop_start()
         return self.client
 
     def on_connect_fail(self, client, userdata, flags, rc):
@@ -81,11 +81,13 @@ class Mainframe:
     
     def subscribe_execute(self, name, callback):
         def on_message(_client, _userdata, message):
+            print('subscribe_execute receive message')
             payload = json.loads(message.payload)
             callback(payload)
 
-        self.client.subscribe(f'execute/{name}', qos=1)
-        self.client.message_callback_add('execute', on_message)
+        topic = f'executor/{name}'
+        self.client.subscribe(topic, qos=1)
+        self.client.message_callback_add(topic, on_message)
 
     def loop(self):
         self.client.loop_forever()

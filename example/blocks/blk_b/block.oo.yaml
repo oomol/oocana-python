@@ -1,5 +1,5 @@
-entry:
-  bin: ../../node_modules/.bin/vocana-executor-python
+executor:
+  name: python-executor
   args:
     - ./index.py
 props:

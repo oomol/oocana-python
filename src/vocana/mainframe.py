@@ -64,8 +64,8 @@ class Mainframe:
             self.client.unsubscribe(topic)
             replay = json.loads(message.payload)
 
-        self.client.on_message = on_message_once
         self.client.subscribe(topic, qos=1)
+        self.client.message_callback_add(topic, on_message_once)
 
         self.client.publish(
             f'session/{session_id}',
@@ -78,6 +78,14 @@ class Mainframe:
                 break
 
         return replay
+    
+    def subscribe_execute(self, name, callback):
+        def on_message(_client, _userdata, message):
+            payload = json.loads(message.payload)
+            callback(payload)
+
+        self.client.subscribe(f'execute/{name}', qos=1)
+        self.client.message_callback_add('execute', on_message)
 
     def disconnect(self):
         self.client.disconnect()

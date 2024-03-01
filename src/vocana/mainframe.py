@@ -56,7 +56,7 @@ class Mainframe:
 
         session_id = msg.get('session_id')
         job_id = msg.get('job_id')
-        topic = f'input/{session_id}/{job_id}'
+        topic = f'inputs/{session_id}/{job_id}'
         replay = None
 
         def on_message_once(_client, _userdata, message):

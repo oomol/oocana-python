@@ -29,15 +29,13 @@ def setup():
     mainframe.connect()
 
     def run(message):
-        print('run')
+        sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'])
         try:
-            start_args = json.loads(message.payload)
-            sdk = setup_vocana_sdk(mainframe, start_args['session_id'], start_args['job_id'])
-            index_module = load_module(start_args['source'])
+            index_module = load_module(message['source'])
             index_module.main(sdk.props, sdk)
         except Exception:
             traceback_str = traceback.format_exc()
-            mainframe.send_error(traceback_str)
+            sdk.send_error(traceback_str)
             sys.exit(1)
 
     mainframe.subscribe_execute(f'{name}', run)

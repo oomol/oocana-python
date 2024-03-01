@@ -81,7 +81,6 @@ class Mainframe:
     
     def subscribe_execute(self, name, callback):
         def on_message(_client, _userdata, message):
-            print('subscribe_execute receive message')
             payload = json.loads(message.payload)
             callback(payload)
 

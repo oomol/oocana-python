@@ -41,8 +41,8 @@ class VocanaSDK:
             'done': done,
         }
         self.__mainframe.send(node_result)
-        if done:
-            self.__mainframe.disconnect()
+        # if done:
+        #     self.__mainframe.disconnect()
 
     def done(self):
         self.__mainframe.send({
@@ -50,7 +50,7 @@ class VocanaSDK:
             'session_id': self.__session_id,
             'job_id': self.__job_id,
         })
-        self.__mainframe.disconnect()
+        # self.__mainframe.disconnect()
 
     def send_message(self, payload):
         self.__mainframe.send_report({
@@ -78,4 +78,4 @@ class VocanaSDK:
             'job_id': self.__job_id,
             'error': error,
         })
-        self.__mainframe.disconnect()
+        # self.__mainframe.disconnect()

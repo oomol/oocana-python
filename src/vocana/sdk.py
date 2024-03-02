@@ -1,17 +1,37 @@
 from .mainframe import Mainframe
+from dataclasses import dataclass, asdict
+
+
+@dataclass(frozen=True)
+class ObjectStoreDescriptor:
+    name: str
+    handle: str
+    job_id: str
+    session_id: str
 
 class VocanaSDK:
     __session_id: str
     __job_id: str
     __props: dict
     __stacks: list[dict]
+    __store: any
 
-    def __init__(self, node_props, mainframe: Mainframe) -> None:
-        self.__props = node_props.get('props')
+    def __init__(self, node_props, mainframe: Mainframe, store=None) -> None:
+        self.__props = node_props.get('inputs')
         self.__session_id = node_props.get('session_id')
         self.__job_id = node_props.get('job_id')
         self.__stacks = node_props.get('stacks')
         self.__mainframe = mainframe
+        self.__store = store
+
+        if self.__props is None:
+            self.__props = {}
+
+        for k, v in self.__props.items():
+            if isinstance(v, dict) and v.get("name") == "python-executor":
+                # TODO: 暂时不做严格校验
+                value = store.get(ObjectStoreDescriptor(**v))
+                self.__props[k] = value
 
     @property
     def session_id(self):
@@ -25,16 +45,20 @@ class VocanaSDK:
     def props(self):
         return self.__props
     
+    def __store_obj(self, handle: str):
+        return ObjectStoreDescriptor(
+            name="python-executor",
+            handle=handle,
+            job_id=self.job_id,
+            session_id=self.session_id
+        )
+    
     def outputObj(self, obj: any, handle: str, done: bool = False):
-        node_result = {
-            'type': 'BlockOutput',
-            'session_id': self.session_id,
-            'job_id': self.job_id,
-            'handle': handle,
-            'output': obj,
-            'done': done,
-        }
-        self.__mainframe.send(node_result)
+
+        s = self.__store_obj(handle)
+        if self.__store is not None:
+            self.__store[s] = obj
+        self.output(s.__dict__, handle, done)
 
     def output(self, output: any, handle: str, done: bool = False):
         node_result = {

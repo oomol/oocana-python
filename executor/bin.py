@@ -10,6 +10,9 @@ import asyncio
 from vocana import setup_vocana_sdk, Mainframe
 import queue
 
+
+store = {}
+
 def load_module(source, dir=None):
     if (os.path.isabs(source)):
         source_abs_path = source
@@ -58,7 +61,7 @@ def setup_sdk(message, mainframe):
     if message.get('job_id') is None:
         raise Exception('job_id is required')
 
-    sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'])
+    sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'], store)
     
     dir = message.get('dir')
 

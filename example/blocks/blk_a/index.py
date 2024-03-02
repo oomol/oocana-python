@@ -1,6 +1,9 @@
+import datetime
+
 def main(props, context):
-    # print("Hello from Python blk_a", props)
+
     context.send_message("Hello from Python blk_a")
     context.log_json({"message": "Hello from Python blk_a"})
-    # context.send_error("Hello from Python blk_a")
-    context.output(11, "my_output", True)
+    obj = datetime.datetime.now()
+    print("obj", obj)
+    context.outputObj(obj, "my_output", True)

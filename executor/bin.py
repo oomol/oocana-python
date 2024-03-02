@@ -10,11 +10,12 @@ import asyncio
 from vocana import setup_vocana_sdk, Mainframe
 import queue
 
-def load_module(source):
+def load_module(source, dir=None):
     if (os.path.isabs(source)):
         source_abs_path = source
     else:
-        source_abs_path = os.path.join(os.getcwd(), source)
+        dirname = dir if dir else os.getcwd()
+        source_abs_path = os.path.join(dirname, source)
 
     module_name = os.path.basename(source_abs_path).replace('.py', '')
     sys.path.append(os.path.dirname(source_abs_path))
@@ -50,15 +51,27 @@ async def setup(loop):
         
 
 def setup_sdk(message, mainframe):
+
+    # 这两个参数肯定存在，所以这里只做 raise Exception 防止调试时没传的问题
+    if message.get('session_id') is None:
+        raise Exception('session_id is required')
+    if message.get('job_id') is None:
+        raise Exception('job_id is required')
+
     sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'])
+    
+    dir = message.get('dir')
+
+    options = message.get('options')
+    source = options["entry"] if options is not None and options.get("entry") is not None else 'index.py'
+
     try:
-        index_module = load_module(message['dir'])
+        index_module = load_module(source, dir)
         index_module.main(sdk.props, sdk)
     except Exception as e:
         print('Error:', repr(e))
         traceback_str = traceback.format_exc()
         sdk.send_error(traceback_str)
-        sys.exit(1)
 
 
 if __name__ == '__main__':

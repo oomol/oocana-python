@@ -2,11 +2,9 @@ executor:
   name: python-executor
   args:
     - ./index.py
-props:
-  my_count:
-    optional: true
-results:
-  my_output:
-options:
-  default_count:
-    default: 1
+entry:
+  bin: ../../node_modules/.bin/vocana-executor-python
+inputs_def:
+  - handle: my_input
+outputs_def:
+  - handle: my_output

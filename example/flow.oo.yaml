@@ -5,7 +5,7 @@ nodes:
   - node_id: block-b
     task: ./blocks/blk_b
     inputs_from: 
-      - handle: my_output
+      - handle: my_input
         from_node:
           - node_id: block-a
             output_handle: my_output

@@ -27,17 +27,24 @@ class VocanaSDK:
     def props(self):
         return self.__props
     
-    @property
-    def options(self):
-        return self.__options
-
-    def output(self, result: any, handle: str, done: bool = False):
+    def outputObj(self, obj: any, handle: str, done: bool = False):
         node_result = {
             'type': 'BlockOutput',
             'session_id': self.__session_id,
             'job_id': self.__job_id,
             'handle': handle,
-            'output': result,
+            'output': obj,
+            'done': done,
+        }
+        self.__mainframe.send(node_result)
+
+    def output(self, output: any, handle: str, done: bool = False):
+        node_result = {
+            'type': 'BlockOutput',
+            'session_id': self.__session_id,
+            'job_id': self.__job_id,
+            'handle': handle,
+            'output': output,
             'done': done,
         }
         self.__mainframe.send(node_result)

@@ -31,13 +31,13 @@ class VocanaSDK:
     def options(self):
         return self.__options
 
-    def result(self, result: any, key: str, done: bool = False):
+    def output(self, result: any, handle: str, done: bool = False):
         node_result = {
-            'type': 'BlockResult',
+            'type': 'BlockOutput',
             'session_id': self.__session_id,
             'job_id': self.__job_id,
-            'key': key,
-            'result': result,
+            'handle': handle,
+            'output': result,
             'done': done,
         }
         self.__mainframe.send(node_result)
@@ -57,7 +57,6 @@ class VocanaSDK:
             'type': 'BlockMessage',
             'session_id': self.__session_id,
             'block_job_id': self.__job_id,
-            'block_path': self.__block_path,
             'stacks': self.__stacks,
             'payload': payload,
         })

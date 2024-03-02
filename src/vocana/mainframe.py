@@ -76,9 +76,7 @@ class Mainframe:
 
         while True:
             if replay is not None:
-                break
-
-        return replay
+                return replay
     
     def subscribe_executor(self, name, callback):
         def on_message(_client, _userdata, message):

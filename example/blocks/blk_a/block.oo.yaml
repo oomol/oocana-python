@@ -1,5 +1,5 @@
 executor:
-  name: python-executor
+  name: python_executor
   args:
     - ./index.py
 outputs_def:

@@ -31,7 +31,7 @@ def load_module(source, dir=None):
 async def setup(loop):
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
     address = os.environ.get('VOCANA_ADDRESS') if os.environ.get('VOCANA_ADDRESS') else 'mqtt://127.0.0.1:47688'
-    name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python-executor'
+    name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
     mainframe = Mainframe(address)
     mainframe.connect()
 

@@ -28,7 +28,7 @@ class VocanaSDK:
             self.__props = {}
 
         for k, v in self.__props.items():
-            if isinstance(v, dict) and v.get("name") == "python-executor":
+            if isinstance(v, dict) and v.get("name") == "python_executor":
                 # TODO: 暂时不做严格校验
                 value = store.get(ObjectStoreDescriptor(**v))
                 self.__props[k] = value
@@ -47,7 +47,7 @@ class VocanaSDK:
     
     def __store_obj(self, handle: str):
         return ObjectStoreDescriptor(
-            name="python-executor",
+            name="python_executor",
             handle=handle,
             job_id=self.job_id,
             session_id=self.session_id

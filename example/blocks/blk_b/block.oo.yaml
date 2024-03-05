@@ -2,8 +2,6 @@ executor:
   name: python-executor
   args:
     - ./index.py
-entry:
-  bin: ../../node_modules/.bin/vocana-executor-python
 inputs_def:
   - handle: my_input
 outputs_def:

@@ -4,7 +4,7 @@ from dataclasses import dataclass, asdict
 
 @dataclass(frozen=True)
 class ObjectStoreDescriptor:
-    name: str
+    executor: str
     handle: str
     job_id: str
     session_id: str
@@ -52,7 +52,7 @@ class VocanaSDK:
     
     def __store_obj(self, handle: str):
         return ObjectStoreDescriptor(
-            name="python_executor",
+            executor="python_executor",
             handle=handle,
             job_id=self.job_id,
             session_id=self.session_id

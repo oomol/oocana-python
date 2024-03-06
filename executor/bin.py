@@ -7,7 +7,7 @@ import traceback
 import importlib
 import importlib.util
 import asyncio
-from vocana import setup_vocana_sdk, Mainframe
+from vocana import setup_vocana_sdk, Mainframe, ObjectStoreDescriptor
 import queue
 
 
@@ -41,8 +41,16 @@ async def setup(loop):
         f = loop.create_future()
         fs.put(f)
         f.set_result(message)
+
+    def drop(message):
+        obj = ObjectStoreDescriptor(**message)
+        o = store.get(obj)
+        print('drop obj', obj, o)
+        if o is not None:
+            del store[obj]
         
-    mainframe.subscribe_executor(f'{name}', run)
+    mainframe.subscribe_execute(f'{name}', run)
+    mainframe.subscribe_drop(f'{name}', drop)
 
     while True:
         await asyncio.sleep(1)

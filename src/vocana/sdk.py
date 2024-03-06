@@ -31,6 +31,11 @@ class VocanaSDK:
             if isinstance(v, dict) and v.get("name") == "python_executor":
                 # TODO: 暂时不做严格校验
                 value = store.get(ObjectStoreDescriptor(**v))
+
+                if value is None:
+                    # TODO: 应该直接报错
+                    print(f'ObjectStoreDescriptor not found: {v}')
+
                 self.__props[k] = value
 
     @property

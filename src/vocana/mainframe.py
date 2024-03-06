@@ -78,12 +78,25 @@ class Mainframe:
             if replay is not None:
                 return replay
     
-    def subscribe_executor(self, name, callback):
+    def subscribe_drop(self, name, callback):
+        topic = f'executor/{name}/drop'
+
         def on_message(_client, _userdata, message):
+            print("topic: ", topic)
             payload = json.loads(message.payload)
             callback(payload)
 
-        topic = f'executor/{name}'
+        self.client.subscribe(topic, qos=1)
+        self.client.message_callback_add(topic, on_message)
+
+    def subscribe_execute(self, name, callback):
+        topic = f'executor/{name}/execute'
+
+        def on_message(_client, _userdata, message):
+            print("topic: ", topic)
+            payload = json.loads(message.payload)
+            callback(payload)
+
         self.client.subscribe(topic, qos=1)
         self.client.message_callback_add(topic, on_message)
 

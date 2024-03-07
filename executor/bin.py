@@ -38,6 +38,8 @@ async def setup(loop):
     fs = queue.Queue()
     def run(message):
         nonlocal fs
+        # 在当前使用的 mqtt 库里，如果在 subscribe 之后，直接 publish 消息，会一直阻塞无法发送成功。
+        # 所以要切换线程后，再进行 publish。这里使用 future 来实现线程切换和数据传递。
         f = loop.create_future()
         fs.put(f)
         f.set_result(message)
@@ -45,10 +47,9 @@ async def setup(loop):
     def drop(message):
         obj = ObjectStoreDescriptor(**message)
         o = store.get(obj)
-        print('drop obj', obj, o)
         if o is not None:
             del store[obj]
-        
+
     mainframe.subscribe_execute(f'{name}', run)
     mainframe.subscribe_drop(f'{name}', drop)
 

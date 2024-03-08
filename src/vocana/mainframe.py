@@ -42,7 +42,7 @@ class Mainframe:
         )
         info.wait_for_publish()
 
-    def send_report(self, msg):
+    def report(self, msg):
         if self.on_ready == False:
             raise Exception('SDK is not ready')
         info = self.client.publish(
@@ -52,10 +52,11 @@ class Mainframe:
         )
         info.wait_for_publish()
 
-    def send_ready(self, msg):
+    def notify_ready(self, msg):
+
         session_id = msg.get('session_id')
-        task_id = msg.get('task_id')
-        topic = f'props/{session_id}/{task_id}'
+        job_id = msg.get('job_id')
+        topic = f'inputs/{session_id}/{job_id}'
         replay = None
 
         def on_message_once(_client, _userdata, message):
@@ -64,8 +65,8 @@ class Mainframe:
             self.client.unsubscribe(topic)
             replay = json.loads(message.payload)
 
-        self.client.on_message = on_message_once
         self.client.subscribe(topic, qos=1)
+        self.client.message_callback_add(topic, on_message_once)
 
         self.client.publish(
             f'session/{session_id}',
@@ -75,9 +76,32 @@ class Mainframe:
 
         while True:
             if replay is not None:
-                break
+                return replay
+    
+    def subscribe_drop(self, name, callback):
+        topic = f'executor/{name}/drop'
 
-        return replay
+        def on_message(_client, _userdata, message):
+            print("topic: ", topic)
+            payload = json.loads(message.payload)
+            callback(payload)
+
+        self.client.subscribe(topic, qos=1)
+        self.client.message_callback_add(topic, on_message)
+
+    def subscribe_execute(self, name, callback):
+        topic = f'executor/{name}/execute'
+
+        def on_message(_client, _userdata, message):
+            print("topic: ", topic)
+            payload = json.loads(message.payload)
+            callback(payload)
+
+        self.client.subscribe(topic, qos=1)
+        self.client.message_callback_add(topic, on_message)
+
+    def loop(self):
+        self.client.loop_forever()
 
     def disconnect(self):
         self.client.disconnect()

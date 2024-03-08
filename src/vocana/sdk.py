@@ -15,14 +15,16 @@ class VocanaSDK:
     __props: dict
     __stacks: list[dict]
     __store: any
+    __outputs: any
 
-    def __init__(self, node_props, mainframe: Mainframe, store=None) -> None:
+    def __init__(self, node_props, mainframe: Mainframe, store=None, outputs=None) -> None:
         self.__props = node_props.get('inputs')
         self.__session_id = node_props.get('session_id')
         self.__job_id = node_props.get('job_id')
         self.__stacks = node_props.get('stacks')
         self.__mainframe = mainframe
         self.__store = store
+        self.__outputs = outputs
 
         if self.__props is None:
             self.__props = {}
@@ -66,12 +68,20 @@ class VocanaSDK:
         self.output(s.__dict__, handle, done)
 
     def output(self, output: any, handle: str, done: bool = False):
+
+        v = output
+
+        if self.__outputs is not None:
+            output_def = self.__outputs.get(handle)
+            if output_def is not None and output_def.get('executor'):
+                v = self.__store_obj(handle).__dict__
+
         node_result = {
             'type': 'BlockOutput',
             'session_id': self.session_id,
             'job_id': self.job_id,
             'handle': handle,
-            'output': output,
+            'output': v,
             'done': done,
         }
         self.__mainframe.send(node_result)

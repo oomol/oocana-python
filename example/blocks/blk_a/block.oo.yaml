@@ -4,6 +4,7 @@ executor:
     - ./index.py
 outputs_def:
   - handle: my_output
+    executor: python_executor
 inputs_def:
   - handle: my_count
     optional: true

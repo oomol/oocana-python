@@ -60,8 +60,21 @@ async def setup(loop):
             message = await f
             setup_sdk(message, mainframe)
 
-        
-
+# TODO: 最好用 dataclass 固化校验
+# message 格式: {
+#     "session_id": "xxxx",
+#     "job_id": "xxxx",
+#     "executor": {
+#         "entry": "index.py"
+#     },
+#     "dir": "xxxx",
+#     "outputs": {
+#         "output1": {
+#               "handleName": "xxxx",
+#               "executor": "python_executor",
+#          }
+#     }
+# }
 def setup_sdk(message, mainframe):
 
     # 这两个参数肯定存在，所以这里只做 raise Exception 防止调试时没传的问题
@@ -74,8 +87,8 @@ def setup_sdk(message, mainframe):
     
     dir = message.get('dir')
 
-    options = message.get('options')
-    source = options["entry"] if options is not None and options.get("entry") is not None else 'index.py'
+    config = message.get('executor')
+    source = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
     try:
         index_module = load_module(source, dir)

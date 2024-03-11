@@ -7,7 +7,7 @@ import traceback
 import importlib
 import importlib.util
 import asyncio
-from vocana import setup_vocana_sdk, Mainframe, ObjectStoreDescriptor
+from vocana import setup_vocana_sdk, Mainframe, ObjectRefDescriptor
 import queue
 
 
@@ -45,7 +45,7 @@ async def setup(loop):
         f.set_result(message)
 
     def drop(message):
-        obj = ObjectStoreDescriptor(**message)
+        obj = ObjectRefDescriptor(**message)
         o = store.get(obj)
         if o is not None:
             del store[obj]
@@ -83,8 +83,7 @@ def setup_sdk(message, mainframe):
     if message.get('job_id') is None:
         raise Exception('job_id is required')
 
-    sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'], store, message.get
-                        ('outputs'))
+    sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'], store, message.get('outputs'))
     
     dir = message.get('dir')
 

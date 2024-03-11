@@ -3,7 +3,7 @@ from dataclasses import dataclass, asdict
 
 
 @dataclass(frozen=True)
-class ObjectStoreDescriptor:
+class ObjectRefDescriptor:
     executor: str
     handle: str
     job_id: str
@@ -13,9 +13,9 @@ class VocanaSDK:
     __session_id: str
     __job_id: str
     __props: dict
-    __stacks: list[dict]
-    __store: any
+    __stacks: list[any]
     __outputs: any
+    __store: any
 
     def __init__(self, node_props, mainframe: Mainframe, store=None, outputs=None) -> None:
         self.__props = node_props.get('inputs')
@@ -30,13 +30,18 @@ class VocanaSDK:
             self.__props = {}
 
         for k, v in self.__props.items():
-            if isinstance(v, dict) and v.get("name") == "python_executor":
-                # TODO: 暂时不做严格校验
-                value = store.get(ObjectStoreDescriptor(**v))
+            if isinstance(v, dict) and v.get('executor') == 'python_executor':
+                try:
+                    objKey = ObjectRefDescriptor(**v)
+                except:
+                    print(f'not valid object ref: {v}')
+                    continue
+
+                value = store.get(objKey)
 
                 if value is None:
-                    # TODO: 应该直接报错
-                    print(f'ObjectStoreDescriptor not found: {v}')
+                    print(f'ObjectRefDescriptor not found: {v}')
+                    continue
 
                 self.__props[k] = value
 
@@ -52,20 +57,13 @@ class VocanaSDK:
     def props(self):
         return self.__props
     
-    def __store_obj(self, handle: str):
-        return ObjectStoreDescriptor(
+    def __store_ref(self, handle: str):
+        return ObjectRefDescriptor(
             executor="python_executor",
             handle=handle,
             job_id=self.job_id,
             session_id=self.session_id
         )
-    
-    def outputObj(self, obj: any, handle: str, done: bool = False):
-
-        s = self.__store_obj(handle)
-        if self.__store is not None:
-            self.__store[s] = obj
-        self.output(s.__dict__, handle, done)
 
     def output(self, output: any, handle: str, done: bool = False):
 
@@ -73,8 +71,11 @@ class VocanaSDK:
 
         if self.__outputs is not None:
             output_def = self.__outputs.get(handle)
-            if output_def is not None and output_def.get('executor'):
-                v = self.__store_obj(handle).__dict__
+            if output_def is not None and output_def.get('data') and output_def.get('data').get('type') == 'var':
+                ref = self.__store_ref(handle)
+                print(f'store output {handle} as object ref')
+                self.__store[ref] = output
+                v = asdict(ref)
 
         node_result = {
             'type': 'BlockOutput',

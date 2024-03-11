@@ -3,7 +3,7 @@ from dataclasses import dataclass, asdict
 
 
 @dataclass(frozen=True)
-class ObjectStoreDescriptor:
+class ObjectRefDescriptor:
     executor: str
     handle: str
     job_id: str
@@ -30,13 +30,18 @@ class VocanaSDK:
             self.__props = {}
 
         for k, v in self.__props.items():
-            if isinstance(v, dict) and v.get("name") == "python_executor":
-                # TODO: 暂时不做严格校验
-                value = store.get(ObjectStoreDescriptor(**v))
+            if isinstance(v, dict) and v.get('executor') == 'python_executor':
+                try:
+                    objKey = ObjectRefDescriptor(**v)
+                except:
+                    print(f'not valid object ref: {v}')
+                    continue
+
+                value = store.get(objKey)
 
                 if value is None:
-                    # TODO: 应该直接报错
-                    print(f'ObjectStoreDescriptor not found: {v}')
+                    print(f'ObjectRefDescriptor not found: {v}')
+                    continue
 
                 self.__props[k] = value
 
@@ -53,7 +58,7 @@ class VocanaSDK:
         return self.__props
     
     def __store_obj(self, handle: str):
-        return ObjectStoreDescriptor(
+        return ObjectRefDescriptor(
             executor="python_executor",
             handle=handle,
             job_id=self.job_id,

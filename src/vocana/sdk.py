@@ -64,13 +64,6 @@ class VocanaSDK:
             job_id=self.job_id,
             session_id=self.session_id
         )
-    
-    def outputObj(self, obj: any, handle: str, done: bool = False):
-
-        s = self.__store_obj(handle)
-        if self.__store is not None:
-            self.__store[s] = obj
-        self.output(s.__dict__, handle, done)
 
     def output(self, output: any, handle: str, done: bool = False):
 
@@ -78,7 +71,7 @@ class VocanaSDK:
 
         if self.__outputs is not None:
             output_def = self.__outputs.get(handle)
-            if output_def is not None and output_def.get('executor'):
+            if output_def is not None and output_def.get('data') and output_def.get('data').get('type') == 'var':
                 v = self.__store_obj(handle).__dict__
 
         node_result = {

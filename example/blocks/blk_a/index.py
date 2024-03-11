@@ -6,4 +6,4 @@ def main(props, context):
     context.log_json({"message": "Hello from Python blk_a"})
     obj = datetime.datetime.now()
     print("obj", obj)
-    context.outputObj(obj, "my_output", True)
+    context.output(obj, "my_output", True)

@@ -4,6 +4,8 @@ executor:
     - ./index.py
 inputs_def:
   - handle: my_input
-    executor: python_executor
+    data:
+      type: var
+      executor: python_executor
 outputs_def:
   - handle: my_output

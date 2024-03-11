@@ -83,8 +83,7 @@ def setup_sdk(message, mainframe):
     if message.get('job_id') is None:
         raise Exception('job_id is required')
 
-    sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'], store, message.get
-                        ('outputs'))
+    sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'], store, message.get('outputs'))
     
     dir = message.get('dir')
 

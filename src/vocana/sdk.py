@@ -14,7 +14,6 @@ class VocanaSDK:
     __job_id: str
     __props: dict
     __stacks: list[dict]
-    __store: any
     __outputs: any
 
     def __init__(self, node_props, mainframe: Mainframe, store=None, outputs=None) -> None:
@@ -23,7 +22,6 @@ class VocanaSDK:
         self.__job_id = node_props.get('job_id')
         self.__stacks = node_props.get('stacks')
         self.__mainframe = mainframe
-        self.__store = store
         self.__outputs = outputs
 
         if self.__props is None:

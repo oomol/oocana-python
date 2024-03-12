@@ -1,7 +1,12 @@
 {
   "name": "@vocana/executor-python",
-  "version": "0.1.1",
-  "files": ["bin.py"],
+  "version": "0.2.0",
+  "files": [
+    "bin.py",
+    "func.py",
+    "mainframin.py",
+    "vocana.py"
+  ],
   "bin": {
     "vocana-executor-python": "bin.py"
   },

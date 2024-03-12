@@ -1,6 +1,5 @@
-from .sdk import VocanaSDK
 from .mainframe import Mainframe
-
+from .vocana import VocanaSDK
 
 def setup_vocana_sdk(mainframe: Mainframe, session_id: str, job_id: str, store, output) -> VocanaSDK:
     # FIXME: remove this after vocana-rust supports timeout

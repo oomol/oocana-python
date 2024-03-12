@@ -7,7 +7,10 @@ import traceback
 import importlib
 import importlib.util
 import asyncio
-from vocana import setup_vocana_sdk, Mainframe, ObjectRefDescriptor
+# from vocana import setup_vocana_sdk, Mainframe, ObjectRefDescriptor
+from .func import setup_vocana_sdk
+from .mainframe import Mainframe
+from .vocana import ObjectRefDescriptor
 import queue
 
 

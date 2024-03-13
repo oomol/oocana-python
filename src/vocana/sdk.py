@@ -14,6 +14,7 @@ class VocanaSDK:
     __job_id: str
     __props: dict
     __stacks: list[any]
+    __block_path: str
     __outputs: any
     __store: any
 
@@ -22,6 +23,8 @@ class VocanaSDK:
         self.__session_id = node_props.get('session_id')
         self.__job_id = node_props.get('job_id')
         self.__stacks = node_props.get('stacks')
+        self.__block_path = node_props.get('block_path')
+
         self.__mainframe = mainframe
         self.__store = store
         self.__outputs = outputs
@@ -104,6 +107,17 @@ class VocanaSDK:
             'block_job_id': self.job_id,
             'stacks': self.__stacks,
             'payload': payload,
+        })
+    
+    # 捕获 block 的输出，转发上报到 vocana 中
+    def report_log(self, line: str, stdio: str = 'stdout'):
+        self.__mainframe.report({
+            'type': 'BlockLog',
+            'session_id': self.session_id,
+            'job_id': self.job_id,
+            'block_path': self.__block_path,
+            'log': line,
+            stdio: stdio,
         })
 
     def log_json(self, payload):

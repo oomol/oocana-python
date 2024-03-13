@@ -7,8 +7,9 @@ import traceback
 import importlib
 import importlib.util
 import asyncio
-from vocana import setup_vocana_sdk, Mainframe, ObjectRefDescriptor
+from vocana import setup_vocana_sdk, VocanaSDK, Mainframe, ObjectRefDescriptor
 import queue
+from io import StringIO
 
 
 store = {}
@@ -58,7 +59,7 @@ async def setup(loop):
         if not fs.empty():
             f = fs.get()
             message = await f
-            setup_sdk(message, mainframe)
+            run_block(message, mainframe)
 
 # TODO: 最好用 dataclass 固化校验
 # message 格式: {
@@ -75,7 +76,7 @@ async def setup(loop):
 #          }
 #     }
 # }
-def setup_sdk(message, mainframe):
+def run_block(message, mainframe):
 
     # 这两个参数肯定存在，所以这里只做 raise Exception 防止调试时没传的问题
     if message.get('session_id') is None:
@@ -90,14 +91,29 @@ def setup_sdk(message, mainframe):
     config = message.get('executor')
     source = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+
     try:
+        captured_output = StringIO()
+        captured_error = StringIO()
+
+        sys.stdout = captured_output
+        sys.stderr = captured_error
         index_module = load_module(source, dir)
         index_module.main(sdk.props, sdk)
     except Exception as e:
-        print('Error:', repr(e))
         traceback_str = traceback.format_exc()
         sdk.send_error(traceback_str)
-
+    finally:
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
+        stdout_lines = captured_output.getvalue()
+        for line in stdout_lines.splitlines():
+            sdk.report_log(line)
+        stderr_lines = captured_error.getvalue()
+        for line in stderr_lines.splitlines():
+            sdk.report_log(line, 'stderr')
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()

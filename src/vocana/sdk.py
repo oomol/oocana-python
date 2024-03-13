@@ -116,6 +116,7 @@ class VocanaSDK:
             'session_id': self.session_id,
             'job_id': self.job_id,
             'block_path': self.__block_path,
+            'stacks': self.__stacks,
             'log': line,
             stdio: stdio,
         })

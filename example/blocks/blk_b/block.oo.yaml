@@ -1,7 +1,6 @@
 executor:
   name: python_executor
-  args:
-    - ./index.py
+  entry: index.py
 inputs_def:
   - handle: my_input
     data:

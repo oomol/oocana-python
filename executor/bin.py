@@ -7,7 +7,7 @@ import traceback
 import importlib
 import importlib.util
 import asyncio
-from vocana import setup_vocana_sdk, VocanaSDK, Mainframe, ObjectRefDescriptor
+from vocana import setup_vocana_sdk, VocanaSDK, Mainframe, RefDescriptor
 import queue
 from io import StringIO
 
@@ -46,7 +46,7 @@ async def setup(loop):
         f.set_result(message)
 
     def drop(message):
-        obj = ObjectRefDescriptor(**message)
+        obj = RefDescriptor(**message)
         o = store.get(obj)
         if o is not None:
             del store[obj]

@@ -1,13 +1,6 @@
 from .mainframe import Mainframe
-from dataclasses import dataclass, asdict
-
-
-@dataclass(frozen=True)
-class ObjectRefDescriptor:
-    executor: str
-    handle: str
-    job_id: str
-    session_id: str
+from dataclasses import asdict
+from .data import RefDescriptor
 
 class VocanaSDK:
     __session_id: str
@@ -35,7 +28,7 @@ class VocanaSDK:
         for k, v in self.__props.items():
             if isinstance(v, dict) and v.get('executor') == 'python_executor':
                 try:
-                    objKey = ObjectRefDescriptor(**v)
+                    objKey = RefDescriptor(**v)
                 except:
                     print(f'not valid object ref: {v}')
                     continue
@@ -61,7 +54,7 @@ class VocanaSDK:
         return self.__props
     
     def __store_ref(self, handle: str):
-        return ObjectRefDescriptor(
+        return RefDescriptor(
             executor="python_executor",
             handle=handle,
             job_id=self.job_id,

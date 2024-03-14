@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 import sys
-import time
 import os
 import traceback
 import importlib
 import importlib.util
 import asyncio
-from vocana import setup_vocana_sdk, VocanaSDK, Mainframe, RefDescriptor
+from vocana import setup_vocana_sdk, Mainframe, RefDescriptor
 import queue
 from io import StringIO
 

@@ -76,8 +76,6 @@ class VocanaSDK:
             'done': done,
         }
         self.__mainframe.send(node_result)
-        # if done:
-        #     self.__mainframe.disconnect()
 
     def done(self):
         self.__mainframe.send({
@@ -85,7 +83,6 @@ class VocanaSDK:
             'session_id': self.session_id,
             'job_id': self.job_id,
         })
-        # self.__mainframe.disconnect()
 
     def send_message(self, payload):
         self.__mainframe.report(self.__block_info, {
@@ -93,7 +90,6 @@ class VocanaSDK:
             'payload': payload,
         })
     
-    # 捕获 block 的输出，转发上报到 vocana 中
     def report_log(self, line: str, stdio: str = 'stdout'):
         self.__mainframe.report(self.__block_info, {
             'type': 'BlockLog',
@@ -114,4 +110,3 @@ class VocanaSDK:
             'job_id': self.job_id,
             'error': error,
         })
-        # self.__mainframe.disconnect()

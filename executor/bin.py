@@ -9,7 +9,27 @@ import asyncio
 from vocana import setup_vocana_sdk, Mainframe, RefDescriptor
 import queue
 from io import StringIO
+from dataclasses import dataclass
+from typing import Optional
 
+@dataclass
+class ExecutePayload:
+    session_id: str
+    job_id: str
+    dir: str
+    executor: Optional[dict] = None
+    outputs: Optional[dict] = None
+
+    def __init__(self, *args, **kwargs):
+        if args:
+            self.session_id = args[0]
+            self.job_id = args[1]
+            self.executor = args[2]
+            self.dir = args[3]
+            self.outputs = args[4]
+        if kwargs:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
 
 store = {}
 
@@ -60,34 +80,26 @@ async def setup(loop):
             message = await f
             run_block(message, mainframe)
 
-# TODO: 最好用 dataclass 固化校验
-# message 格式: {
-#     "session_id": "xxxx",
-#     "job_id": "xxxx",
-#     "executor": {
-#         "entry": "index.py"
-#     },
-#     "dir": "xxxx",
-#     "outputs": {
-#         "output1": {
-#               "handleName": "xxxx",
-#               "executor": "python_executor",
-#          }
-#     }
-# }
-def run_block(message, mainframe):
+def run_block(message, mainframe: Mainframe):
 
-    # 这两个参数肯定存在，所以这里只做 raise Exception 防止调试时没传的问题
-    if message.get('session_id') is None:
-        raise Exception('session_id is required')
-    if message.get('job_id') is None:
-        raise Exception('job_id is required')
+    try:
+        payload = ExecutePayload(**message)
+    except Exception as e:
+        traceback_str = traceback.format_exc()
+        # rust 那边会保证传过来的 message 一定是符合格式的，所以这里不应该出现异常。这里主要是防止 rust 修改错误。
+        mainframe.send({
+            "type": "BlockError",
+            "session_id": message["session_id"], 
+            "job_id": message["job_id"], 
+            "error": traceback_str
+        })
+        return
 
-    sdk = setup_vocana_sdk(mainframe, message['session_id'], message['job_id'], store, message.get('outputs'))
+    sdk = setup_vocana_sdk(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
     
-    dir = message.get('dir')
+    dir = payload.dir
 
-    config = message.get('executor')
+    config = payload.executor
     source = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
     original_stdout = sys.stdout

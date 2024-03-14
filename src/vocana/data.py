@@ -19,3 +19,31 @@ class RefDescriptor:
         if kwargs:
             for key, value in kwargs.items():
                 object.__setattr__(self, key, value)
+
+# 发送 reporter 时，固定需要的 block 信息参数
+@dataclass(frozen=True)
+class BlockInfo:
+
+    # 以下四个参数，在发送数据时，都需要传递过去。
+    session_id: str
+    job_id: str
+    stacks: list
+    block_path: str
+
+    def __init__(self, *args, **kwargs):
+        if args:
+            object.__setattr__(self, "session_id", args[0])
+            object.__setattr__(self, "job_id", args[1])
+            object.__setattr__(self, "stacks", args[2])
+            object.__setattr__(self, "block_path", args[3])
+        if kwargs:
+            for key, value in kwargs.items():
+                object.__setattr__(self, key, value)
+
+    def dict(self):
+        return {
+            "session_id": self.session_id,
+            "job_id": self.job_id,
+            "stacks": self.stacks,
+            "block_path": self.block_path
+        }

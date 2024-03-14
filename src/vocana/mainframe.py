@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 import operator
 from urllib.parse import urlparse
 import uuid
+from .data import BlockInfo
 
 class Mainframe:
     address: str
@@ -42,12 +43,12 @@ class Mainframe:
         )
         info.wait_for_publish()
 
-    def report(self, msg):
+    def report(self, info: BlockInfo, msg: dict):
         if self.on_ready == False:
             raise Exception('SDK is not ready')
         info = self.client.publish(
             f'report',
-            json.dumps(msg),
+            json.dumps({**info.dict(), **msg}),
             qos=1
         )
         info.wait_for_publish()

@@ -119,6 +119,7 @@ class VocanaSDK:
             'type': 'BlockLogJSON',
             'session_id': self.session_id,
             'block_job_id': self.job_id,
+            'block_path': self.__block_path,
             'stacks': self.__stacks,
             'json': payload,
         })

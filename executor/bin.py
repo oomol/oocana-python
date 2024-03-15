@@ -115,7 +115,7 @@ def run_block(message, mainframe: Mainframe):
         index_module.main(sdk.props, sdk)
     except Exception as e:
         traceback_str = traceback.format_exc()
-        sdk.send_error(traceback_str)
+        sdk.done(traceback_str)
     finally:
         sys.stdout = original_stdout
         sys.stderr = original_stderr

@@ -1,0 +1,39 @@
+name: publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+jobs:
+  publish-executor:
+    if: startsWith(github.ref, 'refs/tags/@vocana/executor')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          token: ${{ secrets.PRIVATE_PACKAGE_PAT_WRITE }}
+      - name: build an publish to npm
+        run: pdm publish_executor
+  publish-sdk:
+    if: startsWith(github.ref, 'refs/tags/@vocana/executor') == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup pdm
+        uses: pdm-project/setup-pdm@v4
+      - name: install dependencies
+        run: pdm install
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          # token can publish @vocana
+          token: ${{ secrets.PRIVATE_PACKAGE_PAT_WRITE }}
+          scope: "@vocana"
+          registry-url: "https://npm.pkg.github.com/"
+      - name: build an publish to npm
+        run: pdm publish_vocana

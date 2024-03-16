@@ -1,2 +1,2 @@
 from ._core import *
-from .sdk import ObjectRefDescriptor
+from .sdk import RefDescriptor

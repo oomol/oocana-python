@@ -1,29 +1,16 @@
 from .mainframe import Mainframe
-from dataclasses import dataclass, asdict
-
-
-@dataclass(frozen=True)
-class ObjectRefDescriptor:
-    executor: str
-    handle: str
-    job_id: str
-    session_id: str
+from dataclasses import asdict
+from .data import RefDescriptor, BlockInfo
 
 class VocanaSDK:
-    __session_id: str
-    __job_id: str
     __props: dict
-    __stacks: list[any]
-    __block_path: str
+    __block_info: BlockInfo
     __outputs: any
     __store: any
 
     def __init__(self, node_props, mainframe: Mainframe, store=None, outputs=None) -> None:
         self.__props = node_props.get('inputs')
-        self.__session_id = node_props.get('session_id')
-        self.__job_id = node_props.get('job_id')
-        self.__stacks = node_props.get('stacks')
-        self.__block_path = node_props.get('block_path')
+        self.__block_info = BlockInfo(**node_props)
 
         self.__mainframe = mainframe
         self.__store = store
@@ -35,7 +22,7 @@ class VocanaSDK:
         for k, v in self.__props.items():
             if isinstance(v, dict) and v.get('executor') == 'python_executor':
                 try:
-                    objKey = ObjectRefDescriptor(**v)
+                    objKey = RefDescriptor(**v)
                 except:
                     print(f'not valid object ref: {v}')
                     continue
@@ -49,19 +36,19 @@ class VocanaSDK:
                 self.__props[k] = value
 
     @property
-    def session_id(self):
-        return self.__session_id
-    
-    @property
-    def job_id(self):
-        return self.__job_id
-
-    @property
     def props(self):
         return self.__props
     
+    @property
+    def session_id(self):
+        return self.__block_info.session_id
+    
+    @property
+    def job_id(self):
+        return self.__block_info.job_id
+    
     def __store_ref(self, handle: str):
-        return ObjectRefDescriptor(
+        return RefDescriptor(
             executor="python_executor",
             handle=handle,
             job_id=self.job_id,
@@ -89,44 +76,30 @@ class VocanaSDK:
             'done': done,
         }
         self.__mainframe.send(node_result)
-        # if done:
-        #     self.__mainframe.disconnect()
 
     def done(self):
         self.__mainframe.send({
             'type': 'BlockDone',
-            'session_id': self.__session_id,
-            'job_id': self.__job_id,
+            'session_id': self.session_id,
+            'job_id': self.job_id,
         })
-        # self.__mainframe.disconnect()
 
     def send_message(self, payload):
-        self.__mainframe.report({
+        self.__mainframe.report(self.__block_info, {
             'type': 'BlockMessage',
-            'session_id': self.session_id,
-            'block_job_id': self.job_id,
-            'stacks': self.__stacks,
             'payload': payload,
         })
     
-    # 捕获 block 的输出，转发上报到 vocana 中
     def report_log(self, line: str, stdio: str = 'stdout'):
-        self.__mainframe.report({
+        self.__mainframe.report(self.__block_info, {
             'type': 'BlockLog',
-            'session_id': self.session_id,
-            'job_id': self.job_id,
-            'block_path': self.__block_path,
-            'stacks': self.__stacks,
             'log': line,
             stdio: stdio,
         })
 
     def log_json(self, payload):
-        self.__mainframe.report({
+        self.__mainframe.report(self.__block_info, {
             'type': 'BlockLogJSON',
-            'session_id': self.session_id,
-            'block_job_id': self.job_id,
-            'stacks': self.__stacks,
             'json': payload,
         })
 
@@ -137,4 +110,3 @@ class VocanaSDK:
             'job_id': self.job_id,
             'error': error,
         })
-        # self.__mainframe.disconnect()

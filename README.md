@@ -35,14 +35,6 @@ python broker/main.py
 node example/demo.js
 ```
 
-
 ## 发布项目
 
-因为 github registry 并不支持 pypi 所以这里是发布到 npm 的 registry 再执行手动安装 whl 来进行发包和安装
-
-```shell
-# 发布 vocana-sdk-python
-pdm run publish_vocana
-# 发布 executor
-pdm run publish_executor
-```
+本项目包含`vocana-sdk-python`和`vocana-executor-python`两个子项目，具体的发布流程，参考[发布](./publish.md)文档。

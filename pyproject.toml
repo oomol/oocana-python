@@ -1,7 +1,7 @@
 
 [project]
 name = "vocana"
-version = "0.3.3"
+version = "0.3.4"
 description = ""
 authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},

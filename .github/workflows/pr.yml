@@ -13,6 +13,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: setup pdm
         uses: pdm-project/setup-pdm@v4
+      - name: cache pdm
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pdm-${{ hashFiles('pdm.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pdm-
       - name: install dependencies
         run: pdm install
       - name: build

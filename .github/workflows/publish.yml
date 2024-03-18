@@ -14,7 +14,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          token: ${{ secrets.PRIVATE_PACKAGE_PAT_WRITE }}
+          scope: "@vocana"
+          registry-url: https://npm.pkg.github.com/
+          token: ${{ secrets.VOCANA_PUBLISH_TOKEN }}
       - name: build an publish to npm
         run: pdm publish_executor
   publish-sdk:
@@ -30,9 +32,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          # token can publish @vocana
-          token: ${{ secrets.PRIVATE_PACKAGE_PAT_WRITE }}
           scope: "@vocana"
           registry-url: "https://npm.pkg.github.com/"
+          token: ${{ secrets.VOCANA_PUBLISH_TOKEN }}
       - name: build an publish to npm
         run: pdm publish_vocana

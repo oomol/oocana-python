@@ -4,11 +4,12 @@ on:
   push:
     paths-ignore:
       - "**.md"
-    tags:
-      - "**"
 jobs:
   pr-check:
-    runs-on: ubuntu-latest
+    runs-on:
+      - self-hosted
+      - macOS
+      - ARM64
     steps:
       - uses: actions/checkout@v4
       - name: setup pdm

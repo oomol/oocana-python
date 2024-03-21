@@ -19,9 +19,10 @@ jobs:
           node-version: "18"
           scope: "@vocana"
           registry-url: https://npm.pkg.github.com/
-          token: ${{ secrets.VOCANA_PUBLISH_TOKEN }}
       - name: build an publish to npm
         run: pdm publish_executor
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.VOCANA_PUBLISH_TOKEN }}
   publish-sdk:
     if: startsWith(github.ref, 'refs/tags/@vocana/sdk-python')
     runs-on:
@@ -40,6 +41,7 @@ jobs:
           node-version: "18"
           scope: "@vocana"
           registry-url: "https://npm.pkg.github.com/"
-          token: ${{ secrets.VOCANA_PUBLISH_TOKEN }}
       - name: build an publish to npm
         run: pdm publish_vocana
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.VOCANA_PUBLISH_TOKEN }}

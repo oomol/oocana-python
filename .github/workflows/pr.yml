@@ -6,21 +6,12 @@ on:
       - "**.md"
 jobs:
   pr-check:
-    runs-on:
-      - self-hosted
-      - macOS
-      - ARM64
+    runs-on: [self-hosted, macOS, ARM64]
     steps:
       - uses: actions/checkout@v4
-      - name: setup pdm
-        uses: pdm-project/setup-pdm@v4
-      - name: cache pdm
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pdm-${{ hashFiles('pdm.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pdm-
+      # pdm self-hosted already has pdm installed
+      # - name: setup pdm
+      #   uses: pdm-project/setup-pdm@v4
       - name: install dependencies
         run: pdm install
       - name: build

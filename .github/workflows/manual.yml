@@ -1,0 +1,9 @@
+name: trigger by manually
+on:
+    workflow_dispatch:
+    pull_request:
+jobs:
+    echo:
+        runs-on: [self-hosted, macOS, ARM64]
+        steps:
+            - run: echo ${{ runner.name }}

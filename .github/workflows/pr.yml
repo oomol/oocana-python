@@ -12,7 +12,7 @@ on:
 
 jobs:
   pr-check:
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: [self-hosted, macOS, X64]
     steps:
       - uses: actions/checkout@v4
       # TODO: 在 self-hosted 环境，需要在全局环境安装 pdm，使用这个 action，第一次可以正常安装，但是后续会报错，查出来的 python 路径找不到，需要在全局环境安装 pdm

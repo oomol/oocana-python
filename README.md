@@ -37,4 +37,11 @@ node example/demo.js
 
 ## 发布项目
 
-本项目包含`vocana-sdk-python`和`vocana-executor-python`两个子项目，具体的发布流程，参考[发布](./publish.md)文档。
+现在发布版本，有 github Action 触发，只需要根据不同的包，打 `@vocana/executor`和`@vocana/sdk-python` 前缀的 tag 即可。
+
+可以参考以下命令，快速发布 tag
+
+```shell
+git tag @vocana/sdk-python@0.1.0
+git push upstream @vocana/sdk-python@0.1.0
+```

@@ -83,7 +83,6 @@ class Mainframe:
         topic = f'executor/{name}/drop'
 
         def on_message(_client, _userdata, message):
-            print("topic: ", topic)
             payload = json.loads(message.payload)
             callback(payload)
 
@@ -94,7 +93,6 @@ class Mainframe:
         topic = f'executor/{name}/execute'
 
         def on_message(_client, _userdata, message):
-            print("topic: ", topic)
             payload = json.loads(message.payload)
             callback(payload)
 

@@ -73,6 +73,7 @@ async def setup(loop):
         obj = RefDescriptor(**message)
         o = store.get(obj)
         if o is not None:
+            print("drop", obj.job_id, obj.handle)
             del store[obj]
 
     mainframe.subscribe_execute(f'{name}', run)
@@ -87,6 +88,7 @@ async def setup(loop):
 
 async def run_block(message, mainframe: Mainframe):
 
+    print("block", message.get("job_id"), "start")
     try:
         payload = ExecutePayload(**message)
     except Exception as e:
@@ -132,6 +134,8 @@ async def run_block(message, mainframe: Mainframe):
     except Exception as e:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)
+    finally:
+        print("block", message.get("job_id"), "done")
 
 
 if __name__ == '__main__':

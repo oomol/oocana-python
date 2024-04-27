@@ -50,3 +50,4 @@ git push upstream @vocana/sdk-python@0.1.0
 
 - [ ] 支持协程穿插执行 block，需要让 stderr 和 stdout 的输出能够对应到正确的 block。
 - [ ] 调整项目结构，让 executor 可以写多文件，sdk 导出一份 type hint，executor 不依赖 sdk。
+- [ ] 追加日志。出现过发送的 execute 请求，结果没有向 vocana 发起 inputs 请求的情况。

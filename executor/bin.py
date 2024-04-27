@@ -107,7 +107,13 @@ async def run_block(message, mainframe: Mainframe):
     config = payload.executor
     source = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
-    index_module = load_module(source, dir)
+    try:
+        # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。
+        index_module = load_module(source, dir)
+    except Exception as e:
+        traceback_str = traceback.format_exc()
+        sdk.done(traceback_str)
+        return
     main = index_module.main
 
     try:

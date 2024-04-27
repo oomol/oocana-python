@@ -11,6 +11,7 @@ import queue
 from io import StringIO
 from dataclasses import dataclass
 from typing import Optional
+import inspect
 
 @dataclass
 class ExecutePayload:
@@ -80,7 +81,7 @@ async def setup(loop):
             message = await f
             run_block(message, mainframe)
 
-def run_block(message, mainframe: Mainframe):
+async def run_block(message, mainframe: Mainframe):
 
     try:
         payload = ExecutePayload(**message)
@@ -112,7 +113,11 @@ def run_block(message, mainframe: Mainframe):
         sys.stdout = captured_output
         sys.stderr = captured_error
         index_module = load_module(source, dir)
-        index_module.main(sdk.props, sdk)
+        main = index_module.main
+        if inspect.iscoroutinefunction(main):
+            await main(sdk.props, sdk)
+        else:
+            main(sdk.props, sdk)
     except Exception as e:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)

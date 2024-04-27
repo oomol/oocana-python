@@ -12,6 +12,10 @@ from io import StringIO
 from dataclasses import dataclass
 from typing import Optional
 import inspect
+from contextlib import redirect_stdout, redirect_stderr
+
+from io import StringIO 
+import sys
 
 @dataclass
 class ExecutePayload:
@@ -79,7 +83,7 @@ async def setup(loop):
         if not fs.empty():
             f = fs.get()
             message = await f
-            run_block(message, mainframe)
+            await run_block(message, mainframe)
 
 async def run_block(message, mainframe: Mainframe):
 
@@ -103,33 +107,26 @@ async def run_block(message, mainframe: Mainframe):
     config = payload.executor
     source = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
-    original_stdout = sys.stdout
-    original_stderr = sys.stderr
+    index_module = load_module(source, dir)
+    main = index_module.main
 
     try:
-        captured_output = StringIO()
-        captured_error = StringIO()
-
-        sys.stdout = captured_output
-        sys.stderr = captured_error
-        index_module = load_module(source, dir)
-        main = index_module.main
-        if inspect.iscoroutinefunction(main):
-            await main(sdk.props, sdk)
-        else:
-            main(sdk.props, sdk)
+        # TODO: 这种重定向 stdout 和 stderr 的方式比较优雅，但是由于仍然是替换的全局 sys.stdout 和 sys.stderr 对象，所以在协程切换时，仍然会有错乱的问题。
+        #       目前任务是一个个排队执行，因此暂时不会出现错乱。
+        #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
+        with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
+            if inspect.iscoroutinefunction(main):
+                await main(sdk.props, sdk)
+            else:
+                main(sdk.props, sdk)
+        for line in stdout.getvalue().splitlines():
+            sdk.report_log(line)
+        for line in stderr.getvalue().splitlines():
+            sdk.report_log(line, "stderr")
     except Exception as e:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)
-    finally:
-        sys.stdout = original_stdout
-        sys.stderr = original_stderr
-        stdout_lines = captured_output.getvalue()
-        for line in stdout_lines.splitlines():
-            sdk.report_log(line)
-        stderr_lines = captured_error.getvalue()
-        for line in stderr_lines.splitlines():
-            sdk.report_log(line, 'stderr')
+
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()

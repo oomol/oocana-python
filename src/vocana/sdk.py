@@ -97,6 +97,12 @@ class VocanaSDK:
             'type': 'BlockMessage',
             'payload': payload,
         })
+
+    def report_progress(self, progress: int):
+        self.__mainframe.report(self.__block_info, {
+            'type': 'BlockProgress',
+            'rate': progress,
+        })
     
     def report_log(self, line: str, stdio: str = 'stdout'):
         self.__mainframe.report(self.__block_info, {

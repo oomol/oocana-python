@@ -77,6 +77,10 @@ class VocanaSDK:
         }
         self.__mainframe.send(node_result)
 
+        if done:
+            # 多次调用，需要至少给个警告
+            self.done()
+
     def done(self, error: str = None):
         if error is None:
             self.__mainframe.send({

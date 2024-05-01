@@ -80,13 +80,13 @@ class VocanaSDK:
     def done(self, error: str = None):
         if error is None:
             self.__mainframe.send({
-                'type': 'BlockDone',
+                'type': 'BlockFinish',
                 'session_id': self.session_id,
                 'job_id': self.job_id,
             })
         else:
             self.__mainframe.send({
-                'type': 'BlockDone',
+                'type': 'BlockFinish',
                 'session_id': self.session_id,
                 'job_id': self.job_id,
                 "error": error,

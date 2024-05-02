@@ -63,7 +63,6 @@ class VocanaSDK:
             output_def = self.__outputs.get(handle)
             if output_def is not None and output_def.get('data') and output_def.get('data').get('type') == 'var':
                 ref = self.__store_ref(handle)
-                print(f'store output {handle} as object ref')
                 self.__store[ref] = output
                 v = asdict(ref)
         

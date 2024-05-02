@@ -60,6 +60,8 @@ async def setup(loop):
     mainframe = Mainframe(address)
     mainframe.connect()
     print(f"connecting to broker {address} success")
+    # 保证在以子进程模式启动时，不会等待缓冲区满了才输出，导致连接日志输出不及时。
+    sys.stdout.flush()
 
     fs = queue.Queue()
     def run(message):

@@ -59,6 +59,7 @@ async def setup(loop):
     name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
     mainframe = Mainframe(address)
     mainframe.connect()
+    print(f"connecting to broker {address} success")
 
     fs = queue.Queue()
     def run(message):

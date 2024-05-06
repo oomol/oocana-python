@@ -79,8 +79,8 @@ async def setup(loop):
             print("drop", obj.job_id, obj.handle)
             del store[obj]
 
-    mainframe.subscribe_execute(f'{name}', run)
-    mainframe.subscribe_drop(f'{name}', drop)
+    mainframe.subscribe_execute(run)
+    mainframe.subscribe_drop(drop)
 
     while True:
         await asyncio.sleep(1)

@@ -18,7 +18,7 @@ class Mainframe:
         connect_address = self.address if operator.contains(self.address, "://") else operator.concat("mqtt://", self.address)
         url = urlparse(connect_address)
 
-        self.client = mqtt.Client(client_id=str(uuid.uuid4()))
+        self.client = mqtt.Client(client_id=f'python-executor-{uuid.uuid4().hex[:8]}')
         self.client.on_disconnect = self.on_disconnect
         self.client.on_connect_fail = self.on_connect_fail
         self.client.connect(host=url.hostname, port=url.port)

@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:762ad2dcfbe2f67b2e3dab09f6cf48a178cf47d01702a89a644f08ac0ae7afcc"
+content_hash = "sha256:ab8e961b070c720b552c7037d862fad9c97b9e22d7496f9a99e7e640b7926b3d"
 
 [[package]]
 name = "amqtt"
@@ -34,10 +34,12 @@ files = [
 
 [[package]]
 name = "paho-mqtt"
-version = "1.6.1"
+version = "2.1.0"
+requires_python = ">=3.7"
 summary = "MQTT version 5.0/3.1.1 client class"
 files = [
-    {file = "paho-mqtt-1.6.1.tar.gz", hash = "sha256:2a8291c81623aec00372b5a85558a372c747cbca8e9934dfe218638b8eefc26f"},
+    {file = "paho_mqtt-2.1.0-py3-none-any.whl", hash = "sha256:6db9ba9b34ed5bc6b6e3812718c7e06e2fd7444540df2455d2c51bd58808feee"},
+    {file = "paho_mqtt-2.1.0.tar.gz", hash = "sha256:12d6e7511d4137555a3f6ea167ae846af2c7357b10bc6fa4f7c3968fc1723834"},
 ]
 
 [[package]]

@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 import uuid
 from .data import BlockInfo
 
+name = "python_executor"
 class Mainframe:
     address: str
     client: mqtt.Client
@@ -18,12 +19,18 @@ class Mainframe:
         connect_address = self.address if operator.contains(self.address, "://") else operator.concat("mqtt://", self.address)
         url = urlparse(connect_address)
 
-        self.client = mqtt.Client(client_id=str(uuid.uuid4()))
+        self.client = mqtt.Client(client_id=f'python-executor-{uuid.uuid4().hex[:8]}', clean_session=False)
+        self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
         self.client.on_connect_fail = self.on_connect_fail
         self.client.connect(host=url.hostname, port=url.port)
         self.client.loop_start()
         return self.client
+    
+    # https://stackoverflow.com/a/57396505/4770006 在 on_connect 回调里面订阅的 topic，在重连时，会自动重新订阅，其他地方调用 subscribe 需要自己处理重新订阅逻辑。
+    def on_connect(self, client: mqtt.Client, userdata, flags, rc):
+        client.subscribe(f'executor/{name}/execute', qos=1)
+        client.subscribe(f'executor/{name}/drop', qos=1)
 
     def on_connect_fail(self, client, userdata, flags, rc):
         print('on_connect_fail')
@@ -79,24 +86,22 @@ class Mainframe:
             if replay is not None:
                 return replay
     
-    def subscribe_drop(self, name, callback):
+    def subscribe_drop(self, callback):
         topic = f'executor/{name}/drop'
 
         def on_message(_client, _userdata, message):
             payload = json.loads(message.payload)
             callback(payload)
 
-        self.client.subscribe(topic, qos=1)
         self.client.message_callback_add(topic, on_message)
 
-    def subscribe_execute(self, name, callback):
+    def subscribe_execute(self, callback):
         topic = f'executor/{name}/execute'
 
         def on_message(_client, _userdata, message):
             payload = json.loads(message.payload)
             callback(payload)
 
-        self.client.subscribe(topic, qos=1)
         self.client.message_callback_add(topic, on_message)
 
     def loop(self):

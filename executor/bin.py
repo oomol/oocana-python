@@ -79,8 +79,8 @@ async def setup(loop):
             print("drop", obj.job_id, obj.handle)
             del store[obj]
 
-    mainframe.subscribe_execute(f'{name}', run)
-    mainframe.subscribe_drop(f'{name}', drop)
+    mainframe.subscribe_execute(run)
+    mainframe.subscribe_drop(drop)
 
     while True:
         await asyncio.sleep(1)
@@ -142,6 +142,7 @@ async def run_block(message, mainframe: Mainframe):
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     loop.run_until_complete(setup(loop))
     loop.close()

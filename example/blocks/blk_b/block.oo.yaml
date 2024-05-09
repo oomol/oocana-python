@@ -3,8 +3,8 @@ executor:
   entry: index.py
 inputs_def:
   - handle: my_input
-    data:
-      type: var
+    serialize:
+      serializer: false
       executor: python_executor
 outputs_def:
   - handle: my_output

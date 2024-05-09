@@ -3,23 +3,23 @@ from dataclasses import asdict
 from .data import RefDescriptor, BlockInfo
 
 class VocanaSDK:
-    __props: dict
+    __inputs: dict
     __block_info: BlockInfo
     __outputs: any
     __store: any
 
     def __init__(self, node_props, mainframe: Mainframe, store=None, outputs=None) -> None:
-        self.__props = node_props.get('inputs')
+        self.__inputs = node_props.get('inputs')
         self.__block_info = BlockInfo(**node_props)
 
         self.__mainframe = mainframe
         self.__store = store
         self.__outputs = outputs
 
-        if self.__props is None:
-            self.__props = {}
+        if self.__inputs is None:
+            self.__inputs = {}
 
-        for k, v in self.__props.items():
+        for k, v in self.__inputs.items():
             if isinstance(v, dict) and v.get('executor') == 'python_executor':
                 try:
                     objKey = RefDescriptor(**v)
@@ -33,11 +33,11 @@ class VocanaSDK:
                     print(f'ObjectRefDescriptor not found: {v}')
                     continue
 
-                self.__props[k] = value
+                self.__inputs[k] = value
 
     @property
     def props(self):
-        return self.__props
+        return self.__inputs
     
     @property
     def session_id(self):
@@ -61,7 +61,7 @@ class VocanaSDK:
 
         if self.__outputs is not None:
             output_def = self.__outputs.get(handle)
-            if output_def is not None and output_def.get('data') and output_def.get('data').get('type') == 'var':
+            if output_def is not None and output_def.get('serialize') and output_def.get('serialize').get('executor'):
                 ref = self.__store_ref(handle)
                 self.__store[ref] = output
                 v = asdict(ref)

@@ -41,10 +41,9 @@ class Mainframe:
     def send(self, info: BlockInfo, msg):
         if self.on_ready == False:
             raise Exception('SDK is not ready')
-        session_id = msg.get('session_id')
 
         info = self.client.publish(
-            f'session/{session_id}',
+            f'session/{info.session_id}',
             json.dumps({**info.dict(), **msg}),
             qos=1
         )

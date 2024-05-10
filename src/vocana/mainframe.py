@@ -38,14 +38,14 @@ class Mainframe:
     def on_disconnect(self, client, userdata, rc):
         self.on_ready = False
 
-    def send(self, msg):
+    def send(self, info: BlockInfo, msg):
         if self.on_ready == False:
             raise Exception('SDK is not ready')
         session_id = msg.get('session_id')
 
         info = self.client.publish(
             f'session/{session_id}',
-            json.dumps(msg),
+            json.dumps({**info.dict(), **msg}),
             qos=1
         )
         info.wait_for_publish()

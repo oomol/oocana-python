@@ -72,13 +72,11 @@ class VocanaSDK:
 
         node_result = {
             'type': 'BlockOutput',
-            'session_id': self.session_id,
-            'job_id': self.job_id,
             'handle': handle,
             'output': v,
             'done': done,
         }
-        self.__mainframe.send(node_result)
+        self.__mainframe.send(self.__block_info, node_result)
 
         if done:
             # 多次调用，需要至少给个警告
@@ -86,18 +84,9 @@ class VocanaSDK:
 
     def done(self, error: str = None):
         if error is None:
-            self.__mainframe.send({
-                'type': 'BlockFinished',
-                'session_id': self.session_id,
-                'job_id': self.job_id,
-            })
+            self.__mainframe.send(self.__block_info, {'type': 'BlockFinished'})
         else:
-            self.__mainframe.send({
-                'type': 'BlockFinished',
-                'session_id': self.session_id,
-                'job_id': self.job_id,
-                "error": error,
-            })
+            self.__mainframe.send(self.__block_info, {'type': 'BlockFinished', "error": error})
 
     def send_message(self, payload):
         self.__mainframe.report(self.__block_info, {
@@ -106,7 +95,7 @@ class VocanaSDK:
         })
 
     def report_progress(self, progress: int):
-        self.__mainframe.report(self.__block_info, {
+        self.__mainframe.report({
             'type': 'BlockProgress',
             'rate': progress,
         })
@@ -125,9 +114,4 @@ class VocanaSDK:
         })
 
     def send_error(self, error: str):
-        self.__mainframe.send({
-            'type': 'BlockError',
-            'session_id': self.session_id,
-            'job_id': self.job_id,
-            'error': error,
-        })
+        self.__mainframe.send(self.__block_info, {'type': 'BlockError','error': error})

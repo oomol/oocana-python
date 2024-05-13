@@ -51,7 +51,7 @@ class Mainframe:
             raise Exception("SDK is not ready")
 
         info = self.client.publish(
-            f"session/{job_info["session_id"]}", json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
+            f'session/{job_info["session_id"]}', json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
         )
         info.wait_for_publish()
 

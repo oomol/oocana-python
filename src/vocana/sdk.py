@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from .data import BlockInfo, RefDescriptor, JobDict
+from .data import BlockInfo, RefDescriptor, JobDict, BlockDict
 from .mainframe import Mainframe
 
 
@@ -53,6 +53,10 @@ class VocanaSDK:
     @property
     def job_info(self) -> JobDict:
         return self.__block_info.job_info()
+    
+    @property
+    def block_info(self) -> BlockDict:
+        return self.__block_info.block_dict()
 
     def __store_ref(self, handle: str):
         return RefDescriptor(
@@ -105,7 +109,7 @@ class VocanaSDK:
 
     def send_message(self, payload):
         self.__mainframe.report(
-            self.__block_info,
+            self.block_info,
             {
                 "type": "BlockMessage",
                 "payload": payload,
@@ -114,7 +118,7 @@ class VocanaSDK:
 
     def report_progress(self, progress: int):
         self.__mainframe.report(
-            self.__block_info,
+            self.block_info,
             {
                 "type": "BlockProgress",
                 "rate": progress,
@@ -123,7 +127,7 @@ class VocanaSDK:
 
     def report_log(self, line: str, stdio: str = "stdout"):
         self.__mainframe.report(
-            self.__block_info,
+            self.block_info,
             {
                 "type": "BlockLog",
                 "log": line,
@@ -133,7 +137,7 @@ class VocanaSDK:
 
     def log_json(self, payload):
         self.__mainframe.report(
-            self.__block_info,
+            self.block_info,
             {
                 "type": "BlockLogJSON",
                 "json": payload,

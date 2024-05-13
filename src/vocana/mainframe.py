@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import operator
 from urllib.parse import urlparse
 import uuid
-from .data import BlockInfo, JobDict
+from .data import BlockDict, JobDict
 
 name = "python_executor"
 
@@ -55,10 +55,10 @@ class Mainframe:
         )
         info.wait_for_publish()
 
-    def report(self, block_info: BlockInfo, msg: dict):
+    def report(self, block_info: BlockDict, msg: dict):
         if self.on_ready is False:
             raise Exception("SDK is not ready")
-        info = self.client.publish("report", json.dumps({**block_info.dict(), **msg}), qos=1)
+        info = self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
         info.wait_for_publish()
 
     def notify_ready(self, msg):

@@ -36,11 +36,11 @@ class ExecutePayload:
 
 store = {}
 
-def load_module(source, dir=None):
+def load_module(source, source_dir=None):
     if (os.path.isabs(source)):
         source_abs_path = source
     else:
-        dirname = dir if dir else os.getcwd()
+        dirname = source_dir if source_dir else os.getcwd()
         source_abs_path = os.path.join(dirname, source)
 
     module_name = os.path.basename(source_abs_path).replace('.py', '')
@@ -104,15 +104,15 @@ async def run_block(message, mainframe: Mainframe):
         return
 
     sdk = setup_vocana_sdk(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
-    
-    dir = payload.dir
+
+    load_dir = payload.dir
 
     config = payload.executor
     source = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。
-        index_module = load_module(source, dir)
+        index_module = load_module(source, load_dir)
     except Exception as e:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)

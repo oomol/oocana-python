@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 
-import sys
-import os
-import traceback
+import asyncio
 import importlib
 import importlib.util
-import asyncio
-from vocana import setup_vocana_sdk, Mainframe, RefDescriptor
-import queue
-from io import StringIO
-from dataclasses import dataclass
-from typing import Optional
 import inspect
-from contextlib import redirect_stdout, redirect_stderr
-
-from io import StringIO 
+import os
+import queue
 import sys
+import traceback
+from contextlib import redirect_stderr, redirect_stdout
+from dataclasses import dataclass
+from io import StringIO
+from typing import Optional
+from vocana import Mainframe, RefDescriptor, setup_vocana_sdk
+
 
 @dataclass
 class ExecutePayload:
@@ -38,26 +36,26 @@ class ExecutePayload:
 
 store = {}
 
-def load_module(source, dir=None):
+def load_module(source, source_dir=None):
     if (os.path.isabs(source)):
         source_abs_path = source
     else:
-        dirname = dir if dir else os.getcwd()
+        dirname = source_dir if source_dir else os.getcwd()
         source_abs_path = os.path.join(dirname, source)
 
     module_name = os.path.basename(source_abs_path).replace('.py', '')
     sys.path.append(os.path.dirname(source_abs_path))
     file_spec = importlib.util.spec_from_file_location(module_name, source_abs_path)
-    module = importlib.util.module_from_spec(file_spec)
-    file_spec.loader.exec_module(module)
+    module = importlib.util.module_from_spec(file_spec) # type: ignore
+    file_spec.loader.exec_module(module) # type: ignore
     return module
 
 
 async def setup(loop):
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
     address = os.environ.get('VOCANA_ADDRESS') if os.environ.get('VOCANA_ADDRESS') else 'mqtt://127.0.0.1:47688'
-    name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
-    mainframe = Mainframe(address)
+    # name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
+    mainframe = Mainframe(address) # type: ignore
     mainframe.connect()
     print(f"connecting to broker {address} success")
     # 保证在以子进程模式启动时，不会等待缓冲区满了才输出，导致连接日志输出不及时。
@@ -94,28 +92,31 @@ async def run_block(message, mainframe: Mainframe):
     print("block", message.get("job_id"), "start")
     try:
         payload = ExecutePayload(**message)
-    except Exception as e:
+    except Exception:
         traceback_str = traceback.format_exc()
         # rust 那边会保证传过来的 message 一定是符合格式的，所以这里不应该出现异常。这里主要是防止 rust 修改错误。
-        mainframe.send({
-            "type": "BlockError",
-            "session_id": message["session_id"], 
+        mainframe.send(
+        {
+            "job_id": message["job_id"],
+            "session_id": message["session_id"],
+        },
+        {
             "job_id": message["job_id"], 
             "error": traceback_str
         })
         return
 
     sdk = setup_vocana_sdk(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
-    
-    dir = payload.dir
+
+    load_dir = payload.dir
 
     config = payload.executor
     source = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。
-        index_module = load_module(source, dir)
-    except Exception as e:
+        index_module = load_module(source, load_dir)
+    except Exception:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)
         return
@@ -134,7 +135,7 @@ async def run_block(message, mainframe: Mainframe):
             sdk.report_log(line)
         for line in stderr.getvalue().splitlines():
             sdk.report_log(line, "stderr")
-    except Exception as e:
+    except Exception:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)
     finally:

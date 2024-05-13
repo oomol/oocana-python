@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:ab8e961b070c720b552c7037d862fad9c97b9e22d7496f9a99e7e640b7926b3d"
+content_hash = "sha256:5101d2c18814f93e2490f228c2aaf67d2f1888731c8992c6624dbfe672c23a8a"
 
 [[package]]
 name = "amqtt"
@@ -33,6 +33,19 @@ files = [
 ]
 
 [[package]]
+name = "nodeenv"
+version = "1.8.0"
+requires_python = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*"
+summary = "Node.js virtual environment builder"
+dependencies = [
+    "setuptools",
+]
+files = [
+    {file = "nodeenv-1.8.0-py2.py3-none-any.whl", hash = "sha256:df865724bb3c3adc86b3876fa209771517b0cfe596beff01a92700e0e8be4cec"},
+    {file = "nodeenv-1.8.0.tar.gz", hash = "sha256:d51e0c37e64fbf47d017feac3145cdbb58836d7eee8c6f6d3b6880c5456227d2"},
+]
+
+[[package]]
 name = "paho-mqtt"
 version = "2.1.0"
 requires_python = ">=3.7"
@@ -49,6 +62,20 @@ summary = "comprehensive password hashing framework supporting over 30 schemes"
 files = [
     {file = "passlib-1.7.4-py2.py3-none-any.whl", hash = "sha256:aa6bca462b8d8bda89c70b382f0c298a20b5560af6cbfa2dce410c0a2fb669f1"},
     {file = "passlib-1.7.4.tar.gz", hash = "sha256:defd50f72b65c5402ab2c573830a6978e5f202ad0d984793c8dde2c4152ebe04"},
+]
+
+[[package]]
+name = "pyright"
+version = "1.1.362"
+requires_python = ">=3.7"
+summary = "Command line wrapper for pyright"
+dependencies = [
+    "nodeenv>=1.6.0",
+    "typing-extensions>=3.7; python_version < \"3.8\"",
+]
+files = [
+    {file = "pyright-1.1.362-py3-none-any.whl", hash = "sha256:969957cff45154d8a45a4ab1dae5bdc8223d8bd3c64654fa608ab3194dfff319"},
+    {file = "pyright-1.1.362.tar.gz", hash = "sha256:6a477e448d4a07a6a0eab58b2a15a1bbed031eb3169fa809edee79cca168d83a"},
 ]
 
 [[package]]
@@ -133,6 +160,16 @@ dependencies = [
 files = [
     {file = "transitions-0.8.11-py2.py3-none-any.whl", hash = "sha256:9525dd9b708b0a54bb4562a06a483d237e75c94547ba9831c81c6872d0ea1522"},
     {file = "transitions-0.8.11.tar.gz", hash = "sha256:7b20d32906ea4d60ee6f6c1f5dc9c9f178802425c5b155213eb0f25c277f04e4"},
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.7.1"
+requires_python = ">=3.7"
+summary = "Backported and Experimental Type Hints for Python 3.7+"
+files = [
+    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
+    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
 ]
 
 [[package]]

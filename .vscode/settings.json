@@ -6,5 +6,6 @@
         "SIGALRM",
         "userdata",
         "vocana"
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "basic",
 }

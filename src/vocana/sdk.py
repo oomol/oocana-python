@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from .data import BlockInfo, RefDescriptor
+from .data import BlockInfo, RefDescriptor, JobDict
 from .mainframe import Mainframe
 
 
@@ -49,6 +49,10 @@ class VocanaSDK:
     @property
     def job_id(self):
         return self.__block_info.job_id
+    
+    @property
+    def job_info(self) -> JobDict:
+        return self.__block_info.job_info()
 
     def __store_ref(self, handle: str):
         return RefDescriptor(
@@ -85,7 +89,7 @@ class VocanaSDK:
             "output": v,
             "done": done,
         }
-        self.__mainframe.send(self.__block_info, node_result)
+        self.__mainframe.send(self.job_info, node_result)
 
         if done:
             # 多次调用，需要至少给个警告
@@ -93,10 +97,10 @@ class VocanaSDK:
 
     def done(self, error: str | None = None):
         if error is None:
-            self.__mainframe.send(self.__block_info, {"type": "BlockFinished"})
+            self.__mainframe.send(self.job_info, {"type": "BlockFinished"})
         else:
             self.__mainframe.send(
-                self.__block_info, {"type": "BlockFinished", "error": error}
+                self.job_info, {"type": "BlockFinished", "error": error}
             )
 
     def send_message(self, payload):
@@ -137,4 +141,4 @@ class VocanaSDK:
         )
 
     def send_error(self, error: str):
-        self.__mainframe.send(self.__block_info, {"type": "BlockError", "error": error})
+        self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})

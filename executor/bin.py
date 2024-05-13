@@ -95,9 +95,12 @@ async def run_block(message, mainframe: Mainframe):
     except Exception:
         traceback_str = traceback.format_exc()
         # rust 那边会保证传过来的 message 一定是符合格式的，所以这里不应该出现异常。这里主要是防止 rust 修改错误。
-        mainframe.send(msg={
-            "type": "BlockError",
-            "session_id": message["session_id"], 
+        mainframe.send(
+        {
+            "job_id": message["job_id"],
+            "session_id": message["session_id"],
+        },
+        {
             "job_id": message["job_id"], 
             "error": traceback_str
         })

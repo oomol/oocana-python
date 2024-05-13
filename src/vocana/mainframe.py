@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import operator
 from urllib.parse import urlparse
 import uuid
-from .data import BlockInfo
+from .data import BlockInfo, JobDict
 
 name = "python_executor"
 
@@ -46,12 +46,12 @@ class Mainframe:
     def on_disconnect(self, client, userdata, rc):
         self.on_ready = False
 
-    def send(self, block_info: BlockInfo, msg):
+    def send(self, job_info: JobDict, msg):
         if self.on_ready is False:
             raise Exception("SDK is not ready")
 
         info = self.client.publish(
-            f"session/{block_info.session_id}", json.dumps({**block_info.dict(), **msg}), qos=1
+            f"session/{job_info["session_id"]}", json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
         )
         info.wait_for_publish()
 

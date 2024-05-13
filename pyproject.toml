@@ -16,6 +16,7 @@ license = {text = "MIT"}
 [tool.pdm.scripts]
 publish_vocana = { shell = "./scripts/publish_vocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
+check = { shell = "pdm run pyright ./src ./executor" }
 
 [tool.pdm.dev-dependencies]
 dev = [

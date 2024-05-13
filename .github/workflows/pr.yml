@@ -24,4 +24,4 @@ jobs:
       - name: build
         run: pdm build
       - name: static check
-        run: pyright ./src ./executor
+        run: pdm check

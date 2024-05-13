@@ -1,7 +1,5 @@
-from contextlib import redirect_stderr, redirect_stdout
 import sys
 import random
-from io import StringIO
 import asyncio
 import contextvars
 

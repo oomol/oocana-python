@@ -21,7 +21,7 @@ class Mainframe:
         connect_address = (
             self.address
             if operator.contains(self.address, "://")
-            else operator.concat("mqtt://", self.address)
+            else f"mqtt://{self.address}"
         )
         url = urlparse(connect_address)
 
@@ -30,8 +30,8 @@ class Mainframe:
         )
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
-        self.client.on_connect_fail = self.on_connect_fail
-        self.client.connect(host=url.hostname, port=url.port)
+        self.client.on_connect_fail = self.on_connect_fail # type: ignore
+        self.client.connect(host=url.hostname, port=url.port) # type: ignore
         self.client.loop_start()
         return self.client
 
@@ -40,25 +40,25 @@ class Mainframe:
         client.subscribe(f"executor/{name}/execute", qos=1)
         client.subscribe(f"executor/{name}/drop", qos=1)
 
-    def on_connect_fail(self, client, userdata, flags, rc):
+    def on_connect_fail(self) -> None:
         print("on_connect_fail")
 
     def on_disconnect(self, client, userdata, rc):
         self.on_ready = False
 
-    def send(self, info: BlockInfo, msg):
+    def send(self, block_info: BlockInfo, msg):
         if self.on_ready is False:
             raise Exception("SDK is not ready")
 
         info = self.client.publish(
-            f"session/{info.session_id}", json.dumps({**info.dict(), **msg}), qos=1
+            f"session/{block_info.session_id}", json.dumps({**block_info.dict(), **msg}), qos=1
         )
         info.wait_for_publish()
 
-    def report(self, info: BlockInfo, msg: dict):
+    def report(self, block_info: BlockInfo, msg: dict):
         if self.on_ready is False:
             raise Exception("SDK is not ready")
-        info = self.client.publish(f"report", json.dumps({**info.dict(), **msg}), qos=1)
+        info = self.client.publish("report", json.dumps({**block_info.dict(), **msg}), qos=1)
         info.wait_for_publish()
 
     def notify_ready(self, msg):

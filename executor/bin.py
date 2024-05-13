@@ -46,16 +46,16 @@ def load_module(source, source_dir=None):
     module_name = os.path.basename(source_abs_path).replace('.py', '')
     sys.path.append(os.path.dirname(source_abs_path))
     file_spec = importlib.util.spec_from_file_location(module_name, source_abs_path)
-    module = importlib.util.module_from_spec(file_spec)
-    file_spec.loader.exec_module(module)
+    module = importlib.util.module_from_spec(file_spec) # type: ignore
+    file_spec.loader.exec_module(module) # type: ignore
     return module
 
 
 async def setup(loop):
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
     address = os.environ.get('VOCANA_ADDRESS') if os.environ.get('VOCANA_ADDRESS') else 'mqtt://127.0.0.1:47688'
-    name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
-    mainframe = Mainframe(address)
+    # name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
+    mainframe = Mainframe(address) # type: ignore
     mainframe.connect()
     print(f"connecting to broker {address} success")
     # 保证在以子进程模式启动时，不会等待缓冲区满了才输出，导致连接日志输出不及时。
@@ -92,10 +92,10 @@ async def run_block(message, mainframe: Mainframe):
     print("block", message.get("job_id"), "start")
     try:
         payload = ExecutePayload(**message)
-    except Exception as e:
+    except Exception:
         traceback_str = traceback.format_exc()
         # rust 那边会保证传过来的 message 一定是符合格式的，所以这里不应该出现异常。这里主要是防止 rust 修改错误。
-        mainframe.send({
+        mainframe.send(msg={
             "type": "BlockError",
             "session_id": message["session_id"], 
             "job_id": message["job_id"], 
@@ -113,7 +113,7 @@ async def run_block(message, mainframe: Mainframe):
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。
         index_module = load_module(source, load_dir)
-    except Exception as e:
+    except Exception:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)
         return
@@ -132,7 +132,7 @@ async def run_block(message, mainframe: Mainframe):
             sdk.report_log(line)
         for line in stderr.getvalue().splitlines():
             sdk.report_log(line, "stderr")
-    except Exception as e:
+    except Exception:
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)
     finally:

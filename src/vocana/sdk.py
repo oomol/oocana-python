@@ -6,11 +6,11 @@ from .mainframe import Mainframe
 class VocanaSDK:
     __inputs: dict
     __block_info: BlockInfo
-    __outputs: any
-    __store: any
+    __outputs: any # type: ignore
+    __store: any # type: ignore
 
     def __init__(
-        self, node_props, mainframe: Mainframe, store=None, outputs=None
+        self, node_props, mainframe: Mainframe, store, outputs
     ) -> None:
         self.__inputs = node_props.get("inputs")
         self.__block_info = BlockInfo(**node_props)
@@ -58,7 +58,7 @@ class VocanaSDK:
             session_id=self.session_id,
         )
 
-    def output(self, output: any, handle: str, done: bool = False):
+    def output(self, output, handle: str, done: bool = False):
 
         v = output
 
@@ -91,7 +91,7 @@ class VocanaSDK:
             # 多次调用，需要至少给个警告
             self.done()
 
-    def done(self, error: str = None):
+    def done(self, error: str | None = None):
         if error is None:
             self.__mainframe.send(self.__block_info, {"type": "BlockFinished"})
         else:
@@ -110,6 +110,7 @@ class VocanaSDK:
 
     def report_progress(self, progress: int):
         self.__mainframe.report(
+            self.__block_info,
             {
                 "type": "BlockProgress",
                 "rate": progress,

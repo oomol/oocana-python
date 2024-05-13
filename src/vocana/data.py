@@ -35,7 +35,7 @@ class RefDescriptor:
 
 # 发送 reporter 时，固定需要的 block 信息参数
 @dataclass(frozen=True)
-class BlockInfo:
+class BlockData:
 
     # 以下四个参数，在发送数据时，都需要传递过去。
     session_id: str

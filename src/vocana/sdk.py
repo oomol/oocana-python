@@ -1,11 +1,11 @@
 from dataclasses import asdict
-from .data import BlockInfo, RefDescriptor, JobDict, BlockDict
+from .data import BlockData, RefDescriptor, JobDict, BlockDict
 from .mainframe import Mainframe
 
 
 class VocanaSDK:
     __inputs: dict
-    __block_info: BlockInfo
+    __block_info: BlockData
     __outputs: any # type: ignore
     __store: any # type: ignore
 
@@ -13,7 +13,7 @@ class VocanaSDK:
         self, node_props, mainframe: Mainframe, store, outputs
     ) -> None:
         self.__inputs = node_props.get("inputs")
-        self.__block_info = BlockInfo(**node_props)
+        self.__block_info = BlockData(**node_props)
 
         self.__mainframe = mainframe
         self.__store = store

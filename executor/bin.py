@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 
-import sys
-import os
-import traceback
+import asyncio
 import importlib
 import importlib.util
-import asyncio
-from vocana import setup_vocana_sdk, Mainframe, RefDescriptor
-import queue
-from io import StringIO
-from dataclasses import dataclass
-from typing import Optional
 import inspect
-from contextlib import redirect_stdout, redirect_stderr
-
-from io import StringIO 
+import os
+import queue
 import sys
+import traceback
+from contextlib import redirect_stderr, redirect_stdout
+from dataclasses import dataclass
+from io import StringIO
+from typing import Optional
+from vocana import Mainframe, RefDescriptor, setup_vocana_sdk
+
 
 @dataclass
 class ExecutePayload:

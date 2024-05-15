@@ -4,9 +4,11 @@ import operator
 from urllib.parse import urlparse
 import uuid
 from .data import BlockDict, JobDict
+import logging
 
 name = "python_executor"
 
+logger = logging.getLogger(__name__)
 
 class Mainframe:
     address: str
@@ -37,18 +39,21 @@ class Mainframe:
 
     # https://stackoverflow.com/a/57396505/4770006 在 on_connect 回调里面订阅的 topic，在重连时，会自动重新订阅，其他地方调用 subscribe 需要自己处理重新订阅逻辑。
     def on_connect(self, client: mqtt.Client, userdata, flags, rc):
+        logger.info("connect to broker success")
         client.subscribe(f"executor/{name}/execute", qos=1)
         client.subscribe(f"executor/{name}/drop", qos=1)
 
     def on_connect_fail(self) -> None:
-        print("on_connect_fail")
+        logger.error("connect to broker failed")
 
     def on_disconnect(self, client, userdata, rc):
+        logger.warning("disconnect to broker, rc: %s", rc)
         self.on_ready = False
 
     def send(self, job_info: JobDict, msg):
         if self.on_ready is False:
-            raise Exception("SDK is not ready")
+            logger.error("SDK is not ready when send message", job_info, msg)
+            raise Exception("SDK is not ready when send message")
 
         info = self.client.publish(
             f'session/{job_info["session_id"]}', json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
@@ -57,7 +62,8 @@ class Mainframe:
 
     def report(self, block_info: BlockDict, msg: dict):
         if self.on_ready is False:
-            raise Exception("SDK is not ready")
+            logger.error("SDK is not ready when report message", block_info, msg)
+            raise Exception("SDK is not ready when report message")
         info = self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
         info.wait_for_publish()
 
@@ -81,12 +87,14 @@ class Mainframe:
 
         while True:
             if replay is not None:
+                logger.info("notify ready success", session_id, job_id)
                 return replay
 
     def subscribe_drop(self, callback):
         topic = f"executor/{name}/drop"
 
         def on_message(_client, _userdata, message):
+            logger.info("drop message", message.payload)
             payload = json.loads(message.payload)
             callback(payload)
 
@@ -96,6 +104,7 @@ class Mainframe:
         topic = f"executor/{name}/execute"
 
         def on_message(_client, _userdata, message):
+            logger.info("execute message", message.payload)
             payload = json.loads(message.payload)
             callback(payload)
 

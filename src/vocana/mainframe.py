@@ -14,11 +14,12 @@ logger = logging.getLogger(__name__)
 class Mainframe:
     address: str
     client: mqtt.Client
-    on_ready: bool
 
     def __init__(self, address: str) -> None:
         self.address = address
-        self.on_ready = False
+
+    def is_connected(self):
+        return self.client is not None and self.client.is_connected()
 
     def connect(self):
         connect_address = (
@@ -56,10 +57,9 @@ class Mainframe:
 
     def on_disconnect(self, client, userdata, flags, reason_code, properties):
         logger.warning("disconnect to broker, reason_code: %s", reason_code)
-        self.on_ready = False
 
     def send(self, job_info: JobDict, msg):
-        if self.on_ready is False:
+        if self.is_connected() is False:
             logger.error("SDK is not ready when send message {} {}".format(job_info, msg))
             raise Exception("SDK is not ready when send message")
 
@@ -69,7 +69,7 @@ class Mainframe:
         info.wait_for_publish()
 
     def report(self, block_info: BlockDict, msg: dict):
-        if self.on_ready is False:
+        if self.is_connected() is False:
             logger.error("SDK is not ready when report message {} {}".format(block_info, msg))
             raise Exception("SDK is not ready when report message")
         info = self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
@@ -84,7 +84,6 @@ class Mainframe:
 
         def on_message_once(_client, _userdata, message):
             nonlocal replay
-            self.on_ready = True
             self.client.unsubscribe(topic)
             replay = json.loads(message.payload)
 

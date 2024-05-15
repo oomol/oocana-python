@@ -46,13 +46,13 @@ class Mainframe:
     def on_connect_fail(self) -> None:
         logger.error("connect to broker failed")
 
-    def on_disconnect(self, client, userdata, rc):
-        logger.warning("disconnect to broker, rc: %s", rc)
+    def on_disconnect(self, client, userdata, flags, reason_code, properties):
+        logger.warning("disconnect to broker, reason_code: %s", reason_code)
         self.on_ready = False
 
     def send(self, job_info: JobDict, msg):
         if self.on_ready is False:
-            logger.error("SDK is not ready when send message", job_info, msg)
+            logger.error("SDK is not ready when send message {} {}".format(job_info, msg))
             raise Exception("SDK is not ready when send message")
 
         info = self.client.publish(
@@ -62,7 +62,7 @@ class Mainframe:
 
     def report(self, block_info: BlockDict, msg: dict):
         if self.on_ready is False:
-            logger.error("SDK is not ready when report message", block_info, msg)
+            logger.error("SDK is not ready when report message {} {}".format(block_info, msg))
             raise Exception("SDK is not ready when report message")
         info = self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
         info.wait_for_publish()
@@ -87,14 +87,14 @@ class Mainframe:
 
         while True:
             if replay is not None:
-                logger.info("notify ready success", session_id, job_id)
+                logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
 
     def subscribe_drop(self, callback):
         topic = f"executor/{name}/drop"
 
         def on_message(_client, _userdata, message):
-            logger.info("drop message", message.payload)
+            logger.info("drop message: {}".format(message.payload))
             payload = json.loads(message.payload)
             callback(payload)
 
@@ -104,7 +104,7 @@ class Mainframe:
         topic = f"executor/{name}/execute"
 
         def on_message(_client, _userdata, message):
-            logger.info("execute message", message.payload)
+            logger.info("execute message: {}".format(message.payload))
             payload = json.loads(message.payload)
             callback(payload)
 

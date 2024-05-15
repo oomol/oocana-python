@@ -8,12 +8,14 @@ import os
 import queue
 import sys
 import traceback
+import logging
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
 from typing import Optional
 from vocana import Mainframe, RefDescriptor, setup_vocana_sdk
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class ExecutePayload:
@@ -57,9 +59,25 @@ async def setup(loop):
     # name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
     mainframe = Mainframe(address) # type: ignore
     mainframe.connect()
+
+    # 这个日志，用来告知 bin 模式调用时，连接成功。所以这个格式要主动输出保持不变。
     print(f"connecting to broker {address} success")
-    # 保证在以子进程模式启动时，不会等待缓冲区满了才输出，导致连接日志输出不及时。
+    # 子进程模式启动时，Python 不会立刻输出，我们需要这一行日志的输出，所以主动 flush 一次。
     sys.stdout.flush()
+
+    log_dir: str = os.environ.get('VOCANA_LOG_DIR') if os.environ.get('VOCANA_LOG_DIR') else "/ovm/.oomol-studio" # type: ignore
+
+    if os.path.exists(log_dir):
+        file_name = log_dir + '/executor/python.log'
+        if not os.path.exists(file_name):
+            os.makedirs(os.path.dirname(file_name), exist_ok=True)
+            open(file_name, 'w').close()
+
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename=log_dir + '/executor/python.log')
+        logger.info("setup basic logging in file ~/.oomol-studio/executor/python.log")
+    else:
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+        logger.info("setup basic logging in console")
 
     fs = queue.Queue()
     def run(message):
@@ -74,7 +92,7 @@ async def setup(loop):
         obj = RefDescriptor(**message)
         o = store.get(obj)
         if o is not None:
-            print("drop", obj.job_id, obj.handle)
+            logger.info(f"drop {obj.job_id} {obj.handle}")
             del store[obj]
 
     mainframe.subscribe_execute(run)
@@ -89,7 +107,7 @@ async def setup(loop):
 
 async def run_block(message, mainframe: Mainframe):
 
-    print("block", message.get("job_id"), "start")
+    logger.info(f"block {message.get('job_id')} start")
     try:
         payload = ExecutePayload(**message)
     except Exception:
@@ -139,7 +157,7 @@ async def run_block(message, mainframe: Mainframe):
         traceback_str = traceback.format_exc()
         sdk.done(traceback_str)
     finally:
-        print("block", message.get("job_id"), "done")
+        logger.info(f"block {message.get('job_id')} done")
 
 
 if __name__ == '__main__':

@@ -18,9 +18,6 @@ class Mainframe:
     def __init__(self, address: str) -> None:
         self.address = address
 
-    def is_connected(self):
-        return self.client is not None and self.client.is_connected()
-
     def connect(self):
         connect_address = (
             self.address
@@ -28,7 +25,11 @@ class Mainframe:
             else f"mqtt://{self.address}"
         )
         url = urlparse(connect_address)
-
+        client = self._setup_client()
+        client.connect(host=url.hostname, port=url.port) # type: ignore
+        client.loop_start()
+    
+    def _setup_client(self):
         self.client = mqtt.Client(
             callback_api_version=CallbackAPIVersion.VERSION2,
             client_id=f"python-executor-{uuid.uuid4().hex[:8]}"
@@ -36,8 +37,6 @@ class Mainframe:
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
         self.client.on_connect_fail = self.on_connect_fail # type: ignore
-        self.client.connect(host=url.hostname, port=url.port) # type: ignore
-        self.client.loop_start()
         return self.client
 
     # mqtt v5 重连后，订阅和队列信息会丢失(v3 在初始化时，设置 clean_session 后，会保留两者。
@@ -59,9 +58,6 @@ class Mainframe:
         logger.warning("disconnect to broker, reason_code: %s", reason_code)
 
     def send(self, job_info: JobDict, msg):
-        if self.is_connected() is False:
-            logger.error("SDK is not ready when send message {} {}".format(job_info, msg))
-            raise Exception("SDK is not ready when send message")
 
         info = self.client.publish(
             f'session/{job_info["session_id"]}', json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
@@ -69,9 +65,7 @@ class Mainframe:
         info.wait_for_publish()
 
     def report(self, block_info: BlockDict, msg: dict):
-        if self.is_connected() is False:
-            logger.error("SDK is not ready when report message {} {}".format(block_info, msg))
-            raise Exception("SDK is not ready when report message")
+
         info = self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
         info.wait_for_publish()
 

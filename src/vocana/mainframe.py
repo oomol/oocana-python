@@ -66,10 +66,8 @@ class Mainframe:
     def report(self, block_info: BlockDict, msg: dict) -> mqtt.MQTTMessageInfo:
         return self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
 
-    def notify_ready(self, msg):
+    def notify_ready(self, session_id: str, job_id: str) -> dict:
 
-        session_id = msg.get("session_id")
-        job_id = msg.get("job_id")
         topic = f"inputs/{session_id}/{job_id}"
         replay = None
 
@@ -81,7 +79,11 @@ class Mainframe:
         self.client.subscribe(topic, qos=1)
         self.client.message_callback_add(topic, on_message_once)
 
-        self.client.publish(f"session/{session_id}", json.dumps(msg), qos=1)
+        self.client.publish(f"session/{session_id}", json.dumps({
+            "type": "BlockReady",
+            "session_id": session_id,
+            "job_id": job_id,
+        }), qos=1)
 
         while True:
             if replay is not None:

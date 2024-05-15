@@ -57,17 +57,14 @@ class Mainframe:
     def on_disconnect(self, client, userdata, flags, reason_code, properties):
         logger.warning("disconnect to broker, reason_code: %s", reason_code)
 
-    def send(self, job_info: JobDict, msg):
-
-        info = self.client.publish(
+    # 不等待 publish 完成，使用 qos 参数来会保证消息到达。
+    def send(self, job_info: JobDict, msg) -> mqtt.MQTTMessageInfo:
+        return self.client.publish(
             f'session/{job_info["session_id"]}', json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
         )
-        info.wait_for_publish()
 
-    def report(self, block_info: BlockDict, msg: dict):
-
-        info = self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
-        info.wait_for_publish()
+    def report(self, block_info: BlockDict, msg: dict) -> mqtt.MQTTMessageInfo:
+        return self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
 
     def notify_ready(self, msg):
 

@@ -1,5 +1,6 @@
 import json
 import paho.mqtt.client as mqtt
+from paho.mqtt.enums import CallbackAPIVersion
 import operator
 from urllib.parse import urlparse
 import uuid
@@ -28,6 +29,7 @@ class Mainframe:
         url = urlparse(connect_address)
 
         self.client = mqtt.Client(
+            callback_api_version=CallbackAPIVersion.VERSION2,
             client_id=f"python-executor-{uuid.uuid4().hex[:8]}", clean_session=False
         )
         self.client.on_connect = self.on_connect
@@ -38,8 +40,13 @@ class Mainframe:
         return self.client
 
     # https://stackoverflow.com/a/57396505/4770006 在 on_connect 回调里面订阅的 topic，在重连时，会自动重新订阅，其他地方调用 subscribe 需要自己处理重新订阅逻辑。
-    def on_connect(self, client: mqtt.Client, userdata, flags, rc):
-        logger.info("connect to broker success")
+    def on_connect(self, client, userdata, flags, reason_code, properties):
+
+        if reason_code != 0:
+            logger.error("connect to broker failed, reason_code: %s", reason_code)
+        else:
+            logger.info("connect to broker success")
+
         client.subscribe(f"executor/{name}/execute", qos=1)
         client.subscribe(f"executor/{name}/drop", qos=1)
 

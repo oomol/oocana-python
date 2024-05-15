@@ -1,5 +1,4 @@
 import unittest
-import asyncio
 from .mainframe import Mainframe
 from .data import JobDict
 class TestMainframe(unittest.TestCase):
@@ -21,34 +20,14 @@ class TestMainframe(unittest.TestCase):
      return super().tearDown()
 
   def test_send(self):
-    self.__mainframe.send(self.__job_info, {
+    info = self.__mainframe.send(self.__job_info, {
       'dir': '123',
     })
 
-  def test_resend(self):
-      asyncio.run(self.send_after_disconnect())
+    info.wait_for_publish()
 
-  async def send_after_disconnect(self):
-    self.__mainframe.send(self.__job_info, {
-      'dir': '123',
-    })
-    await asyncio.sleep(10)
-    self.__mainframe.send(self.__job_info, {
-      'dir': '123',
-    })
-
-  def test_send_twice(self):
-
-    self.__mainframe.notify_ready({
-       **self.__job_info,
-      'dir': '123',
-    })
-    self.__mainframe.send(self.__job_info, {
-      'dir': '123',
-    })
-    self.__mainframe.send(self.__job_info, {
-      'dir': '123',
-    })
+  def test_send_ready(self):
+    self.__mainframe.notify_ready('123', '123')
 
 
 

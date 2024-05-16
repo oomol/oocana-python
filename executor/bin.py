@@ -146,9 +146,9 @@ async def run_block(message, mainframe: Mainframe):
         #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
             if inspect.iscoroutinefunction(main):
-                await main(sdk.props, sdk)
+                await main(sdk.inputs, sdk)
             else:
-                main(sdk.props, sdk)
+                main(sdk.inputs, sdk)
         for line in stdout.getvalue().splitlines():
             sdk.report_log(line)
         for line in stderr.getvalue().splitlines():

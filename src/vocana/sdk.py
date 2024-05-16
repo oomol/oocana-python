@@ -39,7 +39,7 @@ class VocanaSDK:
                 self.__inputs[k] = value
 
     @property
-    def props(self):
+    def inputs(self):
         return self.__inputs
 
     @property

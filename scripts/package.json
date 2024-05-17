@@ -1,8 +1,8 @@
 {
-  "name": "@vocana/sdk-python",
+  "name": "@oomol/python-sdk",
   "files": ["dist"],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "repository": "vocana/vocana-sdk-python"
+  "repository": "oomol/oocana-python"
 }

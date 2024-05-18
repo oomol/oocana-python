@@ -2,7 +2,7 @@
 
 rm -rf ./dist
 pdm build
-mkdir -p dist/oocana-sdk-python
 mkdir -p dist/oocana-sdk-python/dist
 node scripts/make_npm_package.js
-cd dist/oocana-sdk-python && npm publish
+cd dist/oocana-sdk-python
+npm publish

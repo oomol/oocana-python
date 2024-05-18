@@ -6,7 +6,7 @@
 
 ## 准备
 
-根据 [oocana-sdk-node](https://github.com/oomol/oocana-sdk-node) 项目的 README.md，配置好 npmrc 内容。
+根据 [oocana-node](https://github.com/oomol/oocana-node) 项目的 README.md，配置好 npmrc 内容。
 
 安装依赖
 

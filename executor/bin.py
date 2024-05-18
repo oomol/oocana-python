@@ -13,7 +13,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
 from typing import Optional
-from oocana import Mainframe, RefDescriptor, setup_vocana_sdk
+from oocana import Mainframe, RefDescriptor, setup_sdk
 
 logger = logging.getLogger(__name__)
 
@@ -55,8 +55,8 @@ def load_module(source, source_dir=None):
 
 async def setup(loop):
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
-    address = os.environ.get('VOCANA_ADDRESS') if os.environ.get('VOCANA_ADDRESS') else 'mqtt://127.0.0.1:47688'
-    # name = os.environ.get('VOCANA_EXECUTOR') if os.environ.get('VOCANA_EXECUTOR') else 'python_executor'
+    address = os.environ.get('ADDRESS') if os.environ.get('ADDRESS') else 'mqtt://127.0.0.1:47688'
+    # name = os.environ.get('EXECUTOR') if os.environ.get('EXECUTOR') else 'python_executor'
     mainframe = Mainframe(address) # type: ignore
     mainframe.connect()
 
@@ -65,7 +65,7 @@ async def setup(loop):
     # 子进程模式启动时，Python 不会立刻输出，我们需要这一行日志的输出，所以主动 flush 一次。
     sys.stdout.flush()
 
-    log_dir: str = os.environ.get('VOCANA_LOG_DIR') if os.environ.get('VOCANA_LOG_DIR') else "/ovm/.oomol-studio" # type: ignore
+    log_dir: str = os.environ.get('LOG_DIR') if os.environ.get('LOG_DIR') else "/ovm/.oomol-studio" # type: ignore
 
     if os.path.exists(log_dir):
         file_name = log_dir + '/executor/python.log'
@@ -124,7 +124,7 @@ async def run_block(message, mainframe: Mainframe):
         })
         return
 
-    sdk = setup_vocana_sdk(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
+    sdk = setup_sdk(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
 
     load_dir = payload.dir
 

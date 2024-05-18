@@ -6,7 +6,7 @@
         "paho",
         "SIGALRM",
         "userdata",
-        "vocana"
+        "oocana"
     ],
     "python.analysis.typeCheckingMode": "basic",
 }

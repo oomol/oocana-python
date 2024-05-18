@@ -3,7 +3,7 @@ from .data import BlockData, RefDescriptor, JobDict, BlockDict
 from .mainframe import Mainframe
 
 
-class VocanaSDK:
+class OocanaSDK:
     __inputs: dict
     __block_info: BlockData
     __outputs: any # type: ignore

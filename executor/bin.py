@@ -13,7 +13,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
 from typing import Optional
-from vocana import Mainframe, RefDescriptor, setup_vocana_sdk
+from oocana import Mainframe, RefDescriptor, setup_vocana_sdk
 
 logger = logging.getLogger(__name__)
 

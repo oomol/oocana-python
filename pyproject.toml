@@ -5,16 +5,20 @@ version = "0.4.0"
 description = ""
 authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},
+    {name = "yleaf", email = "11785335+leavesster@users.noreply.github.com"},
 ]
 dependencies = [
     "paho-mqtt>=2",
     "pyright>=1.1.362",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.12"
 license = {text = "MIT"}
+readme = "README.md"
 
+[tool.pdm]
+distribution = true
 [tool.pdm.scripts]
-publish_vocana = { shell = "./scripts/publish_vocana.sh" }
+publish_oocana = { shell = "./scripts/publish_oocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
 check = { shell = "pdm run pyright ./src ./executor" }
 
@@ -25,3 +29,6 @@ dev = [
 ]
 [tool.setuptools.packages.find]
 where = ["src"]
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

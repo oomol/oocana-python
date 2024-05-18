@@ -7,13 +7,13 @@ const getVersion = () => {
 }
 
 const distPath = path.join(__dirname, "..", "dist");
-const pkgDirPath = path.join(__dirname, "..", "dist", "vocana-sdk-python");
-const packageJOSNPath = path.join(pkgDirPath, "package.json");
+const pkgDirPath = path.join(__dirname, "..", "dist", "oocana-sdk-python");
+const packageJSONPath = path.join(pkgDirPath, "package.json");
 const whlFileName = execSync("ls *.whl", { cwd: distPath }).toString().trim();
 
 execSync(`cp ${path.join(distPath, whlFileName)} ${path.join(pkgDirPath, "dist", whlFileName)}`)
-const packageJOSN = fs.readFileSync(path.join(__dirname, "package.json"), "utf-8");
-const packageJOSNObj = JSON.parse(packageJOSN);
-packageJOSNObj.main = `dist/${whlFileName}`;
-packageJOSNObj.version = getVersion();
-fs.writeFileSync(packageJOSNPath, JSON.stringify(packageJOSNObj, null, 2));
+const packageJSON = fs.readFileSync(path.join(__dirname, "package.json"), "utf-8");
+const packageJSONObj = JSON.parse(packageJSON);
+packageJSONObj.main = `dist/${whlFileName}`;
+packageJSONObj.version = getVersion();
+fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSONObj, null, 2));

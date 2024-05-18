@@ -1,5 +1,5 @@
 {
-  "name": "@oocana/python-executor",
+  "name": "@oomol/python-executor",
   "version": "0.2.1",
   "files": ["bin.py"],
   "bin": {

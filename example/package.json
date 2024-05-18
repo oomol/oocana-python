@@ -2,6 +2,6 @@
   "name": "example",
   "private": true,
   "dependencies": {
-    "@vocana/vocana": "latest"
+    "@oomol/oocana": "latest"
   }
 }

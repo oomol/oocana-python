@@ -32,7 +32,7 @@ class TestMainframe(unittest.TestCase):
 
 
 # 激活虚拟环境后，执行以下命令：
-# python -m unittest src/vocana/mainframe_test.py
-# python -m unittest src.vocana.mainframe_test.TestMainframe.[单个方法名]
+# python -m unittest src/oocana/mainframe_test.py
+# python -m unittest src.oocana.mainframe_test.TestMainframe.[单个方法名]
 if __name__ == '__main__':
     unittest.main()

@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-env node */
 
-const { Vocana } = require("@vocana/vocana");
+const { oocana } = require("@oomol/oocana");
 const path = require("node:path");
 
 
-const vocana = new Vocana();
+const oocana = new oocana();
 
-vocana.events.on(vocana.events.ANY_EVENT, m => console.log(m));
+oocana.events.on(oocana.events.ANY_EVENT, m => console.log(m));
 
 async function main() {
-  await vocana.connect();
-  await vocana.runFlow({
+  await oocana.connect();
+  await oocana.runFlow({
     flowPath: path.join(__dirname),
     blockSearchPaths: [
       path.join(__dirname, "blocks"),

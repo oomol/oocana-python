@@ -16,7 +16,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          scope: "@vocana"
           registry-url: https://npm.pkg.github.com/
       - name: build an publish to npm
         run: pdm publish_executor
@@ -32,9 +31,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          scope: "@vocana"
           registry-url: "https://npm.pkg.github.com/"
       - name: build an publish to npm
-        run: pdm publish_vocana
+        run: pdm publish_oocana
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

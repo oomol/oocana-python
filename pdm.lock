@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:6a5e752c8f555eb55ca613876b9cb59bc5106b6fdb11d17f6b6edeb71ea071a5"
+content_hash = "sha256:b7ffede4f8d7a7da8b22fd6a06f7502fdcd5cfc1385c917160a5d667e0b63199"
 
 [[package]]
 name = "amqtt"

@@ -36,7 +36,8 @@ git push upstream @oomol/python-sdk@0.1.0
 ## TODO
 
 - [ ] 现有 scripts 发布时，npm publish 出现错误时，并不一定会显示失败。需要调整发布脚本，让发布失败时，显示失败。
-- [ ] 支持协程穿插执行 block，需要让 stderr 和 stdout 的输出能够对应到正确的 block。
+    - [publish-executor action](https://github.com/oomol/oocana-python/actions/runs/9137881993/job/25128387566) 向没有权限的 scope 发布 npm 库，提示 403 ，但是 action 并没有失败。而发布相同版本号时，会正常提示失败。
+- [ ] 支持协程/多进程穿插执行 block，需要让 stderr 和 stdout 的输出能够对应到正确的 block。
 - [ ] 调整项目结构，让 executor 可以写多文件，sdk 导出一份 type hint，executor 不依赖 sdk。
 - [x] 处理`DeprecationWarning: There is no current event loop`警告。
 - [x] 追加日志。出现过发送的 execute 请求，结果没有向 oocana 发起 inputs 请求的情况。

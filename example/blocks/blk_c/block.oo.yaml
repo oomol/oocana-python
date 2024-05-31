@@ -6,3 +6,5 @@ outputs_def:
     serialize:
       serializer: false
       executor: python_executor
+inputs_def:
+  - handle: my_count

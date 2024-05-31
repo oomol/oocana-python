@@ -13,7 +13,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
 from typing import Optional
-from oocana import Mainframe, RefDescriptor, setup_sdk
+from oocana import Mainframe, StoreKey, setup_sdk
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ async def setup(loop):
         f.set_result(message)
 
     def drop(message):
-        obj = RefDescriptor(**message)
+        obj = StoreKey(**message)
         o = store.get(obj)
         if o is not None:
             logger.info(f"drop {obj.job_id} {obj.handle}")

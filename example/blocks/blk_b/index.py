@@ -1,6 +1,6 @@
+from oocana import Context
 
-
-def main(props, context):
+def main(props, context: Context):
     print("Hello from Python blk_b")
     if "my_input" in props:
         i = props["my_input"]

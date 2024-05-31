@@ -1,18 +1,25 @@
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
+from .data import InputHandleDict, HandleDict
+from .data import can_convert_to_var_handle_def
 from .mainframe import Mainframe
+from typing import Dict, Any
 
 
 class Context:
-    __inputs: dict
+    __inputs: Dict[str, Any]
+    __inputs_def: Dict[str, InputHandleDict]
+
     __block_info: BlockInfo
-    __outputs: any # type: ignore
-    __store: any # type: ignore
+    __outputs: Dict[str, HandleDict]
+    __store: Any
 
     def __init__(
         self, node_props, mainframe: Mainframe, store, outputs
     ) -> None:
         self.__inputs = node_props.get("inputs")
+        self.__inputs_def = node_props.get("inputs_def")
+
         self.__block_info = BlockInfo(**node_props)
 
         self.__mainframe = mainframe
@@ -22,20 +29,15 @@ class Context:
         if self.__inputs is None:
             self.__inputs = {}
 
-        for k, v in self.__inputs.items():
-            if isinstance(v, dict) and v.get("executor") == "python_executor":
+        for k, v in self.__inputs_def.items():
+            if can_convert_to_var_handle_def(v):
                 try:
-                    obj_key = StoreKey(**v)
+                    ref = StoreKey(**self.__inputs[k])
                 except:
-                    print(f"not valid object ref: {v}")
+                    print(f"not valid object ref: {self.__inputs[k]}")
                     continue
 
-                value = store.get(obj_key)
-
-                if value is None:
-                    print(f"ObjectRefDescriptor not found: {v}")
-                    continue
-
+                value = store.get(ref)
                 self.__inputs[k] = value
 
     @property

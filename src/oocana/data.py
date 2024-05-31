@@ -50,7 +50,7 @@ def can_convert_to_var_handle_def(obj) -> bool:
 
 
 @dataclass(frozen=True, init=False)
-class RefDescriptor:
+class StoreKey:
     executor: str
     handle: str
     job_id: str
@@ -69,7 +69,7 @@ class RefDescriptor:
 
 # 发送 reporter 时，固定需要的 block 信息参数
 @dataclass(frozen=True)
-class BlockData:
+class BlockInfo:
 
     # 以下四个参数，在发送数据时，都需要传递过去。
     session_id: str

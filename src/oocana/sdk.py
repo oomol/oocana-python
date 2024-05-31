@@ -1,11 +1,11 @@
 from dataclasses import asdict
-from .data import BlockData, RefDescriptor, JobDict, BlockDict
+from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .mainframe import Mainframe
 
 
 class OocanaSDK:
     __inputs: dict
-    __block_info: BlockData
+    __block_info: BlockInfo
     __outputs: any # type: ignore
     __store: any # type: ignore
 
@@ -13,7 +13,7 @@ class OocanaSDK:
         self, node_props, mainframe: Mainframe, store, outputs
     ) -> None:
         self.__inputs = node_props.get("inputs")
-        self.__block_info = BlockData(**node_props)
+        self.__block_info = BlockInfo(**node_props)
 
         self.__mainframe = mainframe
         self.__store = store
@@ -25,7 +25,7 @@ class OocanaSDK:
         for k, v in self.__inputs.items():
             if isinstance(v, dict) and v.get("executor") == "python_executor":
                 try:
-                    obj_key = RefDescriptor(**v)
+                    obj_key = StoreKey(**v)
                 except:
                     print(f"not valid object ref: {v}")
                     continue
@@ -59,7 +59,7 @@ class OocanaSDK:
         return self.__block_info.block_dict()
 
     def __store_ref(self, handle: str):
-        return RefDescriptor(
+        return StoreKey(
             executor="python_executor",
             handle=handle,
             job_id=self.job_id,

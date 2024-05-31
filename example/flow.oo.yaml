@@ -10,7 +10,7 @@ nodes:
           - node_id: block-a
             output_handle: my_output
   - node_id: block-c
-    task: ./blocks/blk_a
+    task: ./blocks/blk_c
     inputs_from:
       - handle: my_count
         from_node:

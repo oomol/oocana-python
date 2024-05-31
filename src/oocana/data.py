@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypedDict
+from typing import TypedDict, Any
 
 class JobDict(TypedDict):
     session_id: str
@@ -10,6 +10,40 @@ class BlockDict(TypedDict):
     job_id: str
     stacks: list
     block_path: str
+
+class JsonSerializeDict(TypedDict):
+    serializer: str
+    json_schema: Any
+    name: str | None
+
+class VarSerializeDict(TypedDict):
+    serializer: bool
+    executor: str
+    name: str | None
+
+class HandleDict(TypedDict):
+    handle: str
+    serialize: JsonSerializeDict | VarSerializeDict
+
+class InputHandleDict(HandleDict):
+    value: Any
+    
+def can_convert_to_var_handle_def(obj) -> bool:
+
+    if obj.get("handle") is None:
+        return False
+
+    serialize = obj.get("serialize")
+    if serialize is None or isinstance(serialize, dict) is False:
+        return False
+    
+    if serialize.get("serializer") is None:
+        return False
+
+    if serialize.get("executor") is None:
+        return False
+
+    return True
 
 # 默认的 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。
 # 这里在使用 frozen 固化数据的同时，做了多余字段的忽略处理。如果不 frozen 的话，不需要使用 object.__setattr__ 这种方式来赋值，这种方式会有一点性能开销。

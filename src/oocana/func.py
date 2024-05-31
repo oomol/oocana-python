@@ -1,11 +1,11 @@
-from .sdk import OocanaSDK
+from .context import Context
 from .mainframe import Mainframe
 
 
-def setup_sdk(
+def createContext(
     mainframe: Mainframe, session_id: str, job_id: str, store, output
-) -> OocanaSDK:
+) -> Context:
 
     node_props = mainframe.notify_ready(session_id, job_id)
 
-    return OocanaSDK(node_props, mainframe, store, output)
+    return Context(node_props, mainframe, store, output)

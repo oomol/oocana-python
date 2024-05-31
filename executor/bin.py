@@ -13,7 +13,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
 from typing import Optional
-from oocana import Mainframe, StoreKey, setup_sdk
+from oocana import Mainframe, StoreKey, createContext
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +124,7 @@ async def run_block(message, mainframe: Mainframe):
         })
         return
 
-    sdk = setup_sdk(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
+    sdk = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
 
     load_dir = payload.dir
 

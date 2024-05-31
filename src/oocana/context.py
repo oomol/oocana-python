@@ -3,7 +3,7 @@ from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .mainframe import Mainframe
 
 
-class OocanaSDK:
+class Context:
     __inputs: dict
     __block_info: BlockInfo
     __outputs: any # type: ignore

@@ -13,9 +13,36 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
 from typing import Optional
-from oocana import Mainframe, StoreKey, createContext
+from oocana import Mainframe, StoreKey, Context, can_convert_to_var_handle_def, BlockInfo
 
 logger = logging.getLogger(__name__)
+
+def createContext(
+    mainframe: Mainframe, session_id: str, job_id: str, store, output
+) -> Context:
+
+    node_props = mainframe.notify_ready(session_id, job_id)
+
+    inputs_def = node_props.get("inputs_def")
+    inputs = node_props.get("inputs")
+
+    if inputs_def is not None and inputs is not None:
+        for k, v in inputs_def.items():
+            if can_convert_to_var_handle_def(v):
+                try:
+                    ref = StoreKey(**inputs[k])
+                except:  # noqa: E722
+                    print(f"not valid object ref: {inputs[k]}")
+                    continue
+
+                value = store.get(ref)
+                inputs[k] = value
+    elif inputs is None:
+        inputs = {}
+    
+    blockInfo = BlockInfo(**node_props)
+
+    return Context(inputs, blockInfo, mainframe, store, output)
 
 @dataclass
 class ExecutePayload:
@@ -158,7 +185,6 @@ async def run_block(message, mainframe: Mainframe):
         sdk.done(traceback_str)
     finally:
         logger.info(f"block {message.get('job_id')} done")
-
 
 if __name__ == '__main__':
     loop = asyncio.new_event_loop()

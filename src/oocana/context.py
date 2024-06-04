@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
-from .data import InputHandleDict, HandleDict
+from .data import HandleDict
 from .data import can_convert_to_var_handle_def
 from .mainframe import Mainframe
 from typing import Dict, Any
@@ -8,37 +8,22 @@ from typing import Dict, Any
 
 class Context:
     __inputs: Dict[str, Any]
-    __inputs_def: Dict[str, InputHandleDict]
 
     __block_info: BlockInfo
     __outputs: Dict[str, HandleDict]
     __store: Any
 
     def __init__(
-        self, node_props, mainframe: Mainframe, store, outputs
+        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs
     ) -> None:
-        self.__inputs = node_props.get("inputs")
-        self.__inputs_def = node_props.get("inputs_def")
 
-        self.__block_info = BlockInfo(**node_props)
+        self.__block_info = blockInfo
 
         self.__mainframe = mainframe
         self.__store = store
+        self.__inputs = inputs
         self.__outputs = outputs
 
-        if self.__inputs is None:
-            self.__inputs = {}
-
-        for k, v in self.__inputs_def.items():
-            if can_convert_to_var_handle_def(v):
-                try:
-                    ref = StoreKey(**self.__inputs[k])
-                except:
-                    print(f"not valid object ref: {self.__inputs[k]}")
-                    continue
-
-                value = store.get(ref)
-                self.__inputs[k] = value
 
     @property
     def inputs(self):
@@ -75,9 +60,7 @@ class Context:
         if self.__outputs is not None:
             output_def = self.__outputs.get(handle)
             if (
-                output_def is not None
-                and output_def.get("serialize")
-                and output_def.get("serialize").get("executor")
+                output_def is not None and can_convert_to_var_handle_def(output_def)
             ):
                 ref = self.__store_ref(handle)
                 self.__store[ref] = output

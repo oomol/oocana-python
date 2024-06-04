@@ -37,12 +37,36 @@ def createContext(
 
                 value = store.get(ref)
                 inputs[k] = value
+            elif need_replace_secret(v):
+                inputs[k] = replace_secret(inputs[k])
+
     elif inputs is None:
         inputs = {}
     
     blockInfo = BlockInfo(**node_props)
 
     return Context(inputs, blockInfo, mainframe, store, output)
+
+def need_replace_secret(value: dict):
+    if not isinstance(value, dict):
+        return False
+    
+    serialize = value.get("serialize")
+    if serialize is None or isinstance(serialize, dict) is False:
+        return False
+
+    if serialize.get("serializer") != "json":
+        return False
+    
+    json_schema = serialize.get("json_schema")
+    if json_schema is None or isinstance(json_schema, dict) is False:
+        return False
+    
+    return json_schema.get("ui:widget") == "secret"
+
+def replace_secret(path: str) -> str:
+    # TODO: secret 替换
+    return path
 
 @dataclass
 class ExecutePayload:

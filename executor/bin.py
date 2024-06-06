@@ -204,7 +204,7 @@ async def run_block(message, mainframe: Mainframe):
     logger.info(f"block {message.get('job_id')} start")
     try:
         payload = ExecutePayload(**message)
-        sdk = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
+        context = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
     except Exception:
         traceback_str = traceback.format_exc()
         # rust 那边会保证传过来的 message 一定是符合格式的，所以这里不应该出现异常。这里主要是防止 rust 修改错误。
@@ -230,7 +230,7 @@ async def run_block(message, mainframe: Mainframe):
         index_module = load_module(source, load_dir)
     except Exception:
         traceback_str = traceback.format_exc()
-        sdk.done(traceback_str)
+        context.done(traceback_str)
         return
     main = index_module.main
 
@@ -240,16 +240,16 @@ async def run_block(message, mainframe: Mainframe):
         #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
             if inspect.iscoroutinefunction(main):
-                await main(sdk.inputs, sdk)
+                await main(context.inputs, context)
             else:
-                main(sdk.inputs, sdk)
+                main(context.inputs, context)
         for line in stdout.getvalue().splitlines():
-            sdk.report_log(line)
+            context.report_log(line)
         for line in stderr.getvalue().splitlines():
-            sdk.report_log(line, "stderr")
+            context.report_log(line, "stderr")
     except Exception:
         traceback_str = traceback.format_exc()
-        sdk.done(traceback_str)
+        context.done(traceback_str)
     finally:
         logger.info(f"block {message.get('job_id')} done")
 

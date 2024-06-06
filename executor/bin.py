@@ -9,13 +9,16 @@ import queue
 import sys
 import traceback
 import logging
+import json
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
-from typing import Optional
+from typing import Optional, Any
 from oocana import Mainframe, StoreKey, Context, can_convert_to_var_handle_def, BlockInfo
 
+
 logger = logging.getLogger(__name__)
+SECRET_FILE = "/home/ovm/app-config/oomol-secrets/secrets.json"
 
 def createContext(
     mainframe: Mainframe, session_id: str, job_id: str, store, output
@@ -25,6 +28,15 @@ def createContext(
 
     inputs_def = node_props.get("inputs_def")
     inputs = node_props.get("inputs")
+
+    try:
+        secretJson = json.load(open(SECRET_FILE))
+    except FileNotFoundError:
+        logger.warning(f"secret file {SECRET_FILE} not found")
+        secretJson = None
+    except json.JSONDecodeError:
+        logger.error(f"secret file {SECRET_FILE} is not a valid json file")
+        secretJson = None
 
     if inputs_def is not None and inputs is not None:
         for k, v in inputs_def.items():
@@ -37,8 +49,8 @@ def createContext(
 
                 value = store.get(ref)
                 inputs[k] = value
-            elif need_replace_secret(v):
-                inputs[k] = replace_secret(inputs[k])
+            elif is_secret(v):
+                inputs[k] = replace_secret(inputs[k], secretJson)
 
     elif inputs is None:
         inputs = {}
@@ -47,7 +59,7 @@ def createContext(
 
     return Context(inputs, blockInfo, mainframe, store, output)
 
-def need_replace_secret(value: dict):
+def is_secret(value: dict):
     if not isinstance(value, dict):
         return False
     
@@ -64,9 +76,40 @@ def need_replace_secret(value: dict):
     
     return json_schema.get("ui:widget") == "secret"
 
-def replace_secret(path: str) -> str:
-    # TODO: secret 替换
-    return path
+def replace_secret(path: str, secretJson: dict | None) -> str:
+    if secretJson is None:
+        # throw error
+        logger.error(f"secret file {SECRET_FILE} not found")
+        raise ValueError("secret file not found or invalid json file")
+
+    assert isinstance(secretJson, dict)
+
+    try:
+        [secretType, secretName, secretKey] =  path.split(",")
+    except ValueError:
+        logger.error(f"invalid secret path: {path}")
+        return ""
+    
+    s = secretJson.get(secretName)
+
+    if s is None:
+        logger.error(f"secret {secretName} not found in {SECRET_FILE}")
+        return ""
+
+    if s.get("secretType") != secretType:
+        logger.warning(f"secret type mismatch: {s.get('secretType')} != {secretType}")
+
+    secrets: list[Any] = s.get("secrets")
+    if secrets:
+        for secret in secrets:
+            if secret.get("secretKey") == secretKey:
+                return secret.get("value")
+    else:
+        logger.error(f"secret {secretName} has no value")
+        return ""
+
+    logger.error(f"secret {secretKey} not found in {secretName}")
+    return ""
 
 @dataclass
 class ExecutePayload:
@@ -161,6 +204,7 @@ async def run_block(message, mainframe: Mainframe):
     logger.info(f"block {message.get('job_id')} start")
     try:
         payload = ExecutePayload(**message)
+        sdk = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
     except Exception:
         traceback_str = traceback.format_exc()
         # rust 那边会保证传过来的 message 一定是符合格式的，所以这里不应该出现异常。这里主要是防止 rust 修改错误。
@@ -175,7 +219,6 @@ async def run_block(message, mainframe: Mainframe):
         })
         return
 
-    sdk = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
 
     load_dir = payload.dir
 

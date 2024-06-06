@@ -1,7 +1,7 @@
 
 [project]
 name = "oocana-python"
-version = "0.5.0"
+version = "0.6.0"
 description = ""
 authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},

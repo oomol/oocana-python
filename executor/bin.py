@@ -13,7 +13,7 @@ import json
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
-from typing import Optional, Any
+from typing import Optional, Any, TypedDict
 from oocana import Mainframe, StoreKey, Context, can_convert_to_var_handle_def, BlockInfo
 
 
@@ -111,12 +111,16 @@ def replace_secret(path: str, secretJson: dict | None) -> str:
     logger.error(f"secret {secretKey} not found in {secretName}")
     return ""
 
+class ExecutorDict(TypedDict):
+    entry: Optional[str]
+    function: Optional[str]
+
 @dataclass
 class ExecutePayload:
     session_id: str
     job_id: str
     dir: str
-    executor: Optional[dict] = None
+    executor: Optional[ExecutorDict] = None
     outputs: Optional[dict] = None
 
     def __init__(self, *args, **kwargs):
@@ -232,17 +236,25 @@ async def run_block(message, mainframe: Mainframe):
         traceback_str = traceback.format_exc()
         context.done(traceback_str)
         return
-    main = index_module.main
+    function_name: str = payload.executor["function"] if payload.executor is not None and payload.executor.get("function") is not None else 'main' # type: ignore
+    fn = index_module.__dict__.get(function_name)
+
+    if fn is None:
+        context.done(f"function {function_name} not found in {source}")
+        return
+    if not callable(fn):
+        context.done(f"{function_name} is not a function in {source}")
+        return
 
     try:
         # TODO: 这种重定向 stdout 和 stderr 的方式比较优雅，但是由于仍然是替换的全局 sys.stdout 和 sys.stderr 对象，所以在协程切换时，仍然会有错乱的问题。
         #       目前任务是一个个排队执行，因此暂时不会出现错乱。
         #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
-            if inspect.iscoroutinefunction(main):
-                await main(context.inputs, context)
+            if inspect.iscoroutinefunction(fn):
+                await fn(context.inputs, context)
             else:
-                main(context.inputs, context)
+                fn(context.inputs, context)
         for line in stdout.getvalue().splitlines():
             context.report_log(line)
         for line in stderr.getvalue().splitlines():

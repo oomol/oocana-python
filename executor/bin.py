@@ -252,9 +252,19 @@ async def run_block(message, mainframe: Mainframe):
         #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
             if inspect.iscoroutinefunction(fn):
-                await fn(context.inputs, context)
+                result = await fn(context.inputs, context)
             else:
-                fn(context.inputs, context)
+                result = fn(context.inputs, context)
+        if result is not None and payload.outputs is not None and len(payload.outputs.keys()) == 1:
+            context.output(result, list(payload.outputs.keys())[0], True)
+        elif result is not None and payload.outputs is not None and len(payload.outputs.keys()) > 1:
+            # TODO: 对于多个 handle，更倾向于遍历 key 与 output handle 一一对应，一个个输出到 output 上。
+            context.done("return object to output handle, need output handle has only one key")
+        elif result is context.keepAlive:
+            pass
+        else:
+            context.done()
+
         for line in stdout.getvalue().splitlines():
             context.report_log(line)
         for line in stderr.getvalue().splitlines():

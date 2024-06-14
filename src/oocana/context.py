@@ -5,6 +5,9 @@ from .data import can_convert_to_var_handle_def
 from .mainframe import Mainframe
 from typing import Dict, Any
 
+class OnlyEqualSelf:
+    def __eq__(self, value: object) -> bool:
+        return self is value
 
 class Context:
     __inputs: Dict[str, Any]
@@ -12,6 +15,8 @@ class Context:
     __block_info: BlockInfo
     __outputs: Dict[str, HandleDict]
     __store: Any
+    __is_done: bool = False
+    __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
 
     def __init__(
         self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs
@@ -24,6 +29,9 @@ class Context:
         self.__inputs = inputs
         self.__outputs = outputs
 
+    @property
+    def keepAlive(self):
+        return self.__keep_alive
 
     @property
     def inputs(self):
@@ -81,10 +89,13 @@ class Context:
         self.__mainframe.send(self.job_info, node_result)
 
         if done:
-            # 多次调用，需要至少给个警告
             self.done()
 
     def done(self, error: str | None = None):
+        if self.__is_done:
+            # TODO: 添加 warning 日志，提示重复报错
+            return
+        self.__is_done = True
         if error is None:
             self.__mainframe.send(self.job_info, {"type": "BlockFinished"})
         else:

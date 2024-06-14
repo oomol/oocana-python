@@ -255,15 +255,18 @@ async def run_block(message, mainframe: Mainframe):
                 result = await fn(context.inputs, context)
             else:
                 result = fn(context.inputs, context)
-        if result is not None and payload.outputs is not None and len(payload.outputs.keys()) == 1:
-            context.output(result, list(payload.outputs.keys())[0], True)
-        elif result is not None and payload.outputs is not None and len(payload.outputs.keys()) > 1:
-            # TODO: 对于多个 handle，更倾向于遍历 key 与 output handle 一一对应，一个个输出到 output 上。
-            context.done("return object to output handle, need output handle has only one key")
+        if result is None:
+            context.done()
         elif result is context.keepAlive:
             pass
+        elif hasattr(result, "get"):
+            if payload.outputs is not None:
+                for k, _ in payload.outputs.items():
+                    context.output(result.get(k), k)
+            else:
+                logger.warning(f"no outputs defined in {message.get('job_id')}")
         else:
-            context.done()
+            context.done(f"{function_name}'s return value has no get method")
 
         for line in stdout.getvalue().splitlines():
             context.report_log(line)

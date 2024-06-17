@@ -259,14 +259,11 @@ async def run_block(message, mainframe: Mainframe):
             context.done()
         elif result is context.keepAlive:
             pass
-        elif hasattr(result, "get"):
-            if payload.outputs is not None:
-                for k, _ in payload.outputs.items():
-                    context.output(result.get(k), k)
-            else:
-                logger.warning(f"no outputs defined in {message.get('job_id')}")
+        elif isinstance(result, dict):
+            for k, v in result.items():
+                context.output(v, k)
         else:
-            context.done(f"{function_name}'s return value has no get method")
+            context.done(f"{function_name}'s return value needs to be a dict")
 
         for line in stdout.getvalue().splitlines():
             context.report_log(line)

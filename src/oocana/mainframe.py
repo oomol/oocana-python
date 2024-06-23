@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 import uuid
 from .data import BlockDict, JobDict
 import logging
+from typing import Optional
 
 name = "python_executor"
 
@@ -14,9 +15,11 @@ logger = logging.getLogger(__name__)
 class Mainframe:
     address: str
     client: mqtt.Client
+    client_id: str
 
-    def __init__(self, address: str) -> None:
+    def __init__(self, address: str, client_id: Optional[str] = None) -> None:
         self.address = address
+        self.client_id = client_id or f"python-executor-{uuid.uuid4().hex[:8]}"
 
     def connect(self):
         connect_address = (
@@ -32,7 +35,7 @@ class Mainframe:
     def _setup_client(self):
         self.client = mqtt.Client(
             callback_api_version=CallbackAPIVersion.VERSION2,
-            client_id=f"python-executor-{uuid.uuid4().hex[:8]}"
+            client_id=self.client_id,
         )
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect

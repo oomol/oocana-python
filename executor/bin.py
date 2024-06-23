@@ -18,6 +18,7 @@ from oocana import Mainframe, StoreKey, Context, can_convert_to_var_handle_def, 
 
 
 logger = logging.getLogger(__name__)
+EXECUTOR_NAME = "python_executor"
 SECRET_FILE = "/home/ovm/app-config/oomol-secrets/secrets.json"
 
 def createContext(
@@ -193,8 +194,8 @@ async def setup(loop):
             logger.info(f"drop {obj.job_id} {obj.handle}")
             del store[obj]
 
-    mainframe.subscribe_execute(run)
-    mainframe.subscribe_drop(drop)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/execute", run)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
 
     while True:
         await asyncio.sleep(1)

@@ -8,14 +8,13 @@ from .data import BlockDict, JobDict
 import logging
 from typing import Optional
 
-name = "python_executor"
-
 logger = logging.getLogger(__name__)
 
 class Mainframe:
     address: str
     client: mqtt.Client
     client_id: str
+    _subscriptions: set[str]
 
     def __init__(self, address: str, client_id: Optional[str] = None) -> None:
         self.address = address
@@ -51,8 +50,8 @@ class Mainframe:
         else:
             logger.info("connect to broker success")
 
-        client.subscribe(f"executor/{name}/execute", qos=1)
-        client.subscribe(f"executor/{name}/drop", qos=1)
+        for topic in self._subscriptions:
+            self.client.subscribe(topic, qos=1)
 
     def on_connect_fail(self) -> None:
         logger.error("connect to broker failed")
@@ -92,26 +91,21 @@ class Mainframe:
             if replay is not None:
                 logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
-
-    def subscribe_drop(self, callback):
-        topic = f"executor/{name}/drop"
-
+    
+    def subscribe(self, topic, callback):
         def on_message(_client, _userdata, message):
-            logger.info("drop message: {}".format(message.payload))
+            logger.info("message: {}".format(message.payload))
             payload = json.loads(message.payload)
             callback(payload)
 
         self.client.message_callback_add(topic, on_message)
+        self.client.subscribe(topic, qos=1)
+        self._subscriptions.add(topic)
 
-    def subscribe_execute(self, callback):
-        topic = f"executor/{name}/execute"
-
-        def on_message(_client, _userdata, message):
-            logger.info("execute message: {}".format(message.payload))
-            payload = json.loads(message.payload)
-            callback(payload)
-
-        self.client.message_callback_add(topic, on_message)
+    def unsubscribe(self, topic):
+        self.client.message_callback_remove(topic)
+        self.client.unsubscribe(topic)
+        self._subscriptions.remove(topic)
 
     def loop(self):
         self.client.loop_forever()

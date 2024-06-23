@@ -91,6 +91,9 @@ class Mainframe:
             if replay is not None:
                 logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
+            
+    def publish(self, topic, payload):
+        self.client.publish(topic, json.dumps(payload), qos=1)
     
     def subscribe(self, topic, callback):
         def on_message(_client, _userdata, message):

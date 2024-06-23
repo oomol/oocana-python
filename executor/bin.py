@@ -256,15 +256,7 @@ async def run_block(message, mainframe: Mainframe):
                 result = await fn(context.inputs, context)
             else:
                 result = fn(context.inputs, context)
-        if result is None:
-            context.done()
-        elif result is context.keepAlive:
-            pass
-        elif isinstance(result, dict):
-            for k, v in result.items():
-                context.output(v, k)
-        else:
-            context.done(f"{function_name}'s return value needs to be a dict")
+        output_return_object(result, context)
 
         for line in stdout.getvalue().splitlines():
             context.report_log(line)
@@ -275,6 +267,17 @@ async def run_block(message, mainframe: Mainframe):
         context.done(traceback_str)
     finally:
         logger.info(f"block {message.get('job_id')} done")
+
+def output_return_object(obj, context: Context):
+    if obj is None:
+        context.done()
+    elif obj is context.keepAlive:
+        pass
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            context.output(v, k)
+    else:
+        context.done("return value needs to be a dict")
 
 if __name__ == '__main__':
     loop = asyncio.new_event_loop()

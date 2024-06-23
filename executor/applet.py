@@ -1,6 +1,23 @@
 from typing import Callable, Any
 from oocana import Context, AppletExecutePayload, Mainframe
-from .bin import createContext
+from .bin import createContext, output_return_object
+import threading
+import time
+
+class Timer(threading.Thread):
+    def __init__(self, interval, function):
+        super().__init__()
+        self.interval = interval
+        self.function = function
+        self.cancelled = threading.Event()
+
+    def run(self):
+        time.sleep(self.interval)
+        if not self.cancelled.is_set():
+            self.function()
+
+    def cancel(self):
+        self.cancelled.set()
 
 class AppletRuntime:
 
@@ -9,6 +26,7 @@ class AppletRuntime:
     _config: AppletExecutePayload
     _mainframe: Mainframe
     _applet_id: str
+    _timer: Timer | None = None
 
     def __init__(self, config: AppletExecutePayload,mainframe: Mainframe, applet_id: str):
         self._config = config
@@ -24,10 +42,11 @@ class AppletRuntime:
             handler = self.blockHandler.get(block_name)
             if handler is None:
                 raise Exception(f"block {block_name} not found")
-            handler(context.inputs, context)
+            result = handler(context.inputs, context)
         elif callable(self.blockHandler):
             handler = self.blockHandler
-            handler(block_name, context.inputs, context)
+            result = handler(block_name, context.inputs, context)
         else:
             raise Exception("blockHandler must be a dict or a callable")
-        
+
+        output_return_object(result, context)

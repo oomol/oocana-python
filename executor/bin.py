@@ -14,8 +14,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from io import StringIO
 from typing import Optional, Any, TypedDict
-from oocana import Mainframe, StoreKey, Context, can_convert_to_var_handle_def, BlockInfo
-
+from oocana import Mainframe, StoreKey, Context, can_convert_to_var_handle_def, BlockInfo, AppletExecutePayload
 
 logger = logging.getLogger(__name__)
 EXECUTOR_NAME = "python_executor"
@@ -136,6 +135,7 @@ class ExecutePayload:
                 setattr(self, key, value)
 
 store = {}
+appletMap = {}
 
 def load_module(source, source_dir=None):
     if (os.path.isabs(source)):
@@ -179,10 +179,16 @@ async def setup(loop):
         logger.info("setup basic logging in console")
 
     fs = queue.Queue()
-    def run(message):
+    def execute_block(message):
         nonlocal fs
         # 在当前使用的 mqtt 库里，如果在 subscribe 之后，直接 publish 消息，会一直阻塞无法发送成功。
         # 所以要切换线程后，再进行 publish。这里使用 future 来实现线程切换和数据传递。
+        f = loop.create_future()
+        fs.put(f)
+        f.set_result(message)
+    
+    def execute_applet_block(message):
+        nonlocal fs
         f = loop.create_future()
         fs.put(f)
         f.set_result(message)
@@ -194,15 +200,45 @@ async def setup(loop):
             logger.info(f"drop {obj.job_id} {obj.handle}")
             del store[obj]
 
-    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/execute", run)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/execute", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/applet", execute_applet_block)
 
     while True:
         await asyncio.sleep(1)
         if not fs.empty():
             f = fs.get()
             message = await f
-            await run_block(message, mainframe)
+            if message.get("applet_executor") is not None:
+                applet_id = "-".join([message.get("applet_executor").get("name"), message.get("job_id")])
+                if applet_id is None:
+                    asyncio.create_task(spawn_applet(message, mainframe, address)) # type: ignore
+                else:
+                    run_applet_block(message, mainframe)
+            else:
+                await run_block(message, mainframe)
+
+async def spawn_applet(message: AppletExecutePayload, mainframe: Mainframe, address: str):
+    logger.info(f"create new applet {message.get('dir')}")
+    applet_id = "-".join([message.get("applet_executor").get("name"), message.get("job_id")])
+    appletMap[message.get("dir")] = applet_id
+    # python spawn applet process
+    process = await asyncio.create_subprocess_shell(
+        f"python applet.py --address {address} --client_id {applet_id}",
+        cwd=message.get("dir")
+    )
+
+    mainframe.subscribe(f"executor/applet/{applet_id}/spawn", lambda _: mainframe.publish(f"executor/applet/{applet_id}/config", message))
+
+    # 等待子进程结束
+    await process.wait()
+    appletMap.pop(message.get("dir"))
+    mainframe.unsubscribe(f"executor/applet/{applet_id}/spawn")
+    
+
+def run_applet_block(message: AppletExecutePayload, mainframe: Mainframe):
+    logger.info(f"applet block {message.get('job_id')} start")
+    mainframe.publish(f"executor/applet/{appletMap[message.get('dir')]}/config", message)
 
 async def run_block(message, mainframe: Mainframe):
 

@@ -1,6 +1,7 @@
 from typing import Callable, Any
 from oocana import Context, AppletExecutePayload, Mainframe
-from .executor import createContext, output_return_object, load_module
+from .block import output_return_object, load_module
+from .context import createContext
 import threading
 import time
 import inspect

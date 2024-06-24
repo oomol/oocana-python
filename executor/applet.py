@@ -20,6 +20,7 @@ class Timer(threading.Thread):
     def cancel(self):
         self.cancelled.set()
 
+# TODO: 生命周期管理
 class AppletRuntime:
 
     blockHandler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
@@ -40,6 +41,7 @@ class AppletRuntime:
         applet_config = self._config["applet_executor"]
         m = load_module(applet_config["entry"], self._config["dir"])
         fn = m.__dict__.get(applet_config["function"])
+        # TODO: 从 entry 附近查找到当前 Applet 依赖的 module
         if not callable(fn):
             raise Exception(f"function {applet_config['function']} not found in {applet_config['entry']}")
         if inspect.iscoroutinefunction(fn):

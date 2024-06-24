@@ -23,7 +23,7 @@ class Timer(threading.Thread):
 # TODO: 生命周期管理
 class AppletRuntime:
 
-    blockHandler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
+    block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
     _store = {}
     _config: AppletExecutePayload
     _mainframe: Mainframe
@@ -45,9 +45,9 @@ class AppletRuntime:
         if not callable(fn):
             raise Exception(f"function {applet_config['function']} not found in {applet_config['entry']}")
         if inspect.iscoroutinefunction(fn):
-            await fn()
+            await fn(self)
         else:
-            await fn()
+            fn(self)
         await self.run_block(self._config)
 
     async def run_block(self, payload: AppletExecutePayload):
@@ -55,13 +55,13 @@ class AppletRuntime:
 
         context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"])
 
-        if isinstance(self.blockHandler, dict):
-            handler = self.blockHandler.get(block_name)
+        if isinstance(self.block_handler, dict):
+            handler = self.block_handler.get(block_name)
             if handler is None:
                 raise Exception(f"block {block_name} not found")
             result = handler(context.inputs, context)
-        elif callable(self.blockHandler):
-            handler = self.blockHandler
+        elif callable(self.block_handler):
+            handler = self.block_handler
             result = handler(block_name, context.inputs, context)
         else:
             raise Exception("blockHandler must be a dict or a callable")
@@ -71,7 +71,6 @@ class AppletRuntime:
 def config_callback(payload: Any, mainframe: Mainframe, client_id: str):
     applet = AppletRuntime(payload, mainframe, client_id)
     asyncio.run(applet.run())
-    asyncio.run(applet.run_block(payload))
 
 
 async def start_applet(loop, address, client_id):

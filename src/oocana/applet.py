@@ -15,7 +15,7 @@ class AppletStartOption(Enum):
     App = "app_start"
 
 class AppletContext(TypedDict):
-    blockHandler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
+    block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
 
 class AppletExecutor(TypedDict):
     name: str

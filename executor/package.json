@@ -2,10 +2,10 @@
   "name": "@oomol/python-executor",
   "version": "0.4.2",
   "files": [
-    "*.py"
+    "impl/*.py"
   ],
   "bin": {
-    "python-executor": "bin.py"
+    "python-executor": "bin/python-executor.sh"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

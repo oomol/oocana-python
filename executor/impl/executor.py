@@ -226,7 +226,7 @@ async def spawn_applet(message: AppletExecutePayload, mainframe: Mainframe, addr
 
     parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     process = await asyncio.create_subprocess_shell(
-        f"python -m executor.applet --address {address} --client-id {applet_id}",
+        f"python -m python.applet --address {address} --client-id {applet_id}",
         cwd=parent_dir
     )
 
@@ -318,6 +318,15 @@ def output_return_object(obj, context: Context):
         context.done("return value needs to be a dict")
 
 if __name__ == '__main__':
+
+    import argparse
+    parser = argparse.ArgumentParser(description="run applet with mqtt address and client id")
+    parser.add_argument("--address", help="mqtt address")
+    parser.add_argument("--client-id", help="mqtt client id")
+    args = parser.parse_args()
+
+    print(args)
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(setup(loop))

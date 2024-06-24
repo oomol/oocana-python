@@ -210,11 +210,12 @@ async def setup(loop):
             f = fs.get()
             message = await f
             if message.get("applet_executor") is not None:
-                applet_id = "-".join([message.get("applet_executor").get("name"), message.get("job_id")])
+                applet_dir = message.get("dir")
+                applet_id = appletMap.get(applet_dir)
                 if applet_id is None:
                     asyncio.create_task(spawn_applet(message, mainframe, address)) # type: ignore
                 else:
-                    run_applet_block(message, mainframe)
+                    run_applet_block(message, mainframe, applet_id)
             else:
                 await run_block(message, mainframe)
 
@@ -222,10 +223,11 @@ async def spawn_applet(message: AppletExecutePayload, mainframe: Mainframe, addr
     logger.info(f"create new applet {message.get('dir')}")
     applet_id = "-".join([message.get("applet_executor").get("name"), message.get("job_id")])
     appletMap[message.get("dir")] = applet_id
-    # python spawn applet process
+
+    parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     process = await asyncio.create_subprocess_shell(
-        f"python applet.py --address {address} --client_id {applet_id}",
-        cwd=message.get("dir")
+        f"python -m executor.applet --address {address} --client-id {applet_id}",
+        cwd=parent_dir
     )
 
     mainframe.subscribe(f"executor/applet/{applet_id}/spawn", lambda _: mainframe.publish(f"executor/applet/{applet_id}/config", message))
@@ -236,9 +238,9 @@ async def spawn_applet(message: AppletExecutePayload, mainframe: Mainframe, addr
     mainframe.unsubscribe(f"executor/applet/{applet_id}/spawn")
     
 
-def run_applet_block(message: AppletExecutePayload, mainframe: Mainframe):
+def run_applet_block(message: AppletExecutePayload, mainframe: Mainframe, applet_id: str):
     logger.info(f"applet block {message.get('job_id')} start")
-    mainframe.publish(f"executor/applet/{appletMap[message.get('dir')]}/config", message)
+    mainframe.publish(f"executor/applet/{applet_id}/config", message)
 
 async def run_block(message, mainframe: Mainframe):
 

@@ -23,7 +23,7 @@ class Timer(threading.Thread):
 # TODO: 生命周期管理
 class AppletRuntime:
 
-    block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
+    block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any] = dict()
     _store = {}
     _config: AppletExecutePayload
     _mainframe: Mainframe
@@ -36,6 +36,10 @@ class AppletRuntime:
         self._applet_id = applet_id
 
         mainframe.subscribe(f"executor/applet/{applet_id}/execute", self.run_block)
+
+    def __setitem__(self, key, value):
+        if key == "block_handler":
+            self.block_handler = value
 
     async def run(self):
         applet_config = self._config["applet_executor"]
@@ -77,7 +81,7 @@ async def start_applet(loop, address, client_id):
     mainframe = Mainframe(address, client_id)
     mainframe.connect()
 
-    mainframe.subscribe(f"executor/applet/{client_id}/config", config_callback)
+    mainframe.subscribe(f"executor/applet/{client_id}/config", lambda payload: config_callback(payload, mainframe, client_id))
     mainframe.publish(f"executor/applet/{client_id}/spawn", {})
 
 

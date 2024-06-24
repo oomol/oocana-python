@@ -14,7 +14,7 @@ class Mainframe:
     address: str
     client: mqtt.Client
     client_id: str
-    _subscriptions: set[str]
+    _subscriptions: set[str] = set()
 
     def __init__(self, address: str, client_id: Optional[str] = None) -> None:
         self.address = address

@@ -1,0 +1,9 @@
+title: applet-example
+executor:
+  name: python_executor
+  entry: main.py
+  function: main
+blocks:
+  - name: one
+    outputs_def:
+      - handle: a

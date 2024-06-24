@@ -15,18 +15,25 @@ logger = logging.getLogger(EXECUTOR_NAME)
 
 
 async def setup(loop):
+
+    import argparse
+    parser = argparse.ArgumentParser(description="run applet with mqtt address and client id")
+    parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
+    parser.add_argument("--client-id", help="mqtt client id")
+    parser.add_argument("--log-dir", help="log dir", default="/ovm/.oomol-studio")
+    args = parser.parse_args()
+
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
-    address = os.environ.get('ADDRESS') if os.environ.get('ADDRESS') else 'mqtt://127.0.0.1:47688'
-    # name = os.environ.get('EXECUTOR') if os.environ.get('EXECUTOR') else 'python_executor'
-    mainframe = Mainframe(address) # type: ignore
+    address: str = args.address
+    log_dir: str = args.log_dir
+
+    mainframe = Mainframe(address, args.client_id)
     mainframe.connect()
 
     # 这个日志，用来告知 bin 模式调用时，连接成功。所以这个格式要主动输出保持不变。
     print(f"connecting to broker {address} success")
-    # 子进程模式启动时，Python 不会立刻输出，我们需要这一行日志的输出，所以主动 flush 一次。
+    # Python 以子进程启动时，输出不会立刻出现。而我们在业务上需要这一行日志，所以主动 flush 一次。
     sys.stdout.flush()
-
-    log_dir: str = os.environ.get('LOG_DIR') if os.environ.get('LOG_DIR') else "/ovm/.oomol-studio" # type: ignore
 
     if os.path.exists(log_dir):
         file_name = log_dir + '/executor/python.log'
@@ -41,6 +48,7 @@ async def setup(loop):
         logger.info("setup basic logging in console")
 
     fs = queue.Queue()
+
     def execute_block(message):
         nonlocal fs
         # 在当前使用的 mqtt 库里，如果在 subscribe 之后，直接 publish 消息，会一直阻塞无法发送成功。
@@ -66,6 +74,29 @@ async def setup(loop):
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/applet", execute_applet_block)
 
+    async def spawn_applet(message: AppletExecutePayload):
+        logger.info(f"create new applet {message.get('dir')}")
+        applet_id = "-".join([message.get("applet_executor").get("name"), message.get("job_id")])
+        appletMap[message.get("dir")] = applet_id
+
+        parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        process = await asyncio.create_subprocess_shell(
+            f"python -m python.applet --address {address} --client-id {applet_id}",
+            cwd=parent_dir
+        )
+
+        mainframe.subscribe(f"executor/applet/{applet_id}/spawn", lambda _: mainframe.publish(f"executor/applet/{applet_id}/config", message))
+
+        # 等待子进程结束
+        await process.wait()
+        appletMap.pop(message.get("dir"))
+        mainframe.unsubscribe(f"executor/applet/{applet_id}/spawn")
+    
+
+    def run_applet_block(message: AppletExecutePayload, applet_id: str):
+        logger.info(f"applet block {message.get('job_id')} start")
+        mainframe.publish(f"executor/applet/{applet_id}/config", message)
+
     while True:
         await asyncio.sleep(1)
         if not fs.empty():
@@ -75,34 +106,12 @@ async def setup(loop):
                 applet_dir = message.get("dir")
                 applet_id = appletMap.get(applet_dir)
                 if applet_id is None:
-                    asyncio.create_task(spawn_applet(message, mainframe, address)) # type: ignore
+                    asyncio.create_task(spawn_applet(message))
                 else:
-                    run_applet_block(message, mainframe, applet_id)
+                    run_applet_block(message, applet_id)
             else:
                 await run_block(message, mainframe)
 
-async def spawn_applet(message: AppletExecutePayload, mainframe: Mainframe, address: str):
-    logger.info(f"create new applet {message.get('dir')}")
-    applet_id = "-".join([message.get("applet_executor").get("name"), message.get("job_id")])
-    appletMap[message.get("dir")] = applet_id
-
-    parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-    process = await asyncio.create_subprocess_shell(
-        f"python -m python.applet --address {address} --client-id {applet_id}",
-        cwd=parent_dir
-    )
-
-    mainframe.subscribe(f"executor/applet/{applet_id}/spawn", lambda _: mainframe.publish(f"executor/applet/{applet_id}/config", message))
-
-    # 等待子进程结束
-    await process.wait()
-    appletMap.pop(message.get("dir"))
-    mainframe.unsubscribe(f"executor/applet/{applet_id}/spawn")
-    
-
-def run_applet_block(message: AppletExecutePayload, mainframe: Mainframe, applet_id: str):
-    logger.info(f"applet block {message.get('job_id')} start")
-    mainframe.publish(f"executor/applet/{applet_id}/config", message)
 
 if __name__ == '__main__':
 

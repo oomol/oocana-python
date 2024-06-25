@@ -6,17 +6,19 @@ from urllib.parse import urlparse
 import uuid
 from .data import BlockDict, JobDict
 import logging
-
-name = "python_executor"
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 class Mainframe:
     address: str
     client: mqtt.Client
+    client_id: str
+    _subscriptions: set[str] = set()
 
-    def __init__(self, address: str) -> None:
+    def __init__(self, address: str, client_id: Optional[str] = None) -> None:
         self.address = address
+        self.client_id = client_id or f"python-executor-{uuid.uuid4().hex[:8]}"
 
     def connect(self):
         connect_address = (
@@ -32,7 +34,7 @@ class Mainframe:
     def _setup_client(self):
         self.client = mqtt.Client(
             callback_api_version=CallbackAPIVersion.VERSION2,
-            client_id=f"python-executor-{uuid.uuid4().hex[:8]}"
+            client_id=self.client_id,
         )
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
@@ -48,8 +50,8 @@ class Mainframe:
         else:
             logger.info("connect to broker success")
 
-        client.subscribe(f"executor/{name}/execute", qos=1)
-        client.subscribe(f"executor/{name}/drop", qos=1)
+        for topic in self._subscriptions:
+            self.client.subscribe(topic, qos=1)
 
     def on_connect_fail(self) -> None:
         logger.error("connect to broker failed")
@@ -89,26 +91,24 @@ class Mainframe:
             if replay is not None:
                 logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
-
-    def subscribe_drop(self, callback):
-        topic = f"executor/{name}/drop"
-
+            
+    def publish(self, topic, payload):
+        self.client.publish(topic, json.dumps(payload), qos=1)
+    
+    def subscribe(self, topic, callback):
         def on_message(_client, _userdata, message):
-            logger.info("drop message: {}".format(message.payload))
+            logger.info("message: {}".format(message.payload))
             payload = json.loads(message.payload)
             callback(payload)
 
         self.client.message_callback_add(topic, on_message)
+        self.client.subscribe(topic, qos=1)
+        self._subscriptions.add(topic)
 
-    def subscribe_execute(self, callback):
-        topic = f"executor/{name}/execute"
-
-        def on_message(_client, _userdata, message):
-            logger.info("execute message: {}".format(message.payload))
-            payload = json.loads(message.payload)
-            callback(payload)
-
-        self.client.message_callback_add(topic, on_message)
+    def unsubscribe(self, topic):
+        self.client.message_callback_remove(topic)
+        self.client.unsubscribe(topic)
+        self._subscriptions.remove(topic)
 
     def loop(self):
         self.client.loop_forever()

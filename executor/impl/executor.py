@@ -70,9 +70,9 @@ async def setup(loop):
             logger.info(f"drop {obj.job_id} {obj.handle}")
             del store[obj]
 
-    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/execute", execute_block)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
-    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/applet", execute_applet_block)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_applet_block", execute_applet_block)
 
     async def spawn_applet(message: AppletExecutePayload):
         logger.info(f"create new applet {message.get('dir')}")

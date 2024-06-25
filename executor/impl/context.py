@@ -1,6 +1,7 @@
 import logging
 import json
 from oocana import Mainframe, Context, can_convert_to_var_handle_def, StoreKey, BlockInfo
+from typing import Any
 
 # TODO: 名字统一从常量 module 中取
 logger = logging.getLogger("EXECUTOR_NAME")

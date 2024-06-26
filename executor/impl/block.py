@@ -111,7 +111,7 @@ async def run_block(message, mainframe: Mainframe):
 
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。
-        index_module = load_module(source, load_dir)
+        index_module = load_module(source, load_dir) # type: ignore
     except Exception:
         traceback_str = traceback.format_exc()
         context.done(traceback_str)
@@ -127,14 +127,28 @@ async def run_block(message, mainframe: Mainframe):
         return
 
     try:
+        signature = inspect.signature(fn)
+        params_count = len(signature.parameters)
         # TODO: 这种重定向 stdout 和 stderr 的方式比较优雅，但是由于仍然是替换的全局 sys.stdout 和 sys.stderr 对象，所以在协程切换时，仍然会有错乱的问题。
         #       目前任务是一个个排队执行，因此暂时不会出现错乱。
         #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
             if inspect.iscoroutinefunction(fn):
-                result = await fn(context.inputs, context)
+                if params_count == 0:
+                    result = await fn()
+                elif params_count == 1:
+                    only_context_param = list(signature.parameters.values())[0].annotation is Context
+                    result = await fn(context) if only_context_param else await fn(context.inputs)
+                else:
+                    result = await fn(context.inputs, context)
             else:
-                result = fn(context.inputs, context)
+                if params_count == 0:
+                    result = fn()
+                elif params_count == 1:
+                    only_context_param = list(signature.parameters.values())[0].annotation is Context
+                    result = fn(context) if only_context_param else fn(context.inputs)
+                else:
+                    result = fn(context.inputs, context)
         output_return_object(result, context)
 
         for line in stdout.getvalue().splitlines():

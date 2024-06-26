@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Executor",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "impl.executor",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/executor",
+            "justMyCode": false
+        },
+        {
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",

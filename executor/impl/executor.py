@@ -81,7 +81,7 @@ async def setup(loop):
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         process = await asyncio.create_subprocess_shell(
-            f"python -m python.applet --address {address} --client-id {applet_id}",
+            f"python -m impl.applet --address {address} --client-id {applet_id}",
             cwd=parent_dir
         )
 

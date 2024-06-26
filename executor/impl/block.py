@@ -52,7 +52,7 @@ def load_module(source: str, source_dir=None):
 
     # 在sys.path中临时添加模块所在目录
     original_sys_path = sys.path.copy()
-    sys.path.append(module_dir)
+    sys.path.insert(0, module_dir)
 
     try:
         # 加载模块
@@ -66,6 +66,7 @@ def load_module(source: str, source_dir=None):
         return module
     finally:
         # 恢复原始的sys.path
+        sys.modules.pop(module_name, None)
         sys.path = original_sys_path
 
 

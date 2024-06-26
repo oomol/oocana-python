@@ -37,14 +37,17 @@ class ExecutePayload:
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
-def load_module(source, source_dir=None):
+def load_module(source: str, source_dir=None):
+
+
     if (os.path.isabs(source)):
         source_abs_path = source
     else:
         dirname = source_dir if source_dir else os.getcwd()
         source_abs_path = os.path.join(dirname, source)
 
-    module_name = os.path.basename(source_abs_path).replace('.py', '')
+    is_directory_module = os.path.isdir(source) or source.endswith('__init__.py')
+    module_name = os.path.basename(source_abs_path).replace('.py', '') if not is_directory_module else os.path.basename(os.path.dirname(source_abs_path))
     module_dir = os.path.dirname(source_abs_path)
 
     # 在sys.path中临时添加模块所在目录
@@ -55,6 +58,10 @@ def load_module(source, source_dir=None):
         # 加载模块
         file_spec = importlib.util.spec_from_file_location(module_name, source_abs_path)
         module = importlib.util.module_from_spec(file_spec)  # type: ignore
+
+        if is_directory_module:
+            sys.modules[module_name] = module
+
         file_spec.loader.exec_module(module)  # type: ignore
         return module
     finally:

@@ -37,7 +37,6 @@ class ExecutePayload:
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
-
 def load_module(source, source_dir=None):
     if (os.path.isabs(source)):
         source_abs_path = source
@@ -46,13 +45,21 @@ def load_module(source, source_dir=None):
         source_abs_path = os.path.join(dirname, source)
 
     module_name = os.path.basename(source_abs_path).replace('.py', '')
-    sys.path.append(os.path.dirname(source_abs_path))
-    file_spec = importlib.util.spec_from_file_location(module_name, source_abs_path)
-    module = importlib.util.module_from_spec(file_spec) # type: ignore
-    file_spec.loader.exec_module(module) # type: ignore
-    return module
+    module_dir = os.path.dirname(source_abs_path)
 
+    # 在sys.path中临时添加模块所在目录
+    original_sys_path = sys.path.copy()
+    sys.path.append(module_dir)
 
+    try:
+        # 加载模块
+        file_spec = importlib.util.spec_from_file_location(module_name, source_abs_path)
+        module = importlib.util.module_from_spec(file_spec)  # type: ignore
+        file_spec.loader.exec_module(module)  # type: ignore
+        return module
+    finally:
+        # 恢复原始的sys.path
+        sys.path = original_sys_path
 
 
 def output_return_object(obj, context: Context):

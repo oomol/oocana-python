@@ -93,6 +93,6 @@ if __name__ == "__main__":
     parser.add_argument("--client-id", help="mqtt client id")
     args = parser.parse_args()
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.run_until_complete(start_applet(loop, args.address, args.client_id))
     loop.run_forever()

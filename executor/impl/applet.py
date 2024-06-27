@@ -70,12 +70,22 @@ class AppletRuntime:
             result = handler(block_name, context.inputs, context)
         else:
             raise Exception("blockHandler must be a dict or a callable")
-
         output_return_object(result, context)
+
+def run_async_code(async_func):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(async_func)
+    loop.run_forever()
 
 def config_callback(payload: Any, mainframe: Mainframe, client_id: str):
     applet = AppletRuntime(payload, mainframe, client_id)
-    asyncio.run(applet.run())
+
+    async def run():
+        await applet.run()
+
+    import threading
+    threading.Thread(target=run_async_code, args=(run(),)).start()
 
 
 async def start_applet(loop, address, client_id):
@@ -83,6 +93,7 @@ async def start_applet(loop, address, client_id):
     mainframe.connect()
 
     mainframe.subscribe(f"executor/applet/{client_id}/config", lambda payload: config_callback(payload, mainframe, client_id))
+    await asyncio.sleep(1)
     mainframe.publish(f"executor/applet/{client_id}/spawn", {})
 
 

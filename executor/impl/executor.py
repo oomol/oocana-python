@@ -87,8 +87,10 @@ async def setup(loop):
 
         mainframe.subscribe(f"executor/applet/{applet_id}/spawn", lambda _: mainframe.publish(f"executor/applet/{applet_id}/config", message))
 
+
         # 等待子进程结束
         await process.wait()
+        logger.info(f"applet {applet_id} exit")
         appletMap.pop(message.get("dir"))
         mainframe.unsubscribe(f"executor/applet/{applet_id}/spawn")
     

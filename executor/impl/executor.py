@@ -20,7 +20,7 @@ async def setup(loop):
     parser = argparse.ArgumentParser(description="run applet with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--client-id", help="mqtt client id")
-    parser.add_argument("--log-dir", help="log dir", default=f"{os.path.expanduser("~")}/.oomol-studio/logs")
+    parser.add_argument("--log-dir", help="log dir", default=f"{os.path.expanduser("~")}/.oomol-studio")
     args = parser.parse_args()
 
     # 考虑启动方式，以及获取地址以及执行器名称，or default value

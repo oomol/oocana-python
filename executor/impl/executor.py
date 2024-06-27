@@ -76,7 +76,7 @@ async def setup(loop):
 
     async def spawn_applet(message: AppletExecutePayload):
         logger.info(f"create new applet {message.get('dir')}")
-        applet_id = "-".join([message.get("applet_executor").get("name"), message.get("job_id")])
+        applet_id = "-".join(["applet", message.get("job_id")])
         appletMap[message.get("dir")] = applet_id
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))

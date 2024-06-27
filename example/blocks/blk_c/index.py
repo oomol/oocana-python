@@ -9,4 +9,3 @@ def main(props, context: Context):
     print("obj", obj)
     context.output(obj, "my_output")
     context.output("321321", "my_output1")
-    context.done()

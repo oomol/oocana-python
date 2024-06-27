@@ -51,6 +51,7 @@ class Mainframe:
             logger.info("connect to broker success")
 
         for topic in self._subscriptions:
+            logger.info("resubscribe to topic: {}".format(topic))
             self.client.subscribe(topic, qos=1)
 
     def on_connect_fail(self) -> None:
@@ -102,8 +103,14 @@ class Mainframe:
             callback(payload)
 
         self.client.message_callback_add(topic, on_message)
-        self.client.subscribe(topic, qos=1)
         self._subscriptions.add(topic)
+
+        if self.client.is_connected():
+            self.client.subscribe(topic, qos=1)
+            logger.info("subscribe to topic: {}".format(topic))
+        else:
+            logger.info("wait connected to subscribe to topic: {}".format(topic))
+
 
     def unsubscribe(self, topic):
         self.client.message_callback_remove(topic)

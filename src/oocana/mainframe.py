@@ -98,7 +98,7 @@ class Mainframe:
     
     def subscribe(self, topic, callback):
         def on_message(_client, _userdata, message):
-            logger.info("message: {}".format(message.payload))
+            logger.info("receive topic: {} payload: {}".format(topic, message.payload))
             payload = json.loads(message.payload)
             callback(payload)
 

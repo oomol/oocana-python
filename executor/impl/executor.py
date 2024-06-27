@@ -41,8 +41,8 @@ async def setup(loop):
             os.makedirs(os.path.dirname(file_name), exist_ok=True)
             open(file_name, 'w').close()
 
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename=log_dir + '/executor/python.log')
-        logger.info("setup basic logging in file ~/.oomol-studio/executor/python.log")
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename=file_name)
+        logger.info(f"setup basic logging in file {file_name}")
     else:
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
         logger.info("setup basic logging in console")

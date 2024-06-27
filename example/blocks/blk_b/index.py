@@ -9,4 +9,4 @@ def main(props, context: Context):
         else:
             print("my_input is not a object", i)
 
-    context.output(11, "my_output", True)
+    context.output(11, "my_output")

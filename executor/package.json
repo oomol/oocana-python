@@ -1,6 +1,6 @@
 {
   "name": "@oomol/python-executor",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "files": [
     "impl/*.py",
     "bin/*"

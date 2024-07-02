@@ -69,7 +69,7 @@ class AppletRuntime:
             handler = self.block_handler
             result = handler(block_name, context.inputs, context)
         else:
-            raise Exception("blockHandler must be a dict or a callable")
+            raise Exception("blockHandler must be a dict or a callable function")
         output_return_object(result, context)
 
 def run_async_code(async_func):

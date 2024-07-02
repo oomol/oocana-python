@@ -1,28 +1,18 @@
-from typing import Callable, Any, TypedDict, Optional
+from typing import Literal, Callable, Any, TypedDict, Optional, TypeAlias
 from .context import Context
-from enum import Enum
 from .data import JobDict, HandleDict
-
-class AppletStopOption(Enum):
-    BLOCK = "block_end"
-    SESSION = "session_end"
-    App = "app_end"
-    Never = "never"
-
-class AppletStartOption(Enum):
-    BLOCK = "block_start"
-    SESSION = "session_start"
-    App = "app_start"
 
 class AppletContext(TypedDict):
     block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
+
+StopAtOption: TypeAlias = Optional[Literal["block_end", "session_end", "app_end", "never"]]
 
 class AppletExecutor(TypedDict):
     name: str
     entry: str
     function: str
-    start_at: Optional[AppletStartOption]
-    stop_at: Optional[AppletStopOption]
+    start_at: Optional[Literal["block_start", "session_start", "app_start"]]
+    stop_at: StopAtOption
     keep_alive: Optional[int]
 
 class AppletExecutePayload(JobDict):

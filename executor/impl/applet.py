@@ -1,27 +1,13 @@
 from typing import Callable, Any
-from oocana import Context, AppletExecutePayload, Mainframe
+from oocana import Context, AppletExecutePayload, Mainframe, StopAtOption
 from .block import output_return_object, load_module
 from .context import createContext
-import threading
-import time
+from threading import Timer
 import inspect
 import asyncio
-class Timer(threading.Thread):
-    def __init__(self, interval, function):
-        super().__init__()
-        self.interval = interval
-        self.function = function
-        self.cancelled = threading.Event()
 
-    def run(self):
-        time.sleep(self.interval)
-        if not self.cancelled.is_set():
-            self.function()
+DEFAULT_BLOCK_ALIVE_TIME = 10
 
-    def cancel(self):
-        self.cancelled.set()
-
-# TODO: 生命周期管理
 class AppletRuntime:
 
     block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any] = dict()
@@ -30,13 +16,32 @@ class AppletRuntime:
     _mainframe: Mainframe
     _applet_id: str
     _timer: Timer | None = None
+    _stop_at: StopAtOption
+    _keep_alive: int | None = None
 
-    def __init__(self, config: AppletExecutePayload,mainframe: Mainframe, applet_id: str):
+    # TODO: 需要考虑多线程问题
+    _runningBlocks = dict()
+
+    def __init__(self, config: AppletExecutePayload, mainframe: Mainframe, applet_id: str):
         self._config = config
         self._mainframe = mainframe
         self._applet_id = applet_id
+        self._stop_at = config["applet_executor"]["stop_at"]
+        self._keep_alive = config["applet_executor"]["keep_alive"]
 
         mainframe.subscribe(f"executor/applet/{applet_id}/execute", self.run_block)
+
+    def _setup_timer(self):
+        if self._stop_at is None:
+            return
+        elif self._stop_at == "session_end":
+            self._mainframe.subscribe(f"executor/session/{self._config['session_id']}", lambda payload: self.exit() if payload["type"] == "SessionFinished" else None)
+        elif self._stop_at == "app_end":
+            # TODO: app_end 有 executor 来中止？
+            pass
+        elif self._stop_at == "block_end":
+            # 在 run block 实现
+            pass
 
     def __setitem__(self, key, value):
         if key == "block_handler":
@@ -54,9 +59,25 @@ class AppletRuntime:
         else:
             fn(self)
         await self.run_block(self._config)
+    
+    def exit(self):
+        self._mainframe.publish(f"executor/applet/{self._applet_id}/exit", {})
+        self._mainframe.disconnect()
+        exit(0)
 
     async def run_block(self, payload: AppletExecutePayload):
         block_name = payload["block_name"]
+
+        if self._timer is not None:
+            self._timer.cancel()
+            self._timer = None
+
+        count = self._runningBlocks[block_name]
+        if count is None:
+            count = 1
+        else:
+            count += 1
+        self._runningBlocks[block_name] = count
 
         context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"])
 
@@ -69,8 +90,19 @@ class AppletRuntime:
             handler = self.block_handler
             result = handler(block_name, context.inputs, context)
         else:
-            raise Exception("blockHandler must be a dict or a callable")
+            raise Exception("blockHandler must be a dict or a callable function")
         output_return_object(result, context)
+
+        count = self._runningBlocks[block_name]
+        count -= 1
+        if count == 0:
+            del self._runningBlocks[block_name]
+        else:
+            self._runningBlocks[block_name] = count
+
+        if self._stop_at == "block_end" and len(self._runningBlocks) == 0:
+            self._timer = Timer(self._keep_alive or DEFAULT_BLOCK_ALIVE_TIME, self.exit)
+            self._timer.start()
 
 def run_async_code(async_func):
     loop = asyncio.new_event_loop()

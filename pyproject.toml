@@ -17,7 +17,7 @@ distribution = true
 [tool.pdm.scripts]
 publish_oocana = { shell = "./scripts/publish_oocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
-check = { shell = "pdm run pyright ./src ./executor" }
+check = { shell = "pdm run pyright ./oocana ./executor" }
 
 [tool.pdm.dev-dependencies]
 dev = [

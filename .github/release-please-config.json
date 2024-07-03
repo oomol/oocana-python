@@ -1,0 +1,21 @@
+{
+  "bootstrap-sha": "0d96d87f567e834e14b02484bbba677f7380c956",
+  "packages": {
+    "executor": {
+      "include-v-in-tag": false,
+      "tag-separator": "@",
+      "component": "@oomol/python-executor"
+    },
+    "oocana": {
+      "include-v-in-tag": false,
+      "tag-separator": "@",
+      "component": "@oomol/python-sdk"
+    }
+  },
+  "bump-minor-pre-major": false,
+  "bump-patch-for-minor-pre-major": false,
+  "draft": false,
+  "prerelease": false,
+  "release-type": "python",
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}

@@ -2,7 +2,7 @@
   "name": "@oomol/python-executor",
   "version": "0.5.10",
   "files": [
-    "impl/*.py",
+    "python_executor/*.py",
     "bin/*"
   ],
   "bin": {

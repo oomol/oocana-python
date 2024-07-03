@@ -1,0 +1,12 @@
+[project]
+name = "oocana"
+version = "0.8.0"
+description = "python implement of oocana to give a context for oocana block"
+dependencies = ["paho-mqtt>=2"]
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+

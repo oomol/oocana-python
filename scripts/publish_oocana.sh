@@ -1,8 +1,7 @@
 #/bin/sh -e
 
-rm -rf ./dist
-pdm build
-mkdir -p dist/oocana-sdk-python/dist
-node scripts/make_npm_package.js
-cd dist/oocana-sdk-python
-npm publish
+(cd oocana && pdm build)
+mkdir -p oocana/dist/npm_package/dist
+node scripts/make_oocana_npm_package.js
+cd oocana/dist/npm_package
+# npm publish

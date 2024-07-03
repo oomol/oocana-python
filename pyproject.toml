@@ -14,6 +14,7 @@ readme = "README.md"
 
 [tool.pdm]
 distribution = true
+
 [tool.pdm.scripts]
 publish_oocana = { shell = "./scripts/publish_oocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }

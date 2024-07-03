@@ -12,4 +12,4 @@ fi
 
 cd $DIR/..
 
-python -u -m impl.executor "$@"
+python -u -m python_executor.executor "$@"

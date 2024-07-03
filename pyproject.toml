@@ -7,10 +7,7 @@ authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},
     {name = "yleaf", email = "11785335+leavesster@users.noreply.github.com"},
 ]
-dependencies = [
-    "paho-mqtt>=2",
-    "pyright>=1.1.362",
-]
+
 requires-python = ">=3.9"
 license = {text = "MIT"}
 readme = "README.md"
@@ -24,11 +21,10 @@ check = { shell = "pdm run pyright ./src ./executor" }
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "amqtt>=0.11.0b1",
-    "setuptools>=68.0.0",
+    "-e oocana @ file:///${PROJECT_ROOT}/oocana",
+    "-e python-executor @ file:///${PROJECT_ROOT}/executor",
+    "pyright>=1.1.362",
 ]
-[tool.setuptools.packages.find]
-where = ["src"]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"

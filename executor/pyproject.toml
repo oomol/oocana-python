@@ -1,0 +1,15 @@
+[project]
+name = "python-executor"
+version = "0.3.0"
+authors = [
+    {name = "l1shen", email = "lishen1635@gmail.com"},
+    {name = "yleaf", email = "11785335+leavesster@users.noreply.github.com"},
+]
+description = "a client subscribe mqtt topic to execute oocana's block"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+dependencies = ["oocana"]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

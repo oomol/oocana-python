@@ -4,14 +4,23 @@ on:
   push:
     tags:
       - "**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   publish-executor:
     if: startsWith(github.ref, 'refs/tags/@oomol/python-executor')
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: setup pdm
+        uses: pdm-project/setup-pdm@v4
+        with:
+          cache: true
       - name: install dependencies
         run: pdm install
-      - uses: actions/checkout@v4
       - name: setup node
         uses: actions/setup-node@v4
         with:
@@ -23,8 +32,13 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-sdk:
     if: startsWith(github.ref, 'refs/tags/@oomol/python-sdk')
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: setup pdm
+        uses: pdm-project/setup-pdm@v4
+        with:
+          cache: true
       - name: install dependencies
         run: pdm install
       - name: setup node

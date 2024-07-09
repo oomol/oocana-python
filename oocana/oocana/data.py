@@ -13,7 +13,7 @@ class BlockDict(TypedDict):
 
 media_type: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
 class JsonSchemaDict(TypedDict):
-    ContentMediaType: media_type
+    contentMediaType: media_type
 
 class HandleDict(TypedDict):
     handle: str
@@ -38,10 +38,10 @@ def check_handle_type(obj, type: media_type) -> bool:
     if obj.get("json_schema") is None or isinstance(obj.get("json_schema"), dict) is False:
         return False
 
-    if obj.get("json_schema").get("ContentMediaType") is None:
+    if obj.get("json_schema").get("contentMediaType") is None:
         return False
     
-    return obj.get("json_schema").get("ContentMediaType") == type
+    return obj.get("json_schema").get("contentMediaType") == type
 
 # 默认的 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。
 # 这里在使用 frozen 固化数据的同时，做了多余字段的忽略处理。如果不 frozen 的话，不需要使用 object.__setattr__ 这种方式来赋值，这种方式会有一点性能开销。

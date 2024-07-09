@@ -1,10 +1,8 @@
 {
   "name": "@oomol/python-sdk",
-  "version": "0.9.0",
+  "version": "",
   "main": "",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": "oomol/oocana-python",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

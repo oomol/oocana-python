@@ -1,6 +1,6 @@
 import logging
 import json
-from oocana import Mainframe, Context, can_convert_to_var_handle_def, StoreKey, BlockInfo
+from oocana import Mainframe, Context, is_var_handle, is_secret_handle, StoreKey, BlockInfo
 from typing import Any
 
 # TODO: 名字统一从常量 module 中取
@@ -27,7 +27,7 @@ def createContext(
 
     if inputs_def is not None and inputs is not None:
         for k, v in inputs_def.items():
-            if can_convert_to_var_handle_def(v):
+            if is_var_handle(v):
                 try:
                     ref = StoreKey(**inputs[k])
                 except:  # noqa: E722
@@ -36,7 +36,7 @@ def createContext(
 
                 value = store.get(ref)
                 inputs[k] = value
-            elif is_secret(v):
+            elif is_secret_handle(v):
                 inputs[k] = replace_secret(inputs[k], secretJson)
 
     elif inputs is None:
@@ -45,23 +45,6 @@ def createContext(
     blockInfo = BlockInfo(**node_props)
 
     return Context(inputs, blockInfo, mainframe, store, output)
-
-def is_secret(value: dict):
-    if not isinstance(value, dict):
-        return False
-    
-    serialize = value.get("serialize")
-    if serialize is None or isinstance(serialize, dict) is False:
-        return False
-
-    if serialize.get("serializer") != "json":
-        return False
-    
-    json_schema = serialize.get("json_schema")
-    if json_schema is None or isinstance(json_schema, dict) is False:
-        return False
-    
-    return json_schema.get("ui:widget") == "secret"
 
 def replace_secret(path: str, secretJson: dict | None) -> str:
     if secretJson is None:

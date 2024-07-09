@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.2"
-content_hash = "sha256:b64e4ac1021bf2290166d62ad46982e2289beedecca9cdc55863990faa08e7da"
+content_hash = "sha256:9ad19c13f5f232d747d80f38abd344e862997ef9c2d45b74b2ac0c972bb5a3f7"
 
 [[package]]
 name = "nodeenv"
@@ -20,7 +20,7 @@ files = [
 
 [[package]]
 name = "oocana"
-version = "0.6.0"
+version = "0.8.0"
 requires_python = ">=3.9"
 editable = true
 path = "./oocana"
@@ -43,7 +43,7 @@ files = [
 
 [[package]]
 name = "pyright"
-version = "1.1.369"
+version = "1.1.370"
 requires_python = ">=3.7"
 summary = "Command line wrapper for pyright"
 groups = ["dev"]
@@ -51,8 +51,8 @@ dependencies = [
     "nodeenv>=1.6.0",
 ]
 files = [
-    {file = "pyright-1.1.369-py3-none-any.whl", hash = "sha256:06d5167a8d7be62523ced0265c5d2f1e022e110caf57a25d92f50fb2d07bcda0"},
-    {file = "pyright-1.1.369.tar.gz", hash = "sha256:ad290710072d021e213b98cc7a2f90ae3a48609ef5b978f749346d1a47eb9af8"},
+    {file = "pyright-1.1.370-py3-none-any.whl", hash = "sha256:fc721601e480a69989775bfc210534a6ca0110ebd0c065244a8d3a151294fc61"},
+    {file = "pyright-1.1.370.tar.gz", hash = "sha256:d0d559d506fc41e3297f721aaa05a1b9f06beda5acc9ac64ca371ce94c28f960"},
 ]
 
 [[package]]

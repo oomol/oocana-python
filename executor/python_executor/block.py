@@ -80,7 +80,7 @@ def output_return_object(obj, context: Context):
             context.output(v, k)
         context.done()
     else:
-        context.done("return value needs to be a dict")
+        context.done(f"return object needs to be a dictionary, but get type: {type(obj)}")
 
 logger = logging.getLogger("EXECUTOR_NAME")
 

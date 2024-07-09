@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.9.1...@oomol/python-sdk@0.9.2) (2024-07-09)
+
+
+### Bug Fixes
+
+* oocana publish script ([#86](https://github.com/oomol/oocana-python/issues/86)) ([1a97fec](https://github.com/oomol/oocana-python/commit/1a97fec4decc8102dc1a8c5ea887043612857ace))
+
 ## [0.9.1](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.9.0...@oomol/python-sdk@0.9.1) (2024-07-09)
 
 

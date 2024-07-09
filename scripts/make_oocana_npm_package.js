@@ -12,6 +12,11 @@ const npmDir = path.join(oocanaPath, "dist", "npm_package");
 execSync(`cp ${path.join(buildPath, whlFileName)} ${path.join(npmDir, "dist", whlFileName)}`)
 
 const packageMeta = JSON.parse(fs.readFileSync(path.join(oocanaPath, "package.json"), "utf-8"))
+
+const getVersion = () => {
+    return execSync(`pdm run read_version.py ../oocana`, { cwd: __dirname }).toString().trim();
+}
+
 packageMeta.version = getVersion();
 
 fs.writeFileSync(path.join(npmDir, "package.json"), JSON.stringify(packageMeta, null, 2));

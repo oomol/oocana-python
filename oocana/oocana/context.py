@@ -1,7 +1,7 @@
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .data import HandleDict
-from .data import can_convert_to_var_handle_def
+from .data import is_var_handle
 from .mainframe import Mainframe
 from typing import Dict, Any
 
@@ -68,7 +68,7 @@ class Context:
         if self.__outputs is not None:
             output_def = self.__outputs.get(handle)
             if (
-                output_def is not None and can_convert_to_var_handle_def(output_def)
+                output_def is not None and is_var_handle(output_def)
             ):
                 ref = self.__store_ref(handle)
                 self.__store[ref] = output

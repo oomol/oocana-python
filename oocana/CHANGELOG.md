@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.3](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.9.2...@oomol/python-sdk@0.9.3) (2024-07-09)
+
+
+### Bug Fixes
+
+* camelCase ([#89](https://github.com/oomol/oocana-python/issues/89)) ([38f2815](https://github.com/oomol/oocana-python/commit/38f2815e7a4f3fb7dc7ec510c9d9901dc2eab293))
+
 ## [0.9.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.9.1...@oomol/python-sdk@0.9.2) (2024-07-09)
 
 

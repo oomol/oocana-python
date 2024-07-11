@@ -20,7 +20,7 @@ class AppletRuntime:
     _keep_alive: int | None = None
 
     # TODO: 需要考虑多线程问题
-    _runningBlocks = dict()
+    _runningBlocks = set()
 
     def __init__(self, config: AppletExecutePayload, mainframe: Mainframe, applet_id: str):
         self._config = config
@@ -67,17 +67,13 @@ class AppletRuntime:
 
     async def run_block(self, payload: AppletExecutePayload):
         block_name = payload["block_name"]
+        job_id = payload["job_id"]
 
         if self._timer is not None:
             self._timer.cancel()
             self._timer = None
 
-        count = self._runningBlocks[block_name]
-        if count is None:
-            count = 1
-        else:
-            count += 1
-        self._runningBlocks[block_name] = count
+        self._runningBlocks.add(job_id)
 
         context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"])
 
@@ -93,12 +89,7 @@ class AppletRuntime:
             raise Exception("blockHandler must be a dict or a callable function")
         output_return_object(result, context)
 
-        count = self._runningBlocks[block_name]
-        count -= 1
-        if count == 0:
-            del self._runningBlocks[block_name]
-        else:
-            self._runningBlocks[block_name] = count
+        self._runningBlocks.remove(job_id)
 
         if self._stop_at == "block_end" and len(self._runningBlocks) == 0:
             self._timer = Timer(self._keep_alive or DEFAULT_BLOCK_ALIVE_TIME, self.exit)

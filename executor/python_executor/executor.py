@@ -114,8 +114,21 @@ async def setup(loop):
                 else:
                     run_service_block(message, service_id)
             else:
-                await run_block(message, mainframe)
+                run_in_background(message, mainframe)
 
+def run_async_code(async_func):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(async_func)
+    loop.run_forever()
+
+# 先凑合用线程跑，后续再考虑优化
+def run_in_background(message, mainframe: Mainframe):
+
+    async def run():
+        await run_block(message, mainframe)
+    import threading
+    threading.Thread(target=run_async_code, args=(run(),)).start()
 
 if __name__ == '__main__':
 

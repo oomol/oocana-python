@@ -1,4 +1,4 @@
-title: applet-example
+title: service-example
 executor:
   name: python_executor
   entry: main.py

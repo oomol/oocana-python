@@ -1,12 +1,12 @@
-from oocana import AppletContext, Context
+from oocana import ServiceContext, Context
 
-def main(applet_context: AppletContext):
+def main(service_context: ServiceContext):
     def one(payload, context: Context):
         context.send_message("block one is running")
         return {
             "a": "a",
         }
         
-    applet_context['block_handler'] = {
+    service_context['block_handler'] = {
         "one": one
     }

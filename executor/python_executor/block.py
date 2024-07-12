@@ -46,6 +46,8 @@ def load_module(source: str, source_dir=None):
         dirname = source_dir if source_dir else os.getcwd()
         source_abs_path = os.path.join(dirname, source)
 
+    original_keys = set(sys.modules.keys())
+
     is_directory_module = os.path.isdir(source) or source.endswith('__init__.py')
     module_name = os.path.basename(source_abs_path).replace('.py', '') if not is_directory_module else os.path.basename(os.path.dirname(source_abs_path))
     module_dir = os.path.dirname(source_abs_path)
@@ -65,8 +67,9 @@ def load_module(source: str, source_dir=None):
         file_spec.loader.exec_module(module)  # type: ignore
         return module
     finally:
-        # 恢复原始的sys.path
-        sys.modules.pop(module_name, None)
+        delete = set(sys.modules.keys()) - original_keys
+        for key in delete:
+            del sys.modules[key]
         sys.path = original_sys_path
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.9.3...@oomol/python-sdk@0.10.0) (2024-07-12)
+
+
+### Features
+
+* use service instead of applet ([#94](https://github.com/oomol/oocana-python/issues/94)) ([66bb1d0](https://github.com/oomol/oocana-python/commit/66bb1d01b64295a98ac4b9a56aa76f3cba91c908))
+
 ## [0.9.3](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.9.2...@oomol/python-sdk@0.9.3) (2024-07-09)
 
 

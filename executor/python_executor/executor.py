@@ -6,8 +6,8 @@ import queue
 import sys
 import logging
 
-from oocana import Mainframe, StoreKey, AppletExecutePayload
-from .data import store, appletMap
+from oocana import Mainframe, StoreKey, ServiceExecutePayload
+from .data import store, serviceMap
 from .block import run_block
 
 EXECUTOR_NAME = "python_executor"
@@ -17,7 +17,7 @@ logger = logging.getLogger(EXECUTOR_NAME)
 async def setup(loop):
 
     import argparse
-    parser = argparse.ArgumentParser(description="run applet with mqtt address and client id")
+    parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--client-id", help="mqtt client id")
 
@@ -59,7 +59,7 @@ async def setup(loop):
         fs.put(f)
         f.set_result(message)
     
-    def execute_applet_block(message):
+    def execute_service_block(message):
         nonlocal fs
         f = loop.create_future()
         fs.put(f)
@@ -74,45 +74,45 @@ async def setup(loop):
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
-    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_applet_block", execute_applet_block)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
 
-    async def spawn_applet(message: AppletExecutePayload):
-        logger.info(f"create new applet {message.get('dir')}")
-        applet_id = "-".join(["applet", message.get("job_id")])
-        appletMap[message.get("dir")] = applet_id
+    async def spawn_service(message: ServiceExecutePayload):
+        logger.info(f"create new service {message.get('dir')}")
+        service_id = "-".join(["service", message.get("job_id")])
+        serviceMap[message.get("dir")] = service_id
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         process = await asyncio.create_subprocess_shell(
-            f"python -u -m impl.applet --address {address} --client-id {applet_id} | tee /tmp/1.log",
+            f"python -u -m impl.service --address {address} --client-id {service_id} | tee /tmp/1.log",
             cwd=parent_dir
         )
 
-        mainframe.subscribe(f"executor/applet/{applet_id}/spawn", lambda _: mainframe.publish(f"executor/applet/{applet_id}/config", message))
+        mainframe.subscribe(f"executor/service/{service_id}/spawn", lambda _: mainframe.publish(f"executor/service/{service_id}/config", message))
 
 
         # 等待子进程结束
         await process.wait()
-        logger.info(f"applet {applet_id} exit")
-        appletMap.pop(message.get("dir"))
-        mainframe.unsubscribe(f"executor/applet/{applet_id}/spawn")
+        logger.info(f"service {service_id} exit")
+        serviceMap.pop(message.get("dir"))
+        mainframe.unsubscribe(f"executor/service/{service_id}/spawn")
     
 
-    def run_applet_block(message: AppletExecutePayload, applet_id: str):
-        logger.info(f"applet block {message.get('job_id')} start")
-        mainframe.publish(f"executor/applet/{applet_id}/config", message)
+    def run_service_block(message: ServiceExecutePayload, service_id: str):
+        logger.info(f"service block {message.get('job_id')} start")
+        mainframe.publish(f"executor/service/{service_id}/config", message)
 
     while True:
         await asyncio.sleep(1)
         if not fs.empty():
             f = fs.get()
             message = await f
-            if message.get("applet_executor") is not None:
-                applet_dir = message.get("dir")
-                applet_id = appletMap.get(applet_dir)
-                if applet_id is None:
-                    asyncio.create_task(spawn_applet(message))
+            if message.get("service_executor") is not None:
+                service_dir = message.get("dir")
+                service_id = serviceMap.get(service_dir)
+                if service_id is None:
+                    asyncio.create_task(spawn_service(message))
                 else:
-                    run_applet_block(message, applet_id)
+                    run_service_block(message, service_id)
             else:
                 await run_block(message, mainframe)
 

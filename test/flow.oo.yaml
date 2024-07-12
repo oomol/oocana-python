@@ -1,7 +1,7 @@
 name: flow-1
 nodes:
   # - node_id: block-a
-  #   applet: app::app_a::one
+  #   service: app::app_a::one
   - node_id: block-a
     task: ./blocks/blk_a
   - node_id: block-b

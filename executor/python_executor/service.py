@@ -19,7 +19,6 @@ class ServiceRuntime:
     _stop_at: StopAtOption
     _keep_alive: int | None = None
 
-    # TODO: 需要考虑多线程问题
     _runningBlocks = set()
 
     def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_id: str):

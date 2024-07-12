@@ -26,8 +26,8 @@ class ServiceRuntime:
         self._config = config
         self._mainframe = mainframe
         self._service_id = service_id
-        self._stop_at = config["service_executor"]["stop_at"]
-        self._keep_alive = config["service_executor"]["keep_alive"]
+        self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
+        self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
 
         mainframe.subscribe(f"executor/service/{service_id}/execute", self.run_block)
 
@@ -48,12 +48,12 @@ class ServiceRuntime:
             self.block_handler = value
 
     async def run(self):
-        service_config = self._config["service_executor"]
-        m = load_module(service_config["entry"], self._config["dir"])
-        fn = m.__dict__.get(service_config["function"])
+        service_config = self._config.get("service_executor")
+        m = load_module(service_config.get("entry"), self._config.get("dir"))
+        fn = m.__dict__.get(service_config.get("function"))
         # TODO: 从 entry 附近查找到当前 Service 依赖的 module
         if not callable(fn):
-            raise Exception(f"function {service_config['function']} not found in {service_config['entry']}")
+            raise Exception(f"function {service_config.get('function')} not found in {service_config.get("entry")}")
         if inspect.iscoroutinefunction(fn):
             await fn(self)
         else:

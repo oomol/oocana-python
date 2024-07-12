@@ -8,7 +8,7 @@
             "name": "Debug Executor",
             "type": "debugpy",
             "request": "launch",
-            "module": "impl.executor",
+            "module": "python_executor.executor",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/executor",
             "justMyCode": false

@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Callable, Any, TypedDict
 from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption
 from .block import output_return_object, load_module
 from .context import createContext
@@ -7,6 +7,13 @@ import inspect
 import asyncio
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
+
+class ServiceMessage(TypedDict):
+    job_id: str
+    node_id: str
+    flow_path: str
+    payload: Any
+
 
 class ServiceRuntime:
 
@@ -20,6 +27,7 @@ class ServiceRuntime:
     _keep_alive: int | None = None
 
     _runningBlocks = set()
+    _jobs = set()
 
     def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_id: str):
         self._config = config
@@ -45,6 +53,12 @@ class ServiceRuntime:
     def __setitem__(self, key, value):
         if key == "block_handler":
             self.block_handler = value
+
+    def add_message_callback(self, callback: Callable[[ServiceMessage], Any]):
+        def filter(payload):
+            if payload.get("job_id") in self._jobs:
+                callback(payload)
+        self._mainframe.subscribe(f"service/{self._service_id}", filter)
 
     async def run(self):
         service_config = self._config.get("service_executor")
@@ -73,6 +87,7 @@ class ServiceRuntime:
             self._timer = None
 
         self._runningBlocks.add(job_id)
+        self._jobs.add(job_id)
 
         context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"])
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.8.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.7.0...@oomol/python-executor@0.8.0) (2024-07-12)
+
+
+### Features
+
+* accept service message ([#96](https://github.com/oomol/oocana-python/issues/96)) ([7c626d9](https://github.com/oomol/oocana-python/commit/7c626d912e096cedaaa3b49176607d039d021e7d))
+* use service instead of applet ([#94](https://github.com/oomol/oocana-python/issues/94)) ([66bb1d0](https://github.com/oomol/oocana-python/commit/66bb1d01b64295a98ac4b9a56aa76f3cba91c908))
+
+
+### Bug Fixes
+
+* remove added sys module after return module ([f840805](https://github.com/oomol/oocana-python/commit/f8408053685a9f1aeb161be40bbd08bd09d7c090))
+* support run block in background ([fdd191e](https://github.com/oomol/oocana-python/commit/fdd191eda7038e4b24659c6a24891f490ab912f1))
+* use set store different job id to keep thread safe ([#92](https://github.com/oomol/oocana-python/issues/92)) ([5ca8448](https://github.com/oomol/oocana-python/commit/5ca8448b785d7fdacc8576e96bb75956e577ae53))
+* wrong executor module name ([#95](https://github.com/oomol/oocana-python/issues/95)) ([52e424d](https://github.com/oomol/oocana-python/commit/52e424d8e08aa7137c70c014237c651548e075f8))
+
 ## [0.7.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.6.1...@oomol/python-executor@0.7.0) (2024-07-09)
 
 

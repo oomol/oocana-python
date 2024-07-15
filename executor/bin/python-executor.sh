@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+# set -x
 
 # pnpm 的 bin 是 pnpm 额外创建一个 shell，有那个文件通过 shell 调用当前文件。
 # npm 的 bin 则是软链接到当前文件。

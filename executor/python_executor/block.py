@@ -39,6 +39,9 @@ class ExecutePayload:
 
 def load_module(file_path: str, module_name: str, source_dir=None):
 
+    if module_name in sys.modules:
+        return sys.modules[module_name]
+
     if (os.path.isabs(file_path)):
         file_abs_path = file_path
     else:

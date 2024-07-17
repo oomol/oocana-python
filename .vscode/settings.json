@@ -9,4 +9,8 @@
         "oocana"
     ],
     "python.analysis.typeCheckingMode": "basic",
+    "yaml.schemas": {
+        "https://static.oomol.com/json-schemas/Block.schema.json": "block.oo.yaml",
+        "https://static.oomol.com/json-schemas/Flow.schema.json": "flow.oo.yaml",
+    }
 }

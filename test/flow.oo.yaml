@@ -1,9 +1,23 @@
-name: flow-1
 nodes:
-  - node_id: block-a
-    service: app::app_a::one
-  # - node_id: block-a
-  #   task: ./blocks/blk_a
+  - node_id: block-0
+    task: ./blocks/blk_d
+    inputs_from:
+      - handle: in
+        value: 1
+  - node_id: block-1
+    task: ./blocks/blk_d
+    inputs_from:
+      - handle: in
+        from_node:
+          - node_id: block-0
+            output_handle: output
+  - node_id: block-2
+    task: ./blocks/blk_d
+    inputs_from:
+      - handle: in
+        from_node:
+          - node_id: block-1
+            output_handle: output
   # - node_id: block-b
   #   task: ./blocks/blk_b
   #   inputs_from: 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.8.0...@oomol/python-executor@0.9.0) (2024-07-17)
+
+
+### Features
+
+* support module cache duration session ([#98](https://github.com/oomol/oocana-python/issues/98)) ([a3c9b6a](https://github.com/oomol/oocana-python/commit/a3c9b6a111cf29947fa570da0594fdac34708073))
+
 ## [0.8.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.7.0...@oomol/python-executor@0.8.0) (2024-07-12)
 
 

@@ -127,6 +127,7 @@ async def run_block(message, mainframe: Mainframe):
         #       目前任务是一个个排队执行，因此暂时不会出现错乱。
         #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
         result = None
+        traceback_str = None
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
             try:
                 if inspect.iscoroutinefunction(fn):

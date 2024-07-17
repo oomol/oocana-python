@@ -25,9 +25,9 @@ pdm run build-all
 ## TODO
 
 - [ ] 导出一份 type hint
-- [ ] 支持协程/多进程穿插执行 block，需要让 stderr 和 stdout 的输出能够对应到正确的 block。
-- [ ] 现有 scripts 发布时，npm publish 出现错误时，并不一定会显示失败。需要调整发布脚本，让发布失败时，显示失败。
-    - [publish-executor action](https://github.com/oomol/oocana-python/actions/runs/9137881993/job/25128387566) 向没有权限的 scope 发布 npm 库，提示 403 ，但是 action 并没有失败。而发布相同版本号时，会正常提示失败。
+- [ ] 需要让多进程穿插运行 block 时，将对应 stderr 和 stdout 的输出能够对应到正确的 block。
+- [ ] session 结束时，清理 sys.modules 导入的 modules。
+- [x] 支持协程/多进程穿插执行 block
 - [x] 让 executor 可以编写多文件，目前由于限制，只能写单文件。
 - [x] 处理`DeprecationWarning: There is no current event loop`警告。
 - [x] 追加日志。出现过发送的 execute 请求，结果没有向 oocana 发起 inputs 请求的情况。

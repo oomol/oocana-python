@@ -6,7 +6,7 @@ from io import StringIO
 import inspect
 import traceback
 import logging
-from .data import store
+from .data import store, original_sys_path, original_sys_keys
 from .context import createContext
 import os
 import sys
@@ -46,14 +46,10 @@ def load_module(source: str, source_dir=None):
         dirname = source_dir if source_dir else os.getcwd()
         source_abs_path = os.path.join(dirname, source)
 
-    original_keys = set(sys.modules.keys())
-
     is_directory_module = os.path.isdir(source) or source.endswith('__init__.py')
     module_name = os.path.basename(source_abs_path).replace('.py', '') if not is_directory_module else os.path.basename(os.path.dirname(source_abs_path))
     module_dir = os.path.dirname(source_abs_path)
 
-    # 在sys.path中临时添加模块所在目录
-    original_sys_path = sys.path.copy()
     sys.path.insert(0, module_dir)
 
     try:
@@ -67,7 +63,7 @@ def load_module(source: str, source_dir=None):
         file_spec.loader.exec_module(module)  # type: ignore
         return module
     finally:
-        delete = set(sys.modules.keys()) - original_keys
+        delete = set(sys.modules.keys()) - original_sys_keys
         for key in delete:
             del sys.modules[key]
         sys.path = original_sys_path

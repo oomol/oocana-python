@@ -1,22 +1,22 @@
 nodes:
   - node_id: block-0
-    task: ./blocks/blk_d
+    task: ./blocks/blk_e
     inputs_from:
       - handle: in
         value: 1
   - node_id: block-1
-    task: ./blocks/blk_d
+    task: ./blocks/blk_e
     inputs_from:
       - handle: in
-        from_node:
-          - node_id: block-0
-            output_handle: output
+        value: 1
   - node_id: block-2
     task: ./blocks/blk_d
     inputs_from:
       - handle: in
         from_node:
           - node_id: block-1
+            output_handle: output
+          - node_id: block-0
             output_handle: output
   # - node_id: block-b
   #   task: ./blocks/blk_b

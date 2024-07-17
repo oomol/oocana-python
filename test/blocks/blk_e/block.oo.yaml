@@ -1,0 +1,8 @@
+type: task_block
+executor:
+  name: python_executor
+  entry: index.py
+inputs_def:
+  - handle: in
+outputs_def:
+  - handle: output

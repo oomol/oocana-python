@@ -1,9 +1,6 @@
 executor:
-  name: python_executor
-  entry: __init__.py
-  function: main
+  name: python
+  options: 
+    entry: __init__.py
 outputs_def:
   - handle: my_output
-    serialize:
-      serializer: false
-      executor: python_executor

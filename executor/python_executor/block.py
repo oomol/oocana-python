@@ -6,24 +6,29 @@ from io import StringIO
 import inspect
 import traceback
 import logging
-from .data import store, original_sys_path, original_sys_keys
+from .data import store
 from .context import createContext
 import os
 import sys
 import importlib
 import importlib.util
 
-class ExecutorDict(TypedDict):
-    entry: Optional[str]
-    function: Optional[str]
 
+class ExecutorOptionsDict(TypedDict):
+    function: Optional[str]
+    entry: Optional[str]
+    source: Optional[str]
+
+# entry 与 source 是二选一的存在
+class ExecutorDict(TypedDict):
+    options: Optional[ExecutorOptionsDict]
 
 @dataclass
 class ExecutePayload:
     session_id: str
     job_id: str
     dir: str
-    executor: Optional[ExecutorDict] = None
+    executor: ExecutorDict
     outputs: Optional[dict] = None
 
     def __init__(self, *args, **kwargs):
@@ -97,11 +102,25 @@ async def run_block(message, mainframe: Mainframe):
 
     load_dir = payload.dir
 
-    config = payload.executor
-    file_path = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
+    options = payload.executor.get("options")
 
-    stacks = message.get("stacks")
-    node_id = stacks[-1]["node_id"]
+    node_id = context.node_id
+
+    file_path = options["entry"] if options is not None and options.get("entry") is not None else 'index.py'
+
+    source = options.get("source") if options is not None else None
+    if source is not None:
+        # write source to file 
+        if not os.path.exists(load_dir):
+            os.makedirs(load_dir)
+        
+        dir_path = os.path.join(load_dir, ".scriptlets")
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+        with open(os.path.join(dir_path, f"{node_id}.py"), "w") as f:
+            f.write(source)
+        file_path = os.path.join(dir_path, f"{node_id}.py")
 
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。

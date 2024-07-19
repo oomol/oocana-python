@@ -1,6 +1,16 @@
 nodes:
   - node_id: block-0
-    task: ./blocks/blk_e
+    task: 
+      executor: 
+        name: python
+        options: 
+          source: |-
+            from oocana import Context
+            def main(inputs, context: Context):
+                print("aaaaaaaa")
+                return {"output": "count"}
+      outputs_def:
+        - handle: output
     inputs_from:
       - handle: in
         value: 1

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.10.0...@oomol/python-sdk@0.11.0) (2024-07-19)
+
+
+### Features
+
+* implement snippet in executor ([#104](https://github.com/oomol/oocana-python/issues/104)) ([496b122](https://github.com/oomol/oocana-python/commit/496b1222d996d6d0fd354bb46c1b9e8391b3fe02))
+
 ## [0.10.0](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.9.3...@oomol/python-sdk@0.10.0) (2024-07-12)
 
 

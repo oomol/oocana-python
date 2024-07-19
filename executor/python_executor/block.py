@@ -24,6 +24,7 @@ class ExecutePayload:
     job_id: str
     dir: str
     executor: Optional[ExecutorDict] = None
+    source: Optional[str] = None
     outputs: Optional[dict] = None
 
     def __init__(self, *args, **kwargs):
@@ -32,33 +33,11 @@ class ExecutePayload:
             self.job_id = args[1]
             self.executor = args[2]
             self.dir = args[3]
-            self.outputs = args[4]
+            self.source = args[4]
+            self.outputs = args[5]
         if kwargs:
             for key, value in kwargs.items():
                 setattr(self, key, value)
-
-def load_module(file_path: str, module_name: str, source_dir=None):
-
-    if module_name in sys.modules:
-        return sys.modules[module_name]
-
-    if (os.path.isabs(file_path)):
-        file_abs_path = file_path
-    else:
-        dirname = source_dir if source_dir else os.getcwd()
-        file_abs_path = os.path.join(dirname, file_path)
-
-    module_dir = os.path.dirname(file_abs_path)
-    sys.path.insert(0, module_dir)
-
-
-    file_spec = importlib.util.spec_from_file_location(module_name, file_abs_path)
-    module = importlib.util.module_from_spec(file_spec)  # type: ignore
-    sys.modules[module_name] = module
-
-    file_spec.loader.exec_module(module)  # type: ignore
-    return module
-
 
 def output_return_object(obj, context: Context):
     if obj is None:
@@ -75,8 +54,8 @@ def output_return_object(obj, context: Context):
 logger = logging.getLogger("EXECUTOR_NAME")
 
 async def run_block(message, mainframe: Mainframe):
-
     logger.info(f"block {message.get('job_id')} start")
+
     try:
         payload = ExecutePayload(**message)
         context = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
@@ -89,35 +68,56 @@ async def run_block(message, mainframe: Mainframe):
             "session_id": message["session_id"],
         },
         {
-            "job_id": message["job_id"], 
+            "job_id": message["job_id"],
             "error": traceback_str
         })
         return
 
-
     load_dir = payload.dir
+    source = payload.source
+    source_description = ""
 
     config = payload.executor
-    file_path = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
     stacks = message.get("stacks")
     node_id = stacks[-1]["node_id"]
+    module_name = payload.session_id + node_id
+    module_dict: dict
 
     try:
-        # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。
-        index_module = load_module(file_path, payload.session_id+node_id, load_dir) # type: ignore
+        is_source_path: bool
+
+        if source is None:
+            file_path: str = "index.py"
+            if config is not None:
+                entry_path = config.get("entry", None)
+                if entry_path is not None:
+                    file_path = entry_path
+            source = file_path
+            source_description = file_path
+            is_source_path = True
+        else:
+            is_source_path = False
+
+        module_dict = load_module_dict(
+            module_name=module_name,
+            source=source,
+            is_source_path=is_source_path,
+            source_dir=load_dir,
+        )
     except Exception:
         traceback_str = traceback.format_exc()
         context.done(traceback_str)
         return
+
     function_name: str = payload.executor["function"] if payload.executor is not None and payload.executor.get("function") is not None else 'main' # type: ignore
-    fn = index_module.__dict__.get(function_name)
+    fn = module_dict.get(function_name)
 
     if fn is None:
-        context.done(f"function {function_name} not found in {file_path}")
+        context.done(f"function {function_name} not found in {source_description}")
         return
     if not callable(fn):
-        context.done(f"{function_name} is not a function in {file_path}")
+        context.done(f"{function_name} is not a function in {source_description}")
         return
 
     try:
@@ -154,7 +154,7 @@ async def run_block(message, mainframe: Mainframe):
             context.report_log(line)
         for line in stderr.getvalue().splitlines():
             context.report_log(line, "stderr")
-        
+
         if traceback_str is not None:
             context.done(traceback_str)
     except Exception:
@@ -163,3 +163,35 @@ async def run_block(message, mainframe: Mainframe):
     finally:
         logger.info(f"block {message.get('job_id')} done")
 
+def load_module_dict(
+    module_name: str,
+    source: str,
+    is_source_path: bool,
+    source_dir: Optional[str] = None,
+) -> dict:
+
+    if module_name in sys.modules:
+        return sys.modules[module_name].__dict__
+
+    module_dict: dict
+
+    if is_source_path:
+        file_path = source
+        if (os.path.isabs(file_path)):
+            file_abs_path = file_path
+        else:
+            dirname = source_dir if source_dir else os.getcwd()
+            file_abs_path = os.path.join(dirname, file_path)
+        module_dir = os.path.dirname(file_abs_path)
+        sys.path.insert(0, module_dir)
+        file_spec = importlib.util.spec_from_file_location(module_name, file_abs_path)
+        module = importlib.util.module_from_spec(file_spec)  # type: ignore
+        sys.modules[module_name] = module
+        file_spec.loader.exec_module(module)  # type: ignore
+        module_dict = module.__dict__
+    else:
+        module_dict = {}
+        code = compile(source, "<string>", "exec")
+        eval(code, module_dict)
+
+    return module_dict

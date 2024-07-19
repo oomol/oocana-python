@@ -1,6 +1,6 @@
 from typing import Callable, Any, TypedDict
 from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption
-from .block import output_return_object, load_module
+from .block import output_return_object, load_module_from_path
 from .context import createContext
 from threading import Timer
 import inspect
@@ -62,7 +62,7 @@ class ServiceRuntime:
 
     async def run(self):
         service_config = self._config.get("service_executor")
-        m = load_module(service_config.get("entry"), self._config.get("session_id"), self._config.get("dir"))
+        m = load_module_from_path(service_config.get("entry"), self._config.get("session_id"), self._config.get("dir"))
         fn = m.__dict__.get(service_config.get("function"))
         # TODO: 从 entry 附近查找到当前 Service 依赖的 module
         if not callable(fn):
@@ -72,7 +72,7 @@ class ServiceRuntime:
         else:
             fn(self)
         await self.run_block(self._config)
-    
+
     def exit(self):
         self._mainframe.publish(f"executor/service/{self._service_id}/exit", {})
         self._mainframe.disconnect()

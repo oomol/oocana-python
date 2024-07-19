@@ -1,10 +1,8 @@
 executor:
-  name: python_executor
-  entry: index.py
+  name: python
+  options: 
+    entry: index.py
 outputs_def:
   - handle: my_output
-    serialize:
-      serializer: false
-      executor: python_executor
 inputs_def:
   - handle: my_count

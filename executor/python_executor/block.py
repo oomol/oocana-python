@@ -6,16 +6,18 @@ from io import StringIO
 import inspect
 import traceback
 import logging
-from .data import store, original_sys_path, original_sys_keys
+from .data import store
 from .context import createContext
 import os
 import sys
 import importlib
 import importlib.util
 
+# entry 与 source 是二选一的存在
 class ExecutorDict(TypedDict):
-    entry: Optional[str]
     function: Optional[str]
+    entry: Optional[str]
+    source: Optional[str]
 
 
 @dataclass
@@ -100,8 +102,7 @@ async def run_block(message, mainframe: Mainframe):
     config = payload.executor
     file_path = config["entry"] if config is not None and config.get("entry") is not None else 'index.py'
 
-    stacks = message.get("stacks")
-    node_id = stacks[-1]["node_id"]
+    node_id = context.node_id
 
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。

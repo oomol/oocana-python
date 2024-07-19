@@ -52,6 +52,10 @@ class Context:
     @property
     def block_info(self) -> BlockDict:
         return self.__block_info.block_dict()
+    
+    @property
+    def node_id(self) -> str:
+        return self.__block_info.stacks[-1].get("node_id", None)
 
     def __store_ref(self, handle: str):
         return StoreKey(

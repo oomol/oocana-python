@@ -13,7 +13,6 @@ from .block import run_block
 EXECUTOR_NAME = "python_executor"
 logger = logging.getLogger(EXECUTOR_NAME)
 
-
 async def setup(loop):
 
     import argparse
@@ -22,7 +21,8 @@ async def setup(loop):
     parser.add_argument("--client-id", help="mqtt client id")
 
     home_directory = os.path.expanduser("~")
-    parser.add_argument("--log-dir", help="log dir", default=f"{home_directory}/.oomol-studio")
+    default_log_dir = os.path.join(home_directory, ".oomol-studio")
+    parser.add_argument("--log-dir", help="log dir", default=default_log_dir)
     args = parser.parse_args()
 
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
@@ -38,7 +38,8 @@ async def setup(loop):
     sys.stdout.flush()
 
     if os.path.exists(log_dir):
-        file_name = log_dir + '/executor/python.log'
+
+        file_name = os.path.join(log_dir, 'executor', 'python.log')
         if not os.path.exists(file_name):
             os.makedirs(os.path.dirname(file_name), exist_ok=True)
             open(file_name, 'w').close()

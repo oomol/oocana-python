@@ -129,7 +129,7 @@ async def run_block(message, mainframe: Mainframe):
         traceback_str = traceback.format_exc()
         context.done(traceback_str)
         return
-    function_name: str = payload.executor["function"] if payload.executor is not None and payload.executor.get("function") is not None else 'main' # type: ignore
+    function_name: str = options.get("function") if payload.executor is not None and options.get("function") is not None else 'main' # type: ignore
     fn = index_module.__dict__.get(function_name)
 
     if fn is None:

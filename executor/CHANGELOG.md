@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.0...@oomol/python-executor@0.10.1) (2024-07-23)
+
+
+### Bug Fixes
+
+* function should be in options field ([dd6787e](https://github.com/oomol/oocana-python/commit/dd6787ea0213a8cd20b8b4fc61963f706c7e39c6))
+
 ## [0.10.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.9.1...@oomol/python-executor@0.10.0) (2024-07-19)
 
 

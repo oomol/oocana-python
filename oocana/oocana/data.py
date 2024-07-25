@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import TypedDict, Any, Optional, Literal, TypeAlias
+from typing import TypedDict, Any, Optional, Literal, TypeAlias, Dict
 
 class JobDict(TypedDict):
     session_id: str
@@ -13,35 +13,38 @@ class BlockDict(TypedDict):
 
 media_type: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
 class JsonSchemaDict(TypedDict):
-    contentMediaType: media_type
+    contentMediaType: Optional[media_type]
 
 class HandleDict(TypedDict):
     handle: str
-    json_schema: Optional[dict]
+    json_schema: Optional[JsonSchemaDict]
     name: Optional[str]
 
 class InputHandleDict(HandleDict):
-    value: Any
+    value: Optional[Any]
 
-def is_var_handle(obj) -> bool:
-
+def is_var_handle(obj: HandleDict) -> bool:
     return check_handle_type(obj, "oomol/var")
 
-def is_secret_handle(obj) -> bool:
+def is_secret_handle(obj: HandleDict) -> bool:
     return check_handle_type(obj, "oomol/secret")
 
 
-def check_handle_type(obj, type: media_type) -> bool:
+def check_handle_type(obj: HandleDict, type: media_type) -> bool:
     if obj.get("handle") is None:
         return False
-
-    if obj.get("json_schema") is None or isinstance(obj.get("json_schema"), dict) is False:
+    
+    json_schema = obj.get("json_schema")
+    if json_schema is None:
         return False
 
-    if obj.get("json_schema").get("contentMediaType") is None:
+    if isinstance(json_schema, dict) is False:
+        return False
+
+    if json_schema.get("contentMediaType") is None:
         return False
     
-    return obj.get("json_schema").get("contentMediaType") == type
+    return json_schema.get("contentMediaType") == type
 
 # 为了让 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。这里想兼容额外多余字段，所以需要自己重写 __init__ 方法，忽略处理多余字段。同时需要自己处理缺少字段的情况。
 # 因为这样就已经使用了 object.__setattr__ 就可以干脆加上 frozen=True，防止修改。

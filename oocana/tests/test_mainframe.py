@@ -1,6 +1,6 @@
 import unittest
-from .mainframe import Mainframe
-from .data import JobDict
+from oocana import Mainframe
+from oocana import JobDict
 class TestMainframe(unittest.TestCase):
 
   __mainframe: Mainframe
@@ -29,10 +29,8 @@ class TestMainframe(unittest.TestCase):
   def test_send_ready(self):
     self.__mainframe.notify_ready('123', '123')
 
-
-
 # 激活虚拟环境后，执行以下命令：
-# python -m unittest src/oocana/mainframe_test.py
-# python -m unittest src.oocana.mainframe_test.TestMainframe.[单个方法名]
+# python -m unittest oocana/tests/mainframe_test.py
+# python -m unittest oocana.tests.mainframe_test.TestMainframe.[单个方法名]
 if __name__ == '__main__':
     unittest.main()

@@ -43,10 +43,8 @@ def check_handle_type(obj, type: media_type) -> bool:
     
     return obj.get("json_schema").get("contentMediaType") == type
 
-# 默认的 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。
-# 这里在使用 frozen 固化数据的同时，做了多余字段的忽略处理。如果不 frozen 的话，不需要使用 object.__setattr__ 这种方式来赋值，这种方式会有一点性能开销。
-
-
+# 为了让 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。这里想兼容额外多余字段，所以需要自己重写 __init__ 方法，忽略处理多余字段。同时需要自己处理缺少字段的情况。
+# 因为这样就已经使用了 object.__setattr__ 就可以干脆加上 frozen=True，防止修改。
 @dataclass(frozen=True, kw_only=True)
 class StoreKey:
     executor: str
@@ -57,6 +55,9 @@ class StoreKey:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
+        for key in self.__annotations__.keys():
+            if key not in kwargs:
+                raise ValueError(f"missing key {key}")
 
 
 # 发送 reporter 时，固定需要的 block 信息参数
@@ -71,6 +72,9 @@ class BlockInfo:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
+        for key in self.__annotations__.keys():
+            if key not in kwargs:
+                raise ValueError(f"missing key {key}")
 
     def dict(self):
         return asdict(self)

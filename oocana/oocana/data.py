@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import TypedDict, Any, Optional, Literal, TypeAlias
 
 class JobDict(TypedDict):
@@ -47,51 +47,33 @@ def check_handle_type(obj, type: media_type) -> bool:
 # 这里在使用 frozen 固化数据的同时，做了多余字段的忽略处理。如果不 frozen 的话，不需要使用 object.__setattr__ 这种方式来赋值，这种方式会有一点性能开销。
 
 
-@dataclass(frozen=True, init=False)
+@dataclass(frozen=True, kw_only=True)
 class StoreKey:
     executor: str
     handle: str
     job_id: str
     session_id: str
 
-    def __init__(self, *args, **kwargs):
-        if args:
-            object.__setattr__(self, "executor", args[0])
-            object.__setattr__(self, "handle", args[1])
-            object.__setattr__(self, "job_id", args[2])
-            object.__setattr__(self, "session_id", args[3])
-        if kwargs:
-            for key, value in kwargs.items():
-                object.__setattr__(self, key, value)
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            object.__setattr__(self, key, value)
 
 
 # 发送 reporter 时，固定需要的 block 信息参数
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class BlockInfo:
 
-    # 以下四个参数，在发送数据时，都需要传递过去。
     session_id: str
     job_id: str
     stacks: list
     block_path: str
 
-    def __init__(self, *args, **kwargs):
-        if args:
-            object.__setattr__(self, "session_id", args[0])
-            object.__setattr__(self, "job_id", args[1])
-            object.__setattr__(self, "stacks", args[2])
-            object.__setattr__(self, "block_path", args[3])
-        if kwargs:
-            for key, value in kwargs.items():
-                object.__setattr__(self, key, value)
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            object.__setattr__(self, key, value)
 
     def dict(self):
-        return {
-            "session_id": self.session_id,
-            "job_id": self.job_id,
-            "stacks": self.stacks,
-            "block_path": self.block_path,
-        }
+        return asdict(self)
 
     def job_info(self) -> JobDict:
         return {"session_id": self.session_id, "job_id": self.job_id}
@@ -103,3 +85,5 @@ class BlockInfo:
             "stacks": self.stacks,
             "block_path": self.block_path,
         }
+    
+

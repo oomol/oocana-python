@@ -27,3 +27,5 @@ class TestHandleData(unittest.TestCase):
         handle_def = handle_data.HandleDef(**d) # type: ignore
         self.assertEqual(handle_def.handle, "test")
         self.assertIsNone(handle_def.json_schema)
+
+    

@@ -47,7 +47,7 @@ jobs:
       - name: install and run
         run: |-
           cd test
-          pnpm start broker &
+          pnpm run broker &
           sleep 3
           pdm executor &
           sleep 3

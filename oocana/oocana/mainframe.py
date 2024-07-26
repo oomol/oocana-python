@@ -50,7 +50,7 @@ class Mainframe:
         else:
             logger.info("connect to broker success")
 
-        for topic in self._subscriptions:
+        for topic in self._subscriptions.copy(): # 进程冲突
             logger.info("resubscribe to topic: {}".format(topic))
             self.client.subscribe(topic, qos=1)
 

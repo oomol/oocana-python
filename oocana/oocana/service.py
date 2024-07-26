@@ -1,6 +1,6 @@
 from typing import Literal, Callable, Any, TypedDict, Optional, TypeAlias
 from .context import Context
-from .data import JobDict, HandleDict
+from .data import JobDict
 
 class ServiceContext(TypedDict):
     block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
@@ -19,4 +19,4 @@ class ServiceExecutePayload(JobDict):
     dir: str
     block_name: str
     service_executor: ServiceExecutor
-    outputs: dict[str, HandleDict]
+    outputs: dict

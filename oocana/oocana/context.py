@@ -1,7 +1,6 @@
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
-from .data import HandleDict
-from .data import is_var_handle
+from .handle_data import HandleDef
 from .mainframe import Mainframe
 from typing import Dict, Any
 
@@ -13,7 +12,7 @@ class Context:
     __inputs: Dict[str, Any]
 
     __block_info: BlockInfo
-    __outputs: Dict[str, HandleDict]
+    __outputs_def: Dict[str, HandleDef]
     __store: Any
     __is_done: bool = False
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
@@ -27,7 +26,11 @@ class Context:
         self.__mainframe = mainframe
         self.__store = store
         self.__inputs = inputs
-        self.__outputs = outputs
+
+        outputs_defs = {}
+        for k, v in outputs.items():
+            outputs_defs[k] = HandleDef(**v)
+        self.__outputs_def = outputs_defs
 
     @property
     def keepAlive(self):
@@ -69,16 +72,16 @@ class Context:
 
         v = output
 
-        if self.__outputs is not None:
-            output_def = self.__outputs.get(handle)
+        if self.__outputs_def is not None:
+            output_def = self.__outputs_def.get(handle)
             if (
-                output_def is not None and is_var_handle(output_def)
+                output_def is not None and output_def.is_var_handle()
             ):
                 ref = self.__store_ref(handle)
                 self.__store[ref] = output
                 v = asdict(ref)
 
-        if self.__outputs is not None and self.__outputs.get(handle) is None:
+        if self.__outputs_def is not None and self.__outputs_def.get(handle) is None:
             # TODO: 未来添加 warning 级别日志时，更改为 warning 而不是 error
             self.send_error(
                 f"Output handle key: [{handle}] is not defined in Block outputs schema."

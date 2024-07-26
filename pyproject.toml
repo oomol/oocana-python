@@ -11,6 +11,8 @@ authors = [
 requires-python = ">=3.9"
 license = {text = "MIT"}
 readme = "README.md"
+dependencies = [
+]
 
 [tool.pdm]
 distribution = true
@@ -20,12 +22,15 @@ publish_oocana = { shell = "./scripts/publish_oocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
 check = { shell = "pdm run pyright ./oocana ./executor" }
 build_all = { shell = "(cd oocana && pdm build) && (cd executor && pdm build)" }
+test = { shell = "pdm run pytest ./oocana ./executor" }
+executor = { shell = "executor/bin/python-executor.sh" }
 
 [tool.pdm.dev-dependencies]
 dev = [
     "-e oocana @ file:///${PROJECT_ROOT}/oocana",
     "-e python-executor @ file:///${PROJECT_ROOT}/executor",
     "pyright>=1.1.370",
+    "pytest>=8.3.2",
 ]
 [build-system]
 requires = ["pdm-backend"]

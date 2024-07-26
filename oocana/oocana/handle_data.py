@@ -17,8 +17,11 @@ class JsonSchema:
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
 
+
 @dataclass(frozen=True, kw_only=True)
 class HandleDef:
+    """The base handle for output def, can be directly used for output def 
+    """
     handle: str
     """The name of the handle. it should be unique in handle list."""
 
@@ -52,4 +55,7 @@ class HandleDef:
 
 @dataclass(frozen=True, kw_only=True)
 class InputHandleDef(HandleDef):
+
     value: Optional[Any] = None
+    """default value for input handle, can be None.
+    """

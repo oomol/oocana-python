@@ -31,8 +31,6 @@ class HandleDef:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
-
-    def __post_init__(self):
         json_schema = self.json_schema
         if json_schema is not None and not isinstance(json_schema, JsonSchema):
                 object.__setattr__(self, "json_schema", JsonSchema(**json_schema))

@@ -42,6 +42,8 @@ jobs:
         run: |-
           cd test
           pnpm install
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: install and run
         run: |-
           cd test
@@ -50,5 +52,3 @@ jobs:
           pdm executor &
           sleep 3
           pnpm start
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

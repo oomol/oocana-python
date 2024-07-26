@@ -1,7 +1,7 @@
 import logging
 import json
-from oocana import Mainframe, Context, is_var_handle, is_secret_handle, StoreKey, BlockInfo
-from typing import Any
+from oocana import Mainframe, Context, StoreKey, BlockInfo, InputHandleDef
+from typing import Any, Dict
 
 # TODO: 名字统一从常量 module 中取
 logger = logging.getLogger("EXECUTOR_NAME")
@@ -13,7 +13,7 @@ def createContext(
 
     node_props = mainframe.notify_ready(session_id, job_id)
 
-    inputs_def = node_props.get("inputs_def")
+    inputs_def: Dict[str, Any] | None = node_props.get("inputs_def") # type: ignore
     inputs = node_props.get("inputs")
 
     try:
@@ -27,16 +27,16 @@ def createContext(
 
     if inputs_def is not None and inputs is not None:
         for k, v in inputs_def.items():
-            if is_var_handle(v):
+            input_def = InputHandleDef(**v)
+            if input_def.is_var_handle():
                 try:
                     ref = StoreKey(**inputs[k])
                 except:  # noqa: E722
                     print(f"not valid object ref: {inputs[k]}")
                     continue
-
                 value = store.get(ref)
                 inputs[k] = value
-            elif is_secret_handle(v):
+            elif input_def.is_secret_handle():
                 inputs[k] = replace_secret(inputs[k], secretJson)
 
     elif inputs is None:

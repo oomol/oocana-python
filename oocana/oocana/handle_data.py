@@ -53,6 +53,3 @@ class HandleDef:
 @dataclass(frozen=True, kw_only=True)
 class InputHandleDef(HandleDef):
     value: Optional[Any] = None
-
-InputHandles: TypeAlias = Dict[str, InputHandleDef]
-OutputHandles: TypeAlias = Dict[str, HandleDef]

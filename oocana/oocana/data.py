@@ -1,5 +1,5 @@
-from dataclasses import dataclass, asdict
-from typing import TypedDict, Any, Optional, Literal, TypeAlias, Dict
+from dataclasses import dataclass
+from typing import TypedDict, Any, Optional, Literal, TypeAlias
 
 class JobDict(TypedDict):
     session_id: str
@@ -78,9 +78,6 @@ class BlockInfo:
         for key in self.__annotations__.keys():
             if key not in kwargs:
                 raise ValueError(f"missing key {key}")
-
-    def dict(self):
-        return asdict(self)
 
     def job_info(self) -> JobDict:
         return {"session_id": self.session_id, "job_id": self.job_id}

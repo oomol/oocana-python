@@ -11,7 +11,6 @@ const cli = new Vocana();
 
 cli.events.on(remitter.ANY_EVENT, m => console.log(m));
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-console.log("__dirname", __dirname);
 
 async function main() {
   await cli.connect();

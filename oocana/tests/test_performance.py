@@ -10,7 +10,7 @@ def test_handle_def_creation():
         },
     }
     handle_def = handle_data.HandleDef(**d)
-    return handle_def
+    assert(handle_def.handle == "test")
 
 # 使用 timeit 模块测量执行时间
 execution_time = timeit.timeit("test_handle_def_creation()", globals=globals(), number=10000)

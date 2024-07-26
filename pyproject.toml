@@ -22,6 +22,7 @@ publish_oocana = { shell = "./scripts/publish_oocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
 check = { shell = "pdm run pyright ./oocana ./executor" }
 build_all = { shell = "(cd oocana && pdm build) && (cd executor && pdm build)" }
+test = { shell = "pdm run pytest ./oocana ./executor" }
 
 [tool.pdm.dev-dependencies]
 dev = [

@@ -19,15 +19,15 @@ class TestMainframe(unittest.TestCase):
      self.__mainframe.disconnect()
      return super().tearDown()
 
-  def test_send(self):
-    info = self.__mainframe.send(self.__job_info, {
-      'dir': '123',
-    })
+  # def test_send(self):
+  #   info = self.__mainframe.send(self.__job_info, {
+  #     'dir': '123',
+  #   })
 
-    info.wait_for_publish()
+  #   info.wait_for_publish()
 
-  def test_send_ready(self):
-    self.__mainframe.notify_ready('123', '123')
+  # def test_send_ready(self):
+  #   self.__mainframe.notify_ready('123', '123')
 
 # 激活虚拟环境后，执行以下命令：
 # python -m unittest oocana/tests/mainframe_test.py

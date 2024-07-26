@@ -45,3 +45,5 @@ jobs:
           pnpm start broker &
           pdm executor &
           pnpm start
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

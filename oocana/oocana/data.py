@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypedDict, Any, Optional, Literal, TypeAlias
+from typing import TypedDict
 
 class JobDict(TypedDict):
     session_id: str
@@ -10,41 +10,6 @@ class BlockDict(TypedDict):
     job_id: str
     stacks: list
     block_path: str
-
-media_type: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
-class JsonSchemaDict(TypedDict):
-    contentMediaType: Optional[media_type]
-
-class HandleDict(TypedDict):
-    handle: str
-    json_schema: Optional[JsonSchemaDict]
-    name: Optional[str]
-
-class InputHandleDict(HandleDict):
-    value: Optional[Any]
-
-def is_var_handle(obj: HandleDict) -> bool:
-    return check_handle_type(obj, "oomol/var")
-
-def is_secret_handle(obj: HandleDict) -> bool:
-    return check_handle_type(obj, "oomol/secret")
-
-
-def check_handle_type(obj: HandleDict, type: media_type) -> bool:
-    if obj.get("handle") is None:
-        return False
-    
-    json_schema = obj.get("json_schema")
-    if json_schema is None:
-        return False
-
-    if isinstance(json_schema, dict) is False:
-        return False
-
-    if json_schema.get("contentMediaType") is None:
-        return False
-    
-    return json_schema.get("contentMediaType") == type
 
 # 为了让 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。这里想兼容额外多余字段，所以需要自己重写 __init__ 方法，忽略处理多余字段。同时需要自己处理缺少字段的情况。
 @dataclass(frozen=True, kw_only=True)

@@ -47,7 +47,6 @@ def check_handle_type(obj: HandleDict, type: media_type) -> bool:
     return json_schema.get("contentMediaType") == type
 
 # 为了让 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。这里想兼容额外多余字段，所以需要自己重写 __init__ 方法，忽略处理多余字段。同时需要自己处理缺少字段的情况。
-# 因为这样就已经使用了 object.__setattr__ 就可以干脆加上 frozen=True，防止修改。
 @dataclass(frozen=True, kw_only=True)
 class StoreKey:
     executor: str

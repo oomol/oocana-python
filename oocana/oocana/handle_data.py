@@ -17,7 +17,7 @@ class JsonSchema:
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
 
-@dataclass(kw_only=True)
+@dataclass(frozen=True, kw_only=True)
 class HandleDef:
     handle: str
     """The name of the handle. it should be unique in handle list."""
@@ -50,7 +50,7 @@ class HandleDef:
     def is_secret_handle(self) -> bool:
         return self.check_handle_type("oomol/secret")
 
-@dataclass(kw_only=True)
+@dataclass(frozen=True, kw_only=True)
 class InputHandleDef(HandleDef):
     value: Optional[Any] = None
 

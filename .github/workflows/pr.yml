@@ -38,12 +38,17 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           cache: "pnpm"
           cache-dependency-path: "./test"
-      - name: install and run
+      - name: install
         run: |-
           cd test
           pnpm install
+      - name: install and run
+        run: |-
+          cd test
           pnpm start broker &
+          sleep 3
           pdm executor &
+          sleep 3
           pnpm start
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

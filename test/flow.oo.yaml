@@ -28,17 +28,3 @@ nodes:
             output_handle: output
           - node_id: block-0
             output_handle: output
-  # - node_id: block-b
-  #   task: ./blocks/blk_b
-  #   inputs_from: 
-  #     - handle: my_input
-  #       from_node:
-  #         - node_id: block-a
-  #           output_handle: my_output
-  # - node_id: block-c
-  #   task: ./blocks/blk_c
-  #   inputs_from:
-  #     - handle: my_count
-  #       from_node:
-  #         - node_id : block-b
-            # output_handle: my_output

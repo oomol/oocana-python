@@ -29,6 +29,11 @@ async function main() {
     }
   })
 
+  setTimeout(() => {
+    console.log("wait timeout")
+    exit(-1)
+  }, 1000 * 25);
+
   cli.events.on("SessionFinished", () => {
     console.log("SessionFinished")
     exit(0)

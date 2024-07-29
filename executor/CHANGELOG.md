@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.2...@oomol/python-executor@0.10.3) (2024-07-29)
+
+
+### Bug Fixes
+
+* add message type for reporter ([47d8fb3](https://github.com/oomol/oocana-python/commit/47d8fb3926e017324109cc51ffe64479140191ac))
+
 ## [0.10.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.1...@oomol/python-executor@0.10.2) (2024-07-29)
 
 

@@ -94,6 +94,7 @@ async def run_block(message, mainframe: Mainframe):
             "session_id": message["session_id"],
         },
         {
+            "type": "BlockFinished",
             "job_id": message["job_id"], 
             "error": traceback_str
         })

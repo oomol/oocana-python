@@ -11,7 +11,29 @@
 安装依赖
 
 ```shell
+cd test
 # brew install pnpm 或者用其他 pnpm 安装方式 pnpm
 pnpm install
 # 因为这里只是调试用，所以默认永远安装最新的 oocana cli，忽略 lock 文件
+```
+
+## 启动测试
+
+需要三个进程
+
+1. 开启 broker
+```shell
+cd test
+pnpm broker
+```
+
+2. 开启 executor
+```shell
+pdm run executor
+```
+
+3. 启动测试
+```shell
+cd test
+pnpm start
 ```

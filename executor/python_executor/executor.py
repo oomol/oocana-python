@@ -76,14 +76,15 @@ async def setup(loop):
 
     def session_end(message):
         if message.get("type") == "SessionFinished":
-            dir_set = set()
+            dir_set: set[str] = set()
             for k in tmp_files:
                 if os.path.exists(k):
                     os.remove(k)
-                dir_set.add(os.path.join(os.path.dirname(k), "__pycache__"))                     
+                dir_set.add(os.path.dirname(k))
             for d in dir_set:
-                if os.path.exists(d):
+                if os.path.exists(d) and d.endswith(".scriptlets"):
                     shutil.rmtree(d)
+            
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)

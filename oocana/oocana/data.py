@@ -11,7 +11,9 @@ class BlockDict(TypedDict):
     stacks: list
     block_path: str
 
-# 为了让 dataclass 字段必须一一匹配，如果多一个或者少一个字段，就会报错。这里想兼容额外多余字段，所以需要自己重写 __init__ 方法，忽略处理多余字段。同时需要自己处理缺少字段的情况。
+# dataclass 默认字段必须一一匹配
+# 如果多一个或者少一个字段，就会报错。
+# 这里想兼容额外多余字段，所以需要自己重写 __init__ 方法，忽略处理多余字段。同时需要自己处理缺少字段的情况。
 @dataclass(frozen=True, kw_only=True)
 class StoreKey:
     executor: str

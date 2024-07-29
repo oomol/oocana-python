@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.1...@oomol/python-executor@0.10.2) (2024-07-29)
+
+
+### Bug Fixes
+
+* call done message after other message done ([1a89141](https://github.com/oomol/oocana-python/commit/1a89141d2288e5c1c8ed882fca60fb840424b1fb))
+
 ## [0.10.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.0...@oomol/python-executor@0.10.1) (2024-07-23)
 
 

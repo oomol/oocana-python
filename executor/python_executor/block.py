@@ -167,15 +167,16 @@ async def run_block(message, mainframe: Mainframe):
                         result = fn(context.inputs, context)
             except Exception:
                 traceback_str = traceback.format_exc()
-        output_return_object(result, context)
 
         for line in stdout.getvalue().splitlines():
             context.report_log(line)
         for line in stderr.getvalue().splitlines():
             context.report_log(line, "stderr")
-        
+
         if traceback_str is not None:
             context.done(traceback_str)
+        else:
+            output_return_object(result, context)
     except Exception:
         traceback_str = traceback.format_exc()
         context.done(traceback_str)

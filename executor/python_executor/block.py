@@ -144,7 +144,8 @@ async def run_block(message, mainframe: Mainframe):
         params_count = len(signature.parameters)
         result = None
         traceback_str = None
-        # 多进程的 stdout 和 stderr 是互相独立不影响的，所以 redirect_stdout 和 redirect_stderr 只能捕获到当前进程的输出。
+        # 多进程的 stdout 和 stderr 是互相独立不影响的；
+        # 目前使用的多线程的 stdout 和 stderr 是共享的，导致目前的 redirect_stdout 和 redirect_stderr 会捕获到其他线程的输出。
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
             try:
                 if inspect.iscoroutinefunction(fn):

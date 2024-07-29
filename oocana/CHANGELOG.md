@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.1...@oomol/python-sdk@0.11.2) (2024-07-29)
+
+
+### Bug Fixes
+
+* input_def need use call supper ([bb587d5](https://github.com/oomol/oocana-python/commit/bb587d5904a8e308f42f588bc58d14e2c140d94c))
+
 ## [0.11.1](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.0...@oomol/python-sdk@0.11.1) (2024-07-29)
 
 

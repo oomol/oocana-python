@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Optional, Literal, TypeAlias, Dict
+from typing import Any, Optional, Literal, TypeAlias
 
 
 ContentMediaType: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
@@ -59,3 +59,6 @@ class InputHandleDef(HandleDef):
     value: Optional[Any] = None
     """default value for input handle, can be None.
     """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

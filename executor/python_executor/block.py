@@ -23,6 +23,8 @@ class ExecutorOptionsDict(TypedDict):
 class ExecutorDict(TypedDict):
     options: Optional[ExecutorOptionsDict]
 
+tmp_files = set()
+
 @dataclass
 class ExecutePayload:
     session_id: str
@@ -55,7 +57,6 @@ def load_module(file_path: str, module_name: str, source_dir=None):
 
     module_dir = os.path.dirname(file_abs_path)
     sys.path.insert(0, module_dir)
-
 
     file_spec = importlib.util.spec_from_file_location(module_name, file_abs_path)
     module = importlib.util.module_from_spec(file_spec)  # type: ignore
@@ -111,17 +112,18 @@ async def run_block(message, mainframe: Mainframe):
 
     source = options.get("source") if options is not None else None
     if source is not None:
-        # write source to file 
         if not os.path.exists(load_dir):
             os.makedirs(load_dir)
         
         dir_path = os.path.join(load_dir, ".scriptlets")
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
+        tmp_py = os.path.join(dir_path, f"{node_id}.py")
+        tmp_files.add(tmp_py)
 
-        with open(os.path.join(dir_path, f"{node_id}.py"), "w") as f:
+        with open(tmp_py, "w") as f:
             f.write(source)
-        file_path = os.path.join(dir_path, f"{node_id}.py")
+        file_path = tmp_py
 
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。

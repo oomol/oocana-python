@@ -5,10 +5,11 @@ import os
 import queue
 import sys
 import logging
+import shutil
 
 from oocana import Mainframe, StoreKey, ServiceExecutePayload
 from .data import store, serviceMap
-from .block import run_block
+from .block import run_block, tmp_files
 
 EXECUTOR_NAME = "python"
 logger = logging.getLogger(EXECUTOR_NAME)
@@ -73,9 +74,21 @@ async def setup(loop):
             logger.info(f"drop {obj.job_id} {obj.handle}")
             del store[obj]
 
+    def session_end(message):
+        if message.get("type") == "SessionFinished":
+            dir_set = set()
+            for k in tmp_files:
+                if os.path.exists(k):
+                    os.remove(k)
+                dir_set.add(os.path.join(os.path.dirname(k), "__pycache__"))                     
+            for d in dir_set:
+                if os.path.exists(d):
+                    shutil.rmtree(d)
+
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
+    mainframe.subscribe('report', session_end)
 
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")

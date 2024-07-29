@@ -142,11 +142,9 @@ async def run_block(message, mainframe: Mainframe):
     try:
         signature = inspect.signature(fn)
         params_count = len(signature.parameters)
-        # TODO: 这种重定向 stdout 和 stderr 的方式比较优雅，但是由于仍然是替换的全局 sys.stdout 和 sys.stderr 对象，所以在协程切换时，仍然会有错乱的问题。
-        #       目前任务是一个个排队执行，因此暂时不会出现错乱。
-        #       应该和 nodejs 寻找替换 function，在 function 里面读取 contextvars，来进行分发。大体的尝试代码写在 ./ctx.py 里，有时间，或者有需求时，再进行完善。
         result = None
         traceback_str = None
+        # 多进程的 stdout 和 stderr 是互相独立不影响的，所以 redirect_stdout 和 redirect_stderr 只能捕获到当前进程的输出。
         with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
             try:
                 if inspect.iscoroutinefunction(fn):

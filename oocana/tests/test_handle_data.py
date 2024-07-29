@@ -50,7 +50,7 @@ class TestHandleData(unittest.TestCase):
         with self.assertRaises(TypeError):
             handle_data.InputHandleDef(**d) # type: ignore
 
-    def test_input_handle_type(self):
+    def test_handle_type(self):
         d = fixture.copy()
         d["json_schema"]["contentMediaType"] = "oomol/secret"
 
@@ -60,3 +60,50 @@ class TestHandleData(unittest.TestCase):
         d["json_schema"]["contentMediaType"] = "oomol/var"
         handle_def = handle_data.HandleDef(**d)
         self.assertTrue(handle_def.is_var_handle())
+
+        d = {
+            "handle": "auto_slices",
+            "json_schema": {
+                "items": {
+                "properties": {
+                    "begin": { "type": "number" },
+                    "end": { "type": "number" }
+                },
+                "required": ["begin", "end"],
+                "type": "object"
+                },
+                "type": "array"
+            }
+        }
+        handle_def = handle_data.HandleDef(**d)
+        self.assertFalse(handle_def.is_var_handle())
+        self.assertFalse(handle_def.is_secret_handle())
+
+    def test_input_handle_type(self):
+        d = fixture.copy()
+        d["json_schema"]["contentMediaType"] = "oomol/secret"
+
+        handle_def = handle_data.InputHandleDef(**d)
+        self.assertTrue(handle_def.is_secret_handle())
+
+        d["json_schema"]["contentMediaType"] = "oomol/var"
+        handle_def = handle_data.InputHandleDef(**d)
+        self.assertTrue(handle_def.is_var_handle())
+
+        d = {
+            "handle": "auto_slices",
+            "json_schema": {
+                "items": {
+                "properties": {
+                    "begin": { "type": "number" },
+                    "end": { "type": "number" }
+                },
+                "required": ["begin", "end"],
+                "type": "object"
+                },
+                "type": "array"
+            }
+        }
+        handle_def = handle_data.InputHandleDef(**d)
+        self.assertFalse(handle_def.is_var_handle())
+        self.assertFalse(handle_def.is_secret_handle())

@@ -11,7 +11,10 @@
             "module": "python_executor.executor",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/executor",
-            "justMyCode": false
+            "justMyCode": false,
+            "args": [
+                "--log-dir", "${workspaceFolder}/logs", // 调试时，让日志输出控制台
+            ]
         },
         {
             "name": "Python Debugger: Current File",

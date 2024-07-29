@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.3...@oomol/python-executor@0.10.4) (2024-07-29)
+
+
+### Features
+
+* delete temp source after session end ([75bf533](https://github.com/oomol/oocana-python/commit/75bf5332cb5e70846327a338848af24f2da22b2d))
+
+
+### Bug Fixes
+
+* remove .scriptlets directory ([e18b20c](https://github.com/oomol/oocana-python/commit/e18b20c5e48c487eba73b48abb0b0967cf62f7bc))
+
 ## [0.10.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.2...@oomol/python-executor@0.10.3) (2024-07-29)
 
 

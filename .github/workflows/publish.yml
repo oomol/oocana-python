@@ -26,11 +26,11 @@ jobs:
       - id: result
         run: |
           if [ -n "${{ steps.step1.outputs.command }}" ]; then
-            echo "command=${{ steps.step1.outputs.command }}"
+            echo "command=${{ steps.step1.outputs.command }}" >> $GITHUB_OUTPUT
           elif [ -n "${{ steps.step2.outputs.command }}" ]; then
-            echo "command=${{ steps.step2.outputs.command }}"
+            echo "command=${{ steps.step2.outputs.command }}" >> $GITHUB_OUTPUT
           else
-            exit(1)
+            exit 1
           fi
   publish-executor:
     needs: vars

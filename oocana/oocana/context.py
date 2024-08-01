@@ -119,7 +119,7 @@ class Context:
             },
         )
 
-    def send_to_preview(self, payload):
+    def preview(self, payload):
         self.__mainframe.report(
             self.block_info,
             {

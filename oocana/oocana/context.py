@@ -119,6 +119,15 @@ class Context:
             },
         )
 
+    def send_to_preview(self, payload):
+        self.__mainframe.report(
+            self.block_info,
+            {
+                "type": "BlockPreview",
+                "payload": payload,
+            },
+        )
+
     def report_progress(self, progress: int):
         self.__mainframe.report(
             self.block_info,

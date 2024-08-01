@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.2...@oomol/python-sdk@0.11.3) (2024-08-01)
+
+
+### Features
+
+* add send to preview ([#113](https://github.com/oomol/oocana-python/issues/113)) ([eedc697](https://github.com/oomol/oocana-python/commit/eedc697f59074b6e8624541461a57066803f8c2a))
+
 ## [0.11.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.1...@oomol/python-sdk@0.11.2) (2024-07-29)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.6](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.5...@oomol/python-sdk@0.11.6) (2024-08-02)
+
+
+### Features
+
+* **preview:** support partial table preview ([#121](https://github.com/oomol/oocana-python/issues/121)) ([24d5155](https://github.com/oomol/oocana-python/commit/24d515507d4f55b6cfc41f843ca245641d4a07a5))
+
 ## [0.11.5](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.4...@oomol/python-sdk@0.11.5) (2024-08-02)
 
 

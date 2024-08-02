@@ -2,7 +2,7 @@ from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
-from typing import Dict, Any, List
+from typing import Dict, Any
 from .preview import PreviewPayload
 
 class OnlyEqualSelf:
@@ -122,15 +122,21 @@ class Context:
 
     def preview(self, payload: PreviewPayload):
         if payload.get("type") is not None and payload["type"] == "table":
-            if hasattr(payload.get("data"), "__dataframe__"):
-                # 拿前 50 行数据
-                data = payload.get("data").head(50).to_dict() # type: ignore
-                head = list(data)
-                rows = []
-                keys = data[head[0]].keys()
-                for key in keys:
-                    row = [data[col][key] for col in data]
-                    rows.append(row)
+            df: Any = payload.get("data")
+            if hasattr(df, "__dataframe__") and hasattr(df, "to_dict"):
+                size = df.size
+                if size <= 10:
+                    data = df.to_dict(orient='split')
+                    head = data.get("columns") or []
+                    rows = data.get("data") or []
+                else:
+                    data_head = df.head(5).replace({float('nan'): None}).to_dict(orient='split')
+                    head = data_head.get("columns") or []
+                    rows_head = data_head.get("data") or []
+                    data_tail = df.tail(5).replace({float('nan'): None}).to_dict(orient='split')
+                    rows_tail = data_tail.get("data") or []
+                    rows_dots = [["..."] * len(head)]
+                    rows = rows_head + rows_dots + rows_tail
                 payload["data"] = { "rows": rows, "head": head }
         self.__mainframe.report(
             self.block_info,

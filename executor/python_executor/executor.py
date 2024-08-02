@@ -82,7 +82,8 @@ async def setup(loop):
                     os.remove(k)
                 dir_set.add(os.path.dirname(k))
             for d in dir_set:
-                if os.path.exists(d) and d.endswith(".scriptlets"):
+                # 如果子目录是在 .scriptlets 目录下，删除子目录
+                if os.path.exists(d) and os.path.dirname(d).endswith(".scriptlets"):
                     shutil.rmtree(d)
             
 

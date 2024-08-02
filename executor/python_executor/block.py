@@ -115,7 +115,7 @@ async def run_block(message, mainframe: Mainframe):
         if not os.path.exists(load_dir):
             os.makedirs(load_dir)
         
-        dir_path = os.path.join(load_dir, ".scriptlets")
+        dir_path = os.path.join(load_dir, ".scriptlets", payload.session_id)
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
         tmp_py = os.path.join(dir_path, f"{node_id}.py")

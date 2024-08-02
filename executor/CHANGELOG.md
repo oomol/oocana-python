@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.4...@oomol/python-executor@0.10.5) (2024-08-02)
+
+
+### Features
+
+* move tmp files to &lt;session_id&gt; and only delete this directory ([#115](https://github.com/oomol/oocana-python/issues/115)) ([49e2769](https://github.com/oomol/oocana-python/commit/49e276918b16a1fec490fb3283ca29bd8f81eafb))
+
 ## [0.10.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.3...@oomol/python-executor@0.10.4) (2024-07-29)
 
 

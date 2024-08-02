@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.4](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.3...@oomol/python-sdk@0.11.4) (2024-08-02)
+
+
+### Features
+
+* **context:** add data frame preview ([#117](https://github.com/oomol/oocana-python/issues/117)) ([1376d26](https://github.com/oomol/oocana-python/commit/1376d263ce5173d3f239929c136d19f9d8a24b74))
+
 ## [0.11.3](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.2...@oomol/python-sdk@0.11.3) (2024-08-01)
 
 

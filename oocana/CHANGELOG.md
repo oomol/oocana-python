@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.7](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.6...@oomol/python-sdk@0.11.7) (2024-08-02)
+
+
+### Features
+
+* **preview:** allow previewing data frame directly ([#123](https://github.com/oomol/oocana-python/issues/123)) ([5d1cac7](https://github.com/oomol/oocana-python/commit/5d1cac776d805755eaefaedb68484dade68aedfc))
+
 ## [0.11.6](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.5...@oomol/python-sdk@0.11.6) (2024-08-02)
 
 

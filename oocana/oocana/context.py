@@ -121,7 +121,11 @@ class Context:
         )
 
     def preview(self, payload: PreviewPayload):
-        if payload.get("type") is not None and payload["type"] == "table":
+        # payload is a dataframe
+        if hasattr(payload, "__dataframe__") and hasattr(payload, "to_dict"):
+            payload = { "type": "table", "data": payload }
+
+        if isinstance(payload, dict) and payload.get("type") is not None and payload["type"] == "table":
             df: Any = payload.get("data")
             if hasattr(df, "__dataframe__") and hasattr(df, "to_dict"):
                 size = df.size

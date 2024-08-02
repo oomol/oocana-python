@@ -127,14 +127,14 @@ class Context:
                 size = df.size
                 if size <= 10:
                     data = df.to_dict(orient='split')
-                    head = data.get("columns") or []
-                    rows = data.get("data") or []
+                    head = data.get("columns", [])
+                    rows = data.get("data", [])
                 else:
                     data_head = df.head(5).replace({float('nan'): None}).to_dict(orient='split')
-                    head = data_head.get("columns") or []
-                    rows_head = data_head.get("data") or []
+                    head = data_head.get("columns", [])
+                    rows_head = data_head.get("data", [])
                     data_tail = df.tail(5).replace({float('nan'): None}).to_dict(orient='split')
-                    rows_tail = data_tail.get("data") or []
+                    rows_tail = data_tail.get("data", [])
                     rows_dots = [["..."] * len(head)]
                     rows = rows_head + rows_dots + rows_tail
                 payload["data"] = { "rows": rows, "head": head }

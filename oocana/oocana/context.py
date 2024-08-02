@@ -2,7 +2,8 @@ from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
-from typing import Dict, Any
+from typing import Dict, Any, List
+from .preview import PreviewPayload
 
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
@@ -119,7 +120,18 @@ class Context:
             },
         )
 
-    def preview(self, payload):
+    def preview(self, payload: PreviewPayload):
+        if payload.get("type") is not None and payload["type"] == "table":
+            if hasattr(payload.get("data"), "__dataframe__"):
+                # 拿前 50 行数据
+                data = payload.get("data").head(50).to_dict() # type: ignore
+                head = list(data)
+                rows = []
+                keys = data[head[0]].keys()
+                for key in keys:
+                    row = [data[col][key] for col in data]
+                    rows.append(row)
+                payload["data"] = { "rows": rows, "head": head }
         self.__mainframe.report(
             self.block_info,
             {

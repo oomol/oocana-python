@@ -13,4 +13,4 @@ class MediaPreviewPayload(TypedDict):
     type: Literal['image', 'audio', 'video', 'markdown', "iframe"]
     data: str
 
-PreviewPayload: TypeAlias = TablePreviewPayload | MediaPreviewPayload
+PreviewPayload: TypeAlias = TablePreviewPayload | MediaPreviewPayload | Any

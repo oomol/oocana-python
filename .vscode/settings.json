@@ -1,12 +1,12 @@
 {
     "cSpell.words": [
         "aiomqtt",
+        "dataframe",
         "mqtt",
         "oocana",
         "paho",
         "SIGALRM",
-        "userdata",
-        "oocana"
+        "userdata"
     ],
     "python.analysis.typeCheckingMode": "basic",
     "yaml.schemas": {

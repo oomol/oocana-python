@@ -121,10 +121,10 @@ class Context:
         )
 
     def preview(self, payload: PreviewPayload):
-        if payload["type"] == "table":
-            if hasattr(payload["data"], "__dataframe__"):
+        if payload.get("type") is not None and payload["type"] == "table":
+            if hasattr(payload.get("data"), "__dataframe__"):
                 # 拿前 50 行数据
-                data = payload["data"].head(50).to_dict() # type: ignore
+                data = payload.get("data").head(50).to_dict() # type: ignore
                 head = list(data)
                 rows = []
                 keys = data[head[0]].keys()

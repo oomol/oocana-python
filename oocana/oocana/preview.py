@@ -10,7 +10,7 @@ class TablePreviewPayload(TypedDict):
     data: TablePreviewData | Any
 
 class MediaPreviewPayload(TypedDict):
-    type: Literal['image', 'audio', 'video', 'markdown']
+    type: Literal['image', 'audio', 'video', 'markdown', "iframe"]
     data: str
 
 PreviewPayload: TypeAlias = TablePreviewPayload | MediaPreviewPayload

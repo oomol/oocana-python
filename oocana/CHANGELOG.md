@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.5](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.4...@oomol/python-sdk@0.11.5) (2024-08-02)
+
+
+### Features
+
+* **preview:** add iframe ([#118](https://github.com/oomol/oocana-python/issues/118)) ([17d29e1](https://github.com/oomol/oocana-python/commit/17d29e1f0d1633b9a459aa2c2179318a740370df))
+
 ## [0.11.4](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.3...@oomol/python-sdk@0.11.4) (2024-08-02)
 
 

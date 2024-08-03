@@ -1,4 +1,4 @@
-import json
+import simplejson as json
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
 import operator
@@ -63,11 +63,11 @@ class Mainframe:
     # 不等待 publish 完成，使用 qos 参数来会保证消息到达。
     def send(self, job_info: JobDict, msg) -> mqtt.MQTTMessageInfo:
         return self.client.publish(
-            f'session/{job_info["session_id"]}', json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
+            f'session/{job_info["session_id"]}', json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}, ignore_nan=True), qos=1
         )
 
     def report(self, block_info: BlockDict, msg: dict) -> mqtt.MQTTMessageInfo:
-        return self.client.publish("report", json.dumps({**block_info, **msg}), qos=1)
+        return self.client.publish("report", json.dumps({**block_info, **msg}, ignore_nan=True), qos=1)
 
     def notify_ready(self, session_id: str, job_id: str) -> dict:
 
@@ -86,7 +86,7 @@ class Mainframe:
             "type": "BlockReady",
             "session_id": session_id,
             "job_id": job_id,
-        }), qos=1)
+        }, ignore_nan=True), qos=1)
 
         while True:
             if replay is not None:
@@ -94,7 +94,7 @@ class Mainframe:
                 return replay
             
     def publish(self, topic, payload):
-        self.client.publish(topic, json.dumps(payload), qos=1)
+        self.client.publish(topic, json.dumps(payload, ignore_nan=True), qos=1)
     
     def subscribe(self, topic, callback):
         def on_message(_client, _userdata, message):

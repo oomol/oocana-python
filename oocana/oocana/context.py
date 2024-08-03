@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
@@ -128,16 +129,16 @@ class Context:
         if isinstance(payload, dict) and payload.get("type") is not None and payload["type"] == "table":
             df: Any = payload.get("data")
             if hasattr(df, "__dataframe__") and hasattr(df, "to_dict"):
-                size = df.size
+                size = df.shape[0]
                 if size <= 10:
                     data = df.to_dict(orient='split')
                     head = data.get("columns", [])
                     rows = data.get("data", [])
                 else:
-                    data_head = df.head(5).replace({float('nan'): None}).to_dict(orient='split')
+                    data_head = loads(df.head(5).to_json(orient='split'))
                     head = data_head.get("columns", [])
                     rows_head = data_head.get("data", [])
-                    data_tail = df.tail(5).replace({float('nan'): None}).to_dict(orient='split')
+                    data_tail = loads(df.tail(5).to_json(orient='split'))
                     rows_tail = data_tail.get("data", [])
                     rows_dots = [["..."] * len(head)]
                     rows = rows_head + rows_dots + rows_tail

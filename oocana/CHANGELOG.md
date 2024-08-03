@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.8](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.7...@oomol/python-sdk@0.11.8) (2024-08-03)
+
+
+### Features
+
+* use simplejson instead of json ([#125](https://github.com/oomol/oocana-python/issues/125)) ([c2bf1a9](https://github.com/oomol/oocana-python/commit/c2bf1a96dba0cc9965852c60079a8d8072fb1312))
+
+
+### Bug Fixes
+
+* **preview:** use df parse json ([#126](https://github.com/oomol/oocana-python/issues/126)) ([95950af](https://github.com/oomol/oocana-python/commit/95950afb2af340089a324ba55a83871fba3edca9))
+
 ## [0.11.7](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.6...@oomol/python-sdk@0.11.7) (2024-08-02)
 
 

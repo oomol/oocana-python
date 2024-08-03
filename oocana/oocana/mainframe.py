@@ -1,4 +1,4 @@
-import json
+import simplejson as json
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
 import operator

@@ -5,7 +5,7 @@ from .handle_data import HandleDef
 from .mainframe import Mainframe
 from typing import Dict, Any
 from .preview import PreviewPayload
-
+from .data import EXECUTOR_NAME
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
         return self is value
@@ -64,7 +64,7 @@ class Context:
 
     def __store_ref(self, handle: str):
         return StoreKey(
-            executor="python_executor",
+            executor=EXECUTOR_NAME,
             handle=handle,
             job_id=self.job_id,
             session_id=self.session_id,

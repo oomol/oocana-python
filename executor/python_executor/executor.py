@@ -10,8 +10,8 @@ import shutil
 from oocana import Mainframe, StoreKey, ServiceExecutePayload
 from .data import store, serviceMap
 from .block import run_block, tmp_files
+from .data import EXECUTOR_NAME
 
-EXECUTOR_NAME = "python"
 logger = logging.getLogger(EXECUTOR_NAME)
 
 async def setup(loop):

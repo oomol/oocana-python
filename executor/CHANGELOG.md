@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.6](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.5...@oomol/python-executor@0.10.6) (2024-08-05)
+
+
+### Bug Fixes
+
+* missing drop message path ([2c14cc2](https://github.com/oomol/oocana-python/commit/2c14cc27ad8d78a318414a01dd700689f466114e))
+* wrong EXECUTOR NAME ([#131](https://github.com/oomol/oocana-python/issues/131)) ([fc93311](https://github.com/oomol/oocana-python/commit/fc93311d7697047728981caa25c25abfceb2e191))
+
 ## [0.10.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.4...@oomol/python-executor@0.10.5) (2024-08-02)
 
 

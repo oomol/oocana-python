@@ -1,0 +1,59 @@
+nodes:
+  - node_id: block-0
+    task: 
+      executor: 
+        name: python
+        options: 
+          source: |-
+            from oocana import Context
+            def main(inputs, context: Context):
+                a = "aaa"
+                return {"output": "count"}
+      outputs_def:
+        - handle: output
+          json_schema:
+            contentMediaType: "oomol/var"
+    inputs_from:
+      - handle: in
+  - node_id: block-1
+    task:
+      executor: 
+        name: python
+        options: 
+          source: |-
+            from oocana import Context
+            def main(inputs, context: Context):
+                a = "aaa"
+                return {"output": "count"}
+      outputs_def:
+        - handle: output
+          json_schema:
+            contentMediaType: oomol/var
+      inputs_def:
+        - handle: in
+    inputs_from:
+      - handle: in
+        from_node:
+          - node_id: block-0
+            output_handle: output
+  - node_id: block-2
+    task:
+      executor: 
+        name: python
+        options: 
+          source: |-
+            from oocana import Context
+            def main(inputs, context: Context):
+                a = "aaa"
+                return {"output": "count"}
+      outputs_def:
+        - handle: output
+          json_schema:
+            contentMediaType: oomol/var
+      inputs_def:
+        - handle: in
+    inputs_from:
+      - handle: in
+        from_node:
+          - node_id: block-1
+            output_handle: output

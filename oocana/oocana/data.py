@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import TypedDict
 
+EXECUTOR_NAME = "python"
+
 class JobDict(TypedDict):
     session_id: str
     job_id: str

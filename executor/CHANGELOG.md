@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.7](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.6...@oomol/python-executor@0.10.7) (2024-08-05)
+
+
+### Bug Fixes
+
+* use delay delete for workaround ([#132](https://github.com/oomol/oocana-python/issues/132)) ([54687f8](https://github.com/oomol/oocana-python/commit/54687f8527d0f1c71e14ab29fcfb0cd41b42c83d))
+
 ## [0.10.6](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.5...@oomol/python-executor@0.10.6) (2024-08-05)
 
 

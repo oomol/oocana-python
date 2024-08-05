@@ -1,6 +1,6 @@
 title: service-example
 executor:
-  name: python_executor
+  name: python
   entry: main.py
   function: main
 blocks:

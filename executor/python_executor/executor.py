@@ -10,7 +10,7 @@ import shutil
 from oocana import Mainframe, StoreKey, ServiceExecutePayload
 from .data import store, serviceMap
 from .block import run_block, tmp_files
-from .data import EXECUTOR_NAME
+from oocana import EXECUTOR_NAME
 
 logger = logging.getLogger(EXECUTOR_NAME)
 

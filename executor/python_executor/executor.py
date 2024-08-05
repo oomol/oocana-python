@@ -71,8 +71,12 @@ async def setup(loop):
         obj = StoreKey(**message)
         o = store.get(obj)
         if o is not None:
-            logger.info(f"drop {obj.job_id} {obj.handle}")
-            del store[obj]
+            def dele():
+                logger.info(f"drop {obj.job_id} {obj.handle}")
+                del store[obj]
+            import threading
+            timer = threading.Timer(5, dele)
+            timer.start()
 
     def session_end(message):
         if message.get("type") == "SessionFinished":

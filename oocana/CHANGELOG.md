@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.11](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.10...@oomol/python-sdk@0.11.11) (2024-08-06)
+
+
+### Features
+
+* **preview:** support preview matplotlib figure as image ([#137](https://github.com/oomol/oocana-python/issues/137)) ([548dfd0](https://github.com/oomol/oocana-python/commit/548dfd045b240f43ee4af95c8d34e08bb0c92466))
+
 ## [0.11.10](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.9...@oomol/python-sdk@0.11.10) (2024-08-06)
 
 

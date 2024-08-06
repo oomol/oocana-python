@@ -129,20 +129,20 @@ class Context:
         if isinstance(payload, dict) and payload.get("type") is not None and payload["type"] == "table":
             df: Any = payload.get("data")
             if hasattr(df, "__dataframe__") and hasattr(df, "to_dict"):
-                size = df.shape[0]
-                if size <= 10:
+                row_count = df.shape[0]
+                if row_count <= 10:
                     data = df.to_dict(orient='split')
-                    head = data.get("columns", [])
+                    columns = data.get("columns", [])
                     rows = data.get("data", [])
                 else:
-                    data_head = loads(df.head(5).to_json(orient='split'))
-                    head = data_head.get("columns", [])
-                    rows_head = data_head.get("data", [])
+                    data_columns = loads(df.head(5).to_json(orient='split'))
+                    columns = data_columns.get("columns", [])
+                    rows_head = data_columns.get("data", [])
                     data_tail = loads(df.tail(5).to_json(orient='split'))
                     rows_tail = data_tail.get("data", [])
-                    rows_dots = [["..."] * len(head)]
+                    rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail
-                payload["data"] = { "rows": rows, "head": head }
+                payload["data"] = { "rows": rows, "columns": columns, "row_count": row_count }
         self.__mainframe.report(
             self.block_info,
             {

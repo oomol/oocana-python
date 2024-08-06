@@ -69,6 +69,9 @@ class Context:
             job_id=self.job_id,
             session_id=self.session_id,
         )
+    
+    def __is_basic_type(self, value: Any) -> bool:
+        return isinstance(value, (int, float, str, bool))
 
     def output(self, output, handle: str, done: bool = False):
 
@@ -77,7 +80,7 @@ class Context:
         if self.__outputs_def is not None:
             output_def = self.__outputs_def.get(handle)
             if (
-                output_def is not None and output_def.is_var_handle()
+                output_def is not None and output_def.is_var_handle() and not self.__is_basic_type(output) # 基础类型即使是变量也不放进 store，直接作为 json 内容传递
             ):
                 ref = self.__store_ref(handle)
                 self.__store[ref] = output

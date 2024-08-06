@@ -4,6 +4,8 @@ from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
 from typing import Dict, Any
+from base64 import b64encode
+from io import BytesIO
 from .preview import PreviewPayload
 from .data import EXECUTOR_NAME
 class OnlyEqualSelf:
@@ -123,8 +125,8 @@ class Context:
                 "payload": payload,
             },
         )
-
-    def preview(self, payload: PreviewPayload):
+    
+    def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
         # payload is a dataframe
         if hasattr(payload, "__dataframe__") and hasattr(payload, "to_dict"):
             payload = { "type": "table", "data": payload }
@@ -146,6 +148,27 @@ class Context:
                     rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail
                 payload["data"] = { "rows": rows, "columns": columns, "row_count": row_count }
+        
+        return payload
+
+    def __matplotlib(self, payload: PreviewPayload) -> PreviewPayload:
+        # payload is a matplotlib Figure
+        if hasattr(payload, 'savefig'):
+            fig: Any = payload
+            buffer = BytesIO()
+            fig.savefig(buffer, format='png')
+            buffer.seek(0)
+            png = buffer.getvalue()
+            buffer.close()
+            url = f'data:image/png;base64,{b64encode(png).decode('utf-8')}'
+            payload = { "type": "image", "data": url }
+
+        return payload
+
+    def preview(self, payload: PreviewPayload):
+        payload = self.__dataframe(payload)
+        payload = self.__matplotlib(payload)
+
         self.__mainframe.report(
             self.block_info,
             {

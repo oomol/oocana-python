@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.10](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.9...@oomol/python-sdk@0.11.10) (2024-08-06)
+
+
+### Features
+
+* **preview:** add row count ([#134](https://github.com/oomol/oocana-python/issues/134)) ([594a9c8](https://github.com/oomol/oocana-python/commit/594a9c86c9b8cba7770070feff0b3f8eae0c139a))
+* var store exclude basic type ([#136](https://github.com/oomol/oocana-python/issues/136)) ([56f0029](https://github.com/oomol/oocana-python/commit/56f0029e387c6fae1f025e1df3b3d632a18c6fc0))
+
 ## [0.11.9](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.8...@oomol/python-sdk@0.11.9) (2024-08-05)
 
 

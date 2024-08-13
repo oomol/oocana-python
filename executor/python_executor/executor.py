@@ -20,6 +20,7 @@ async def setup(loop):
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--session-id", help="executor subscribe session id", required=True)
+    parser.add_argument("--client-id", help="mqtt client id")
 
     home_directory = os.path.expanduser("~")
 

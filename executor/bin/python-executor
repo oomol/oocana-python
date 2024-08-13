@@ -12,4 +12,9 @@ fi
 
 cd $DIR/..
 
+# 本地的 .venv 优先使用
+if [ -d ../.venv ]; then
+  source ../.venv/bin/activate
+fi
+
 python -u -m python_executor.executor "$@"

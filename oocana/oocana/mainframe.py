@@ -69,7 +69,7 @@ class Mainframe:
     def report(self, block_info: BlockDict, msg: dict) -> mqtt.MQTTMessageInfo:
         return self.client.publish("report", json.dumps({**block_info, **msg}, ignore_nan=True), qos=1)
 
-    def notify_ready(self, session_id: str, job_id: str) -> dict:
+    def notify_block_ready(self, session_id: str, job_id: str) -> dict:
 
         topic = f"inputs/{session_id}/{job_id}"
         replay = None

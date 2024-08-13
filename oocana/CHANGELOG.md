@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.12.0](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.11...@oomol/python-sdk@0.12.0) (2024-08-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* session level executor ([#140](https://github.com/oomol/oocana-python/issues/140))
+
+### Features
+
+* session level executor ([#140](https://github.com/oomol/oocana-python/issues/140)) ([ca77bec](https://github.com/oomol/oocana-python/commit/ca77becb427d22d516a8fca6f8a1c413953d201c))
+
 ## [0.11.11](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.10...@oomol/python-sdk@0.11.11) (2024-08-06)
 
 

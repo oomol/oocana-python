@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.11.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.7...@oomol/python-executor@0.11.0) (2024-08-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* session level executor ([#140](https://github.com/oomol/oocana-python/issues/140))
+
+### Features
+
+* session level executor ([#140](https://github.com/oomol/oocana-python/issues/140)) ([ca77bec](https://github.com/oomol/oocana-python/commit/ca77becb427d22d516a8fca6f8a1c413953d201c))
+
 ## [0.10.7](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.6...@oomol/python-executor@0.10.7) (2024-08-05)
 
 

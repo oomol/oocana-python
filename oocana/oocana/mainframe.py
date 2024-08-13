@@ -68,8 +68,15 @@ class Mainframe:
 
     def report(self, block_info: BlockDict, msg: dict) -> mqtt.MQTTMessageInfo:
         return self.client.publish("report", json.dumps({**block_info, **msg}, ignore_nan=True), qos=1)
+    
+    def notify_executor_ready(self, session_id: str, executor_name: str) -> None:
+        self.client.publish(f"session/{session_id}", json.dumps({
+            "type": "ExecutorReady",
+            "session_id": session_id,
+            "executor_name": executor_name,
+        }, ignore_nan=True), qos=1)
 
-    def notify_ready(self, session_id: str, job_id: str) -> dict:
+    def notify_block_ready(self, session_id: str, job_id: str) -> dict:
 
         topic = f"inputs/{session_id}/{job_id}"
         replay = None

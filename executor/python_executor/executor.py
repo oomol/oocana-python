@@ -19,15 +19,18 @@ async def setup(loop):
     import argparse
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
-    parser.add_argument("--client-id", help="mqtt client id")
+    parser.add_argument("--session-id", help="executor subscribe session id", required=True)
 
     home_directory = os.path.expanduser("~")
+
+    # TODO: 迁移到 .oocana 下
     default_log_dir = os.path.join(home_directory, ".oomol-studio")
     parser.add_argument("--log-dir", help="log dir", default=default_log_dir)
     args = parser.parse_args()
 
     # 考虑启动方式，以及获取地址以及执行器名称，or default value
     address: str = args.address
+    session_id: str = args.session_id
     log_dir: str = args.log_dir
 
     mainframe = Mainframe(address, args.client_id)
@@ -40,7 +43,7 @@ async def setup(loop):
 
     if os.path.exists(log_dir):
 
-        file_name = os.path.join(log_dir, 'executor', 'python.log')
+        file_name = os.path.join(log_dir, 'executor', f'python-{session_id}.log')
         if not os.path.exists(file_name):
             os.makedirs(os.path.dirname(file_name), exist_ok=True)
             open(file_name, 'w').close()
@@ -53,7 +56,13 @@ async def setup(loop):
 
     fs = queue.Queue()
 
+    def not_current_session(message):
+        return message.get("session_id") != session_id
+
     def execute_block(message):
+        if not_current_session(message):
+            return
+
         nonlocal fs
         # 在当前使用的 mqtt 库里，如果在 subscribe 之后，直接 publish 消息，会一直阻塞无法发送成功。
         # 所以要切换线程后，再进行 publish。这里使用 future 来实现线程切换和数据传递。
@@ -62,12 +71,18 @@ async def setup(loop):
         f.set_result(message)
     
     def execute_service_block(message):
+        if not_current_session(message):
+            return
+
         nonlocal fs
         f = loop.create_future()
         fs.put(f)
         f.set_result(message)
 
     def drop(message):
+        if not_current_session(message):
+            return
+        
         obj = StoreKey(**message)
         o = store.get(obj)
         if o is not None:
@@ -79,6 +94,9 @@ async def setup(loop):
             timer.start()
 
     def session_end(message):
+        if not_current_session(message):
+            return
+
         if message.get("type") == "SessionFinished":
             dir_set: set[str] = set()
             for k in tmp_files:
@@ -89,6 +107,7 @@ async def setup(loop):
                 # 如果子目录是在 .scriptlets 目录下，删除子目录
                 if os.path.exists(d) and os.path.dirname(d).endswith(".scriptlets"):
                     shutil.rmtree(d)
+            exit()
             
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)

@@ -94,11 +94,18 @@ async def setup(loop):
             timer = threading.Timer(5, dele)
             timer.start()
 
-    def session_end(message):
-        if not_current_session(message):
-            return
+    def report_message(message):
+        type = message.get("type")
 
-        if message.get("type") == "SessionFinished":
+        if type == "SessionStarted":
+            if not_current_session(message):
+                logger.info(f"new session {message.get('session_id')} started, exit current session {session_id} executor")
+                exit()
+
+        elif type == "SessionFinished":
+            if not_current_session(message):
+                return
+
             dir_set: set[str] = set()
             for k in tmp_files:
                 if os.path.exists(k):
@@ -108,13 +115,12 @@ async def setup(loop):
                 # 如果子目录是在 .scriptlets 目录下，删除子目录
                 if os.path.exists(d) and os.path.dirname(d).endswith(".scriptlets"):
                     shutil.rmtree(d)
-            exit()
             
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
-    mainframe.subscribe('report', session_end)
+    mainframe.subscribe('report', report_message)
 
     mainframe.notify_executor_ready(session_id, EXECUTOR_NAME)
 

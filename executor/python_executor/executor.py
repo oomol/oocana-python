@@ -94,6 +94,18 @@ async def setup(loop):
             timer = threading.Timer(5, dele)
             timer.start()
 
+    def ping(message):
+        nonlocal fs
+        f = loop.create_future()
+        fs.put(f)
+        f.set_result({"type": "ExecutorPing"})
+
+    def ask_ready(message):
+        nonlocal fs
+        f = loop.create_future()
+        fs.put(f)
+        f.set_result({"type": "ExecutorReady"})
+
     def report_message(message):
         type = message.get("type")
 
@@ -115,14 +127,16 @@ async def setup(loop):
                 # 如果子目录是在 .scriptlets 目录下，删除子目录
                 if os.path.exists(d) and os.path.dirname(d).endswith(".scriptlets"):
                     shutil.rmtree(d)
-            
+        
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/{session_id}/ping", ping)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/{session_id}/ready", ask_ready)
     mainframe.subscribe('report', report_message)
 
-    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME)
+    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=args.client_id)
 
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")
@@ -161,6 +175,12 @@ async def setup(loop):
                     asyncio.create_task(spawn_service(message))
                 else:
                     run_service_block(message, service_id)
+            # TODO: 把类型约束弄好
+            elif message.get("type") == "ExecutorPing":
+                mainframe.publish(f"session/{session_id}", {"type": "ExecutorPong", "session_id": session_id, "executor_name": EXECUTOR_NAME, "client_id": args.client_id})
+                pass
+            elif message.get("type") == "ExecutorReady":
+                mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=args.client_id)
             else:
                 run_in_background(message, mainframe)
 

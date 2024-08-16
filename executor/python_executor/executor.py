@@ -59,6 +59,9 @@ async def setup(loop):
 
     def not_current_session(message):
         return message.get("session_id") != session_id
+    
+    def not_current_service(message):
+        return message.get("service_id") != service_id
 
     def execute_block(message):
         if not_current_session(message):
@@ -169,6 +172,9 @@ async def setup(loop):
             f = fs.get()
             message = await f
             if message.get("service_executor") is not None:
+                if not_current_service(message):
+                    continue
+
                 service_dir = message.get("dir")
                 service_id = serviceMap.get(service_dir)
                 if service_id is None:
@@ -182,6 +188,8 @@ async def setup(loop):
             elif message.get("type") == "ExecutorReady":
                 mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=args.client_id)
             else:
+                if not_current_session(message):
+                    continue
                 run_in_background(message, mainframe)
 
 def run_async_code(async_func):

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.0...@oomol/python-executor@0.11.1) (2024-08-16)
+
+
+### Features
+
+* delay exit after new session start for rerun cache ([#142](https://github.com/oomol/oocana-python/issues/142)) ([6073583](https://github.com/oomol/oocana-python/commit/6073583c554d2f3380125178362ea51a0ee73a25))
+
 ## [0.11.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.10.7...@oomol/python-executor@0.11.0) (2024-08-13)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.12.0...@oomol/python-sdk@0.12.1) (2024-08-17)
+
+
+### Bug Fixes
+
+* missing some commit  ([#144](https://github.com/oomol/oocana-python/issues/144)) ([0b62b0b](https://github.com/oomol/oocana-python/commit/0b62b0b59d59d5ebcd5e85f4bf48f22cc86cd079))
+
 ## [0.12.0](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.11.11...@oomol/python-sdk@0.12.0) (2024-08-13)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.1...@oomol/python-executor@0.11.2) (2024-08-17)
+
+
+### Bug Fixes
+
+* missing some commit  ([#144](https://github.com/oomol/oocana-python/issues/144)) ([0b62b0b](https://github.com/oomol/oocana-python/commit/0b62b0b59d59d5ebcd5e85f4bf48f22cc86cd079))
+
 ## [0.11.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.0...@oomol/python-executor@0.11.1) (2024-08-16)
 
 

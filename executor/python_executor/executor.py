@@ -59,6 +59,9 @@ async def setup(loop):
 
     def not_current_session(message):
         return message.get("session_id") != session_id
+    
+    def not_current_service(message):
+        return message.get("service_id") != service_id
 
     def execute_block(message):
         if not_current_session(message):
@@ -83,16 +86,28 @@ async def setup(loop):
     def drop(message):
         if not_current_session(message):
             return
-        
-        obj = StoreKey(**message)
-        o = store.get(obj)
-        if o is not None:
-            def dele():
-                logger.info(f"drop {obj.job_id} {obj.handle}")
-                del store[obj]
-            import threading
-            timer = threading.Timer(5, dele)
-            timer.start()
+        # 现在是 session 级别的 executor，退出自然清空。这样也允许变量重复使用
+        # obj = StoreKey(**message)
+        # o = store.get(obj)
+        # if o is not None:
+        #     def dele():
+        #         logger.info(f"drop {obj.job_id} {obj.handle}")
+        #         del store[obj]
+        #     import threading
+        #     timer = threading.Timer(5, dele)
+        #     timer.start()
+
+    def ping(message):
+        nonlocal fs
+        f = loop.create_future()
+        fs.put(f)
+        f.set_result({"type": "ExecutorPing"})
+
+    def ask_ready(message):
+        nonlocal fs
+        f = loop.create_future()
+        fs.put(f)
+        f.set_result({"type": "ExecutorReady"})
 
     def report_message(message):
         type = message.get("type")
@@ -115,14 +130,16 @@ async def setup(loop):
                 # 如果子目录是在 .scriptlets 目录下，删除子目录
                 if os.path.exists(d) and os.path.dirname(d).endswith(".scriptlets"):
                     shutil.rmtree(d)
-            
+        
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/{session_id}/ping", ping)
+    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/{session_id}/ready", ask_ready)
     mainframe.subscribe('report', report_message)
 
-    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME)
+    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=args.client_id)
 
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")
@@ -155,13 +172,24 @@ async def setup(loop):
             f = fs.get()
             message = await f
             if message.get("service_executor") is not None:
+                if not_current_service(message):
+                    continue
+
                 service_dir = message.get("dir")
                 service_id = serviceMap.get(service_dir)
                 if service_id is None:
                     asyncio.create_task(spawn_service(message))
                 else:
                     run_service_block(message, service_id)
+            # TODO: 把类型约束弄好
+            elif message.get("type") == "ExecutorPing":
+                mainframe.publish(f"session/{session_id}", {"type": "ExecutorPong", "session_id": session_id, "executor_name": EXECUTOR_NAME, "client_id": args.client_id})
+                pass
+            elif message.get("type") == "ExecutorReady":
+                mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=args.client_id)
             else:
+                if not_current_session(message):
+                    continue
                 run_in_background(message, mainframe)
 
 def run_async_code(async_func):

@@ -32,8 +32,9 @@ class Context:
         self.__inputs = inputs
 
         outputs_defs = {}
-        for k, v in outputs.items():
-            outputs_defs[k] = HandleDef(**v)
+        if outputs is not None:
+            for k, v in outputs.items():
+                outputs_defs[k] = HandleDef(**v)
         self.__outputs_def = outputs_defs
 
     @property

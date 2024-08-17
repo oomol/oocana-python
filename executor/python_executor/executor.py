@@ -86,16 +86,16 @@ async def setup(loop):
     def drop(message):
         if not_current_session(message):
             return
-        
-        obj = StoreKey(**message)
-        o = store.get(obj)
-        if o is not None:
-            def dele():
-                logger.info(f"drop {obj.job_id} {obj.handle}")
-                del store[obj]
-            import threading
-            timer = threading.Timer(5, dele)
-            timer.start()
+        # 现在是 session 级别的 executor，退出自然清空。这样也允许变量重复使用
+        # obj = StoreKey(**message)
+        # o = store.get(obj)
+        # if o is not None:
+        #     def dele():
+        #         logger.info(f"drop {obj.job_id} {obj.handle}")
+        #         del store[obj]
+        #     import threading
+        #     timer = threading.Timer(5, dele)
+        #     timer.start()
 
     def ping(message):
         nonlocal fs

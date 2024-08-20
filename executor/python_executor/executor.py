@@ -6,8 +6,8 @@ import queue
 import sys
 import logging
 
-from oocana import Mainframe, StoreKey, ServiceExecutePayload
-from .data import store, serviceMap
+from oocana import Mainframe, ServiceExecutePayload
+from .data import serviceMap
 from .block import run_block
 from oocana import EXECUTOR_NAME
 

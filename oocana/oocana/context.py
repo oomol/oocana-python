@@ -178,7 +178,14 @@ class Context:
             },
         )
 
-    def report_progress(self, progress: int):
+
+    def report_progress(self, progress: float | int):
+        """report progress
+
+        This api is used to report the progress of the block. but it just effect the ui progress not the real progress.
+
+        :param float | int progress: the progress of the block, the value should be in [0, 100].
+        """
         self.__mainframe.report(
             self.block_info,
             {

@@ -97,6 +97,8 @@ async def setup(loop):
         #     timer = threading.Timer(5, dele)
         #     timer.start()
 
+    original_keys = set(sys.modules.keys())
+
     def ping(message):
         nonlocal fs
         f = loop.create_future()
@@ -116,10 +118,19 @@ async def setup(loop):
             if not_current_session(message):
                 logger.info(f"new session {message.get('session_id')} started, exit current session {session_id} executor")
                 exit()
+            
 
         elif type == "SessionFinished":
             if not_current_session(message):
                 return
+            
+            # 每次运行结束，清理新增的模块
+            delete = set(sys.modules.keys()) - original_keys
+            for key in delete:
+                del sys.modules[key]
+            
+            # sys.path 可能也需要清理。
+
 
             dir_set: set[str] = set()
             for k in tmp_files:

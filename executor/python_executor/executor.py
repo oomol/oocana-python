@@ -5,11 +5,10 @@ import os
 import queue
 import sys
 import logging
-import shutil
 
 from oocana import Mainframe, StoreKey, ServiceExecutePayload
 from .data import store, serviceMap
-from .block import run_block, tmp_files
+from .block import run_block
 from oocana import EXECUTOR_NAME
 
 logger = logging.getLogger(EXECUTOR_NAME)
@@ -130,17 +129,6 @@ async def setup(loop):
                 del sys.modules[key]
             
             # sys.path 可能也需要清理。
-
-
-            dir_set: set[str] = set()
-            for k in tmp_files:
-                if os.path.exists(k):
-                    os.remove(k)
-                dir_set.add(os.path.dirname(k))
-            for d in dir_set:
-                # 如果子目录是在 .scriptlets 目录下，删除子目录
-                if os.path.exists(d) and os.path.dirname(d).endswith(".scriptlets"):
-                    shutil.rmtree(d)
         
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)

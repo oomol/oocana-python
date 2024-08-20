@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.12.1...@oomol/python-sdk@0.12.2) (2024-08-20)
+
+
+### Features
+
+* support float and add some docs ([#149](https://github.com/oomol/oocana-python/issues/149)) ([16935cc](https://github.com/oomol/oocana-python/commit/16935ccc604de149310dea906e73bb1afe3f00ae))
+
 ## [0.12.1](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.12.0...@oomol/python-sdk@0.12.1) (2024-08-17)
 
 

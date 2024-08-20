@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.3...@oomol/python-executor@0.11.4) (2024-08-20)
+
+
+### Features
+
+* support float and add some docs ([#149](https://github.com/oomol/oocana-python/issues/149)) ([16935cc](https://github.com/oomol/oocana-python/commit/16935ccc604de149310dea906e73bb1afe3f00ae))
+
 ## [0.11.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.2...@oomol/python-executor@0.11.3) (2024-08-20)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.2...@oomol/python-executor@0.11.3) (2024-08-20)
+
+
+### Bug Fixes
+
+* clear code cache after session end ([#146](https://github.com/oomol/oocana-python/issues/146)) ([b48ca03](https://github.com/oomol/oocana-python/commit/b48ca03929a59417343b62ba591f77cc31707c47))
+
 ## [0.11.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.1...@oomol/python-executor@0.11.2) (2024-08-17)
 
 

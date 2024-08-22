@@ -47,7 +47,6 @@ async def setup(loop):
         logger_file = os.path.join(log_dir, f'python-{session_id}.log')
         if not os.path.exists(logger_file):
             os.makedirs(os.path.dirname(logger_file), exist_ok=True)
-            open(logger_file, 'w').close()
 
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename=logger_file)
         print(f"setup basic logging in file {logger_file}")

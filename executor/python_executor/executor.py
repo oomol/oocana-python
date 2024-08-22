@@ -25,7 +25,7 @@ async def setup(loop):
 
     # TODO: 迁移到 .oocana 下
     default_log_dir = os.path.join(home_directory, ".oomol-studio", "executor")
-    parser.add_argument("--log-dir", help="log file's directory", default=default_log_dir)
+    parser.add_argument("--log-dir", help="log file's directory. need output option be file", default=default_log_dir)
 
 
     args = parser.parse_args()

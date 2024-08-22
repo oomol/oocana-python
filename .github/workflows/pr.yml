@@ -44,3 +44,5 @@ jobs:
         run: pdm build
       - name: static check
         run: pdm check
+      - name: test
+        run: pdm test

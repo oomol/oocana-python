@@ -20,18 +20,20 @@ async def setup(loop):
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--session-id", help="executor subscribe session id", required=True)
     parser.add_argument("--client-id", help="mqtt client id")
-
+    parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     home_directory = os.path.expanduser("~")
 
     # TODO: 迁移到 .oocana 下
-    default_log_dir = os.path.join(home_directory, ".oomol-studio")
-    parser.add_argument("--log-dir", help="log dir", default=default_log_dir)
+    default_log_dir = os.path.join(home_directory, ".oomol-studio", "executor")
+    parser.add_argument("--log-dir", help="log file's directory", default=default_log_dir)
+
+
     args = parser.parse_args()
 
-    # 考虑启动方式，以及获取地址以及执行器名称，or default value
     address: str = args.address
     session_id: str = args.session_id
     log_dir: str = args.log_dir
+    output: str = args.output
 
     mainframe = Mainframe(address, args.client_id)
     mainframe.connect()
@@ -41,15 +43,14 @@ async def setup(loop):
     # Python 以子进程启动时，输出不会立刻出现。而我们在业务上需要这一行日志，所以主动 flush 一次。
     sys.stdout.flush()
 
-    if os.path.exists(log_dir):
+    if output == "file":
+        logger_file = os.path.join(log_dir, f'python-{session_id}.log')
+        if not os.path.exists(logger_file):
+            os.makedirs(os.path.dirname(logger_file), exist_ok=True)
+            open(logger_file, 'w').close()
 
-        file_name = os.path.join(log_dir, 'executor', f'python-{session_id}.log')
-        if not os.path.exists(file_name):
-            os.makedirs(os.path.dirname(file_name), exist_ok=True)
-            open(file_name, 'w').close()
-
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename=file_name)
-        logger.info(f"setup basic logging in file {file_name}")
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename=logger_file)
+        print(f"setup basic logging in file {logger_file}")
     else:
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
         logger.info("setup basic logging in console")
@@ -85,16 +86,6 @@ async def setup(loop):
     def drop(message):
         if not_current_session(message):
             return
-        # 现在是 session 级别的 executor，退出自然清空。这样也允许变量重复使用
-        # obj = StoreKey(**message)
-        # o = store.get(obj)
-        # if o is not None:
-        #     def dele():
-        #         logger.info(f"drop {obj.job_id} {obj.handle}")
-        #         del store[obj]
-        #     import threading
-        #     timer = threading.Timer(5, dele)
-        #     timer.start()
 
     original_keys = set(sys.modules.keys())
 

@@ -24,9 +24,10 @@ pdm run build-all
 
 ## TODO
 
-- [ ] 导出一份 type hint
+- [x] 导出一份 type hint
+- [ ] 增加 mqtt broker 启动，以支持在 action 中开启 cli 启动单测
 - [ ] 需要让多进程穿插运行 block 时，将对应 stderr 和 stdout 的输出能够对应到正确的 block。
-- [ ] session 结束时，清理 sys.modules 导入的 modules。
+- [x] session 结束时，清理 sys.modules 导入的 modules。
 - [x] 支持协程/多进程穿插执行 block
 - [x] 让 executor 可以编写多文件，目前由于限制，只能写单文件。
 - [x] 处理`DeprecationWarning: There is no current event loop`警告。

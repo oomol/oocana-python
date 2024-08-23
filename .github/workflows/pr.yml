@@ -44,5 +44,13 @@ jobs:
         run: pdm build
       - name: static check
         run: pdm check
-      - name: test
-        run: pdm test
+      - name: install mqtt broker
+        run: |
+          sudo apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
+          sudo apt-get update
+          sudo apt-get install -y mosquitto
+      - name: unittest
+        run: |
+          mosquitto -p 47688 &
+          sleep 5
+          pdm test

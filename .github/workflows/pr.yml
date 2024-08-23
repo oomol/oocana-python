@@ -51,6 +51,6 @@ jobs:
           sudo apt-get install -y mosquitto
       - name: unittest
         run: |
-          mosquitto -p 47688 &
+          mosquitto -p 47688 -d
           sleep 5
           pdm test

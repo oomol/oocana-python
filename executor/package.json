@@ -2,8 +2,7 @@
   "name": "@oomol/python-executor",
   "version": "",
   "files": [
-    "python_executor/*.py",
-    "bin/*"
+    "python_executor/*.py"
   ],
   "bin": {
     "python-executor": "bin/python-executor.sh"

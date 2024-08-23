@@ -47,7 +47,7 @@ class TestHandleData(unittest.TestCase):
             "a": "1",
         }
 
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError, msg="missing attr key: 'handle'"):
             handle_data.InputHandleDef(**d) # type: ignore
 
     def test_handle_type(self):

@@ -1,4 +1,8 @@
-# oocana-python-sdk
+# oocana-python
+
+本项目有 oocana 和 executor 两个项目，分别为给 Python block 用的 oocana sdk 和用来运行所有 block 的 python-executor。
+
+目前都通过 npm 包发布。在 install 后安装到全局环境。
 
 ## 开发准备
 

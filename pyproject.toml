@@ -22,7 +22,7 @@ publish_oocana = { shell = "./scripts/publish_oocana.sh" }
 publish_executor = { shell = "./scripts/publish_executor.sh" }
 check = { shell = "pdm run pyright ./oocana ./executor" }
 build_all = { shell = "(cd oocana && pdm build) && (cd executor && pdm build)" }
-test = { shell = "pdm run pytest ./oocana ./executor" }
+test = { shell = "pdm run pytest ./oocana" } # TODO: executor 上的一些测试需要开启 broker 才能测试
 executor = { shell = "executor/bin/python-executor.sh" }
 
 [tool.pdm.dev-dependencies]

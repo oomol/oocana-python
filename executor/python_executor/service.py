@@ -43,7 +43,8 @@ class ServiceRuntime:
         if self._stop_at is None:
             return
         elif self._stop_at == "session_end":
-            self._mainframe.subscribe(f"executor/session/{self._config['session_id']}", lambda payload: self.exit() if payload["type"] == "SessionFinished" else None)
+            # session level 的 executor，由于缓存的存在，不能立刻退出。要等到新 session 启动才退出
+            self._mainframe.subscribe(f"session/{self._config.get('session_id')}", lambda payload: self.exit() if payload.get("type") == "SessionStarted" and payload.get("session_id") != self._config.get("session_id") else None)
         elif self._stop_at == "app_end":
             # TODO: app_end 有 executor 来中止？
             pass

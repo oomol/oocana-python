@@ -55,7 +55,6 @@ async def setup(loop):
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
         logger.info("setup basic logging in console")
 
-    fs = queue.Queue()
 
     def not_current_session(message):
         return message.get("session_id") != session_id
@@ -63,13 +62,14 @@ async def setup(loop):
     def not_current_service(message):
         return message.get("service_id") != service_id
 
+    # 目前的 mqtt 库，在 subscribe 回调里 publish 消息会导致死锁无法工作，参考 https://github.com/eclipse/paho.mqtt.python/issues/527 或者 https://stackoverflow.com/a/36964192/4770006
+    # 通过这种方式来绕过，所有需要 callback 后 publish message 的情况，都需要使用 future 类似方式来绕过。
+    fs = queue.Queue()
     def execute_block(message):
         if not_current_session(message):
             return
 
         nonlocal fs
-        # 在当前使用的 mqtt 库里，如果在 subscribe 之后，直接 publish 消息，会一直阻塞无法发送成功。
-        # 所以要切换线程后，再进行 publish。这里使用 future 来实现线程切换和数据传递。
         f = loop.create_future()
         fs.put(f)
         f.set_result(message)
@@ -83,9 +83,11 @@ async def setup(loop):
         fs.put(f)
         f.set_result(message)
 
+    # 现在 session 要保留 var 进行 rerun 缓存，所以这个回调目前不处理。如果 var 功能保留，这个回调就直接删除。
     def drop(message):
-        if not_current_session(message):
-            return
+        pass
+        # if not_current_session(message):
+        #     return
 
     original_keys = set(sys.modules.keys())
 

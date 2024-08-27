@@ -115,8 +115,8 @@ def run_async_code(async_func):
     loop.run_until_complete(async_func)
     loop.run_forever()
 
-def config_callback(payload: Any, mainframe: Mainframe, client_id: str):
-    service = ServiceRuntime(payload, mainframe, client_id)
+def config_callback(payload: Any, mainframe: Mainframe, service_id: str):
+    service = ServiceRuntime(payload, mainframe, service_id)
 
     async def run():
         await service.run()
@@ -125,20 +125,20 @@ def config_callback(payload: Any, mainframe: Mainframe, client_id: str):
     threading.Thread(target=run_async_code, args=(run(),)).start()
 
 
-async def run_service(address, client_id):
-    mainframe = Mainframe(address, client_id)
+async def run_service(address, service_id):
+    mainframe = Mainframe(address, service_id)
     mainframe.connect()
 
-    mainframe.subscribe(f"executor/service/{client_id}/config", lambda payload: config_callback(payload, mainframe, client_id))
+    mainframe.subscribe(f"executor/service/{service_id}/config", lambda payload: config_callback(payload, mainframe, service_id))
     await asyncio.sleep(1)
-    mainframe.publish(f"executor/service/{client_id}/spawn", {})
+    mainframe.publish(f"executor/service/{service_id}/spawn", {})
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", required=True)
-    parser.add_argument("--client-id", help="mqtt client id")
+    parser.add_argument("--service-id", help="service id")
     args = parser.parse_args()
 
     loop = asyncio.new_event_loop()

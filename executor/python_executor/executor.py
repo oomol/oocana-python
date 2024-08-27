@@ -137,7 +137,7 @@ async def setup(loop):
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         process = await asyncio.create_subprocess_shell(
-            f"python -u -m python_executor.service --address {address} --client-id {service_id}",
+            f"python -u -m python_executor.service --address {address} --service-id {service_id}",
             cwd=parent_dir
         )
 

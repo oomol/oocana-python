@@ -14,7 +14,8 @@
             "justMyCode": false,
             "args": [
                 "--output=console",
-                "--session-id=123"
+                "--session-id=123",
+                "--client-id=123"
             ]
         },
         {

@@ -46,10 +46,10 @@ class ExecutePayload:
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
-def load_module(file_path: str, module_name: str, source_dir=None):
+def load_module(file_path: str, source_dir=None):
 
-    if module_name in sys.modules:
-        return sys.modules[module_name]
+    if file_path in sys.modules:
+        return sys.modules[file_path]
 
     if (os.path.isabs(file_path)):
         file_abs_path = file_path
@@ -60,9 +60,9 @@ def load_module(file_path: str, module_name: str, source_dir=None):
     module_dir = os.path.dirname(file_abs_path)
     sys.path.insert(0, module_dir)
 
-    file_spec = importlib.util.spec_from_file_location(module_name, file_abs_path)
+    file_spec = importlib.util.spec_from_file_location(file_path, file_abs_path)
     module = importlib.util.module_from_spec(file_spec)  # type: ignore
-    sys.modules[module_name] = module
+    sys.modules[file_path] = module
 
     file_spec.loader.exec_module(module)  # type: ignore
     return module
@@ -131,7 +131,7 @@ async def run_block(message, mainframe: Mainframe):
 
     try:
         # TODO: 这里的异常处理，应该跟详细一些，提供语法错误提示。
-        index_module = load_module(file_path, payload.session_id+node_id, load_dir) # type: ignore
+        index_module = load_module(file_path, load_dir) # type: ignore
     except Exception:
         traceback_str = traceback.format_exc()
         context.done(traceback_str)

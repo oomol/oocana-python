@@ -7,6 +7,7 @@ import inspect
 import asyncio
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
+SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
 
 class ServiceMessage(TypedDict):
     job_id: str
@@ -36,13 +37,14 @@ class ServiceRuntime:
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
 
-        mainframe.subscribe(f"executor/service/{service_id}/execute", self.run_block)
+        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.run_block)
 
     def _setup_timer(self):
         if self._stop_at is None:
             return
         elif self._stop_at == "session_end":
-            self._mainframe.subscribe(f"executor/session/{self._config['session_id']}", lambda payload: self.exit() if payload["type"] == "SessionFinished" else None)
+            # session level 的 executor，由于缓存的存在，不能立刻退出。要等到新 session 启动才退出
+            self._mainframe.subscribe(f"session/{self._config.get('session_id')}", lambda payload: self.exit() if payload.get("type") == "SessionStarted" and payload.get("session_id") != self._config.get("session_id") else None)
         elif self._stop_at == "app_end":
             # TODO: app_end 有 executor 来中止？
             pass
@@ -74,7 +76,7 @@ class ServiceRuntime:
         await self.run_block(self._config)
     
     def exit(self):
-        self._mainframe.publish(f"executor/service/{self._service_id}/exit", {})
+        self._mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{self._service_id}/exit", {})
         self._mainframe.disconnect()
         exit(0)
 
@@ -115,8 +117,8 @@ def run_async_code(async_func):
     loop.run_until_complete(async_func)
     loop.run_forever()
 
-def config_callback(payload: Any, mainframe: Mainframe, client_id: str):
-    service = ServiceRuntime(payload, mainframe, client_id)
+def config_callback(payload: Any, mainframe: Mainframe, service_id: str):
+    service = ServiceRuntime(payload, mainframe, service_id)
 
     async def run():
         await service.run()
@@ -125,22 +127,21 @@ def config_callback(payload: Any, mainframe: Mainframe, client_id: str):
     threading.Thread(target=run_async_code, args=(run(),)).start()
 
 
-async def start_service(loop, address, client_id):
-    mainframe = Mainframe(address, client_id)
+async def run_service(address, service_id):
+    mainframe = Mainframe(address, service_id)
     mainframe.connect()
-
-    mainframe.subscribe(f"executor/service/{client_id}/config", lambda payload: config_callback(payload, mainframe, client_id))
+    mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", lambda payload: config_callback(payload, mainframe, service_id))
     await asyncio.sleep(1)
-    mainframe.publish(f"executor/service/{client_id}/spawn", {})
+    mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn", {})
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", required=True)
-    parser.add_argument("--client-id", help="mqtt client id")
+    parser.add_argument("--service-id", help="service id")
     args = parser.parse_args()
 
     loop = asyncio.new_event_loop()
-    loop.run_until_complete(start_service(loop, args.address, args.client_id))
+    loop.run_until_complete(run_service(args.address, args.client_id))
     loop.run_forever()

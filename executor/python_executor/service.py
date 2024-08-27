@@ -125,7 +125,7 @@ def config_callback(payload: Any, mainframe: Mainframe, client_id: str):
     threading.Thread(target=run_async_code, args=(run(),)).start()
 
 
-async def start_service(loop, address, client_id):
+async def run_service(address, client_id):
     mainframe = Mainframe(address, client_id)
     mainframe.connect()
 
@@ -142,5 +142,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     loop = asyncio.new_event_loop()
-    loop.run_until_complete(start_service(loop, args.address, args.client_id))
+    loop.run_until_complete(run_service(args.address, args.client_id))
     loop.run_forever()

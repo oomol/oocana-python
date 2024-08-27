@@ -10,6 +10,7 @@ from oocana import Mainframe, ServiceExecutePayload
 from .data import serviceMap
 from .block import run_block
 from oocana import EXECUTOR_NAME
+from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
 
 logger = logging.getLogger(EXECUTOR_NAME)
 
@@ -141,19 +142,19 @@ async def setup(loop):
             cwd=parent_dir
         )
 
-        mainframe.subscribe(f"executor/service/{service_id}/spawn", lambda _: mainframe.publish(f"executor/service/{service_id}/config", message))
+        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn", lambda _: mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", message))
 
 
         # 等待子进程结束
         await process.wait()
         logger.info(f"service {service_id} exit")
         serviceMap.pop(message.get("dir"))
-        mainframe.unsubscribe(f"executor/service/{service_id}/spawn")
+        mainframe.unsubscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn")
     
 
     def run_service_block(message: ServiceExecutePayload, service_id: str):
         logger.info(f"service block {message.get('job_id')} start")
-        mainframe.publish(f"executor/service/{service_id}/config", message)
+        mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", message)
 
     while True:
         await asyncio.sleep(1)

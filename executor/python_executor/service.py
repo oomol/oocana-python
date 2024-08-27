@@ -7,6 +7,7 @@ import inspect
 import asyncio
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
+SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
 
 class ServiceMessage(TypedDict):
     job_id: str
@@ -36,7 +37,7 @@ class ServiceRuntime:
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
 
-        mainframe.subscribe(f"executor/service/{service_id}/execute", self.run_block)
+        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.run_block)
 
     def _setup_timer(self):
         if self._stop_at is None:
@@ -74,7 +75,7 @@ class ServiceRuntime:
         await self.run_block(self._config)
     
     def exit(self):
-        self._mainframe.publish(f"executor/service/{self._service_id}/exit", {})
+        self._mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{self._service_id}/exit", {})
         self._mainframe.disconnect()
         exit(0)
 
@@ -128,10 +129,9 @@ def config_callback(payload: Any, mainframe: Mainframe, service_id: str):
 async def run_service(address, service_id):
     mainframe = Mainframe(address, service_id)
     mainframe.connect()
-
-    mainframe.subscribe(f"executor/service/{service_id}/config", lambda payload: config_callback(payload, mainframe, service_id))
+    mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", lambda payload: config_callback(payload, mainframe, service_id))
     await asyncio.sleep(1)
-    mainframe.publish(f"executor/service/{service_id}/spawn", {})
+    mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn", {})
 
 
 if __name__ == "__main__":

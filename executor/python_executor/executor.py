@@ -56,7 +56,8 @@ async def setup(loop):
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
         logger.info("setup basic logging in console")
 
-    globals().setdefault('oomol', vars)
+    # TODO: 透传给其他模块的 全局变量。比较 hack。后续考虑优化，或者把变量共享到另一个文件。使用见 oomol.py
+    sys.modules['oomol'] = vars # type: ignore
 
     add_matplot_module()
     import_helper(logger)

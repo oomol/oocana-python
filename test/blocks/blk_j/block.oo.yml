@@ -1,0 +1,5 @@
+type: task_block
+executor:
+  name: python
+  options: 
+    entry: main.py

@@ -1,0 +1,3 @@
+nodes:
+  - node_id: a
+    task: ../../blocks/blk_j

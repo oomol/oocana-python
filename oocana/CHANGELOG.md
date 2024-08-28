@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.3](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.12.2...@oomol/python-sdk@0.12.3) (2024-08-28)
+
+
+### Code Refactoring
+
+* improve ci and publish files ([#153](https://github.com/oomol/oocana-python/issues/153)) ([41e207f](https://github.com/oomol/oocana-python/commit/41e207f4272d49fdbea7c0600b9fdf97ce04b705))
+
 ## [0.12.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.12.1...@oomol/python-sdk@0.12.2) (2024-08-20)
 
 

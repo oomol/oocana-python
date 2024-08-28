@@ -20,6 +20,6 @@ def show(*args, **kwargs):
                 buffer.close()
                 url = f'data:image/png;base64,{b64encode(png).decode('utf-8')}'
                 payload = { "type": "image", "data": url }
-                # context.preview(payload)
+                context.preview(payload)
     else:
         print('matplotlib_oomol: no globals().get("oomol")', file=sys.stderr)

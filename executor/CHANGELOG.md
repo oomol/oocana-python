@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.0...@oomol/python-executor@0.12.1) (2024-08-28)
+
+
+### Bug Fixes
+
+* missing module and global var ([#161](https://github.com/oomol/oocana-python/issues/161)) ([403ccdb](https://github.com/oomol/oocana-python/commit/403ccdb957e65561159b4c39469f2fa05800ce98))
+* uncomment preview ([d8ca88b](https://github.com/oomol/oocana-python/commit/d8ca88b61eea5c9c493961923de2858f1fbc8048))
+
 ## [0.12.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.5...@oomol/python-executor@0.12.0) (2024-08-28)
 
 

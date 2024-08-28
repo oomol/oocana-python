@@ -2,8 +2,7 @@
   "name": "@oomol/python-executor",
   "version": "",
   "files": [
-    "python_executor/*.py",
-    "matplotlib_oomol/*.py"
+    "python_executor"
   ],
   "bin": {
     "python-executor": "bin/python-executor.sh"

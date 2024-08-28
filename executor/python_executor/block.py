@@ -12,7 +12,9 @@ import os
 import sys
 import importlib
 import importlib.util
+import contextvars
 
+vars = contextvars.ContextVar('context')
 
 class ExecutorOptionsDict(TypedDict):
     function: Optional[str]
@@ -101,6 +103,7 @@ async def run_block(message, mainframe: Mainframe):
         })
         return
 
+    vars.set(context)
 
     load_dir = payload.dir
 

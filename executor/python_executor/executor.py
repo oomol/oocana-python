@@ -8,50 +8,10 @@ import logging
 
 from oocana import Mainframe, ServiceExecutePayload
 from .data import serviceMap
-from .block import run_block
+from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
-
-# TODO: 把 matplotlib_oomol.py 文件所在目录加入 PYTHONPATH
-# 如果下面这个 use 不起作用，可以设置环境变量 MPLBACKEND 为 'module://matplotlib_oomol'
-
-# 下面两个 try 理论上用户环境有安装 matplotlib 和 plotly.py 的话可以注入自定义 show() 的实现
-
-try:
-    import matplotlib # type: ignore
-    matplotlib.use('module://matplotlib_oomol')
-except:
-    pass
-
-try:
-    from plotly.io import renderers # type: ignore
-    from plotly.io.base_renderers import ExternalRenderer # type: ignore
-
-    class OomolRenderer(ExternalRenderer):
-        def render(self, fig_dict):
-            var = globals().get('oomol')
-            if var:
-                context = var.get('context')
-
-                from plotly.io import to_html # type: ignore
-                html = to_html(
-                    fig_dict,
-                    include_plotlyjs=True,
-                    include_mathjax="cdn",
-                    full_html=True,
-                    default_width="100%",
-                    default_height="100%",
-                    validate=False,
-                )
-
-                context.preview({ "type": "html", "data": html })
-            else:
-                print("OomolRenderer: no globals().get('oomol')", file=sys.stderr)
-
-    renderers['oomol'] = OomolRenderer()
-    renderers.default = 'oomol'
-except:
-    pass
+from .matplot_helper import import_helper
 
 logger = logging.getLogger(EXECUTOR_NAME)
 
@@ -95,6 +55,10 @@ async def setup(loop):
     else:
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
         logger.info("setup basic logging in console")
+
+    globals().setdefault('oomol', vars)
+
+    import_helper(logger)
 
 
     def not_current_session(message):

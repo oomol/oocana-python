@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.12.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.5...@oomol/python-executor@0.12.0) (2024-08-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* add custom show() handler for matplotlib and plotly ([#159](https://github.com/oomol/oocana-python/issues/159))
+
+### Features
+
+* add custom show() handler for matplotlib and plotly ([#159](https://github.com/oomol/oocana-python/issues/159)) ([1581474](https://github.com/oomol/oocana-python/commit/1581474f7df7f6be5a7c4c51b329af628aab105e))
+
 ## [0.11.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.4...@oomol/python-executor@0.11.5) (2024-08-28)
 
 

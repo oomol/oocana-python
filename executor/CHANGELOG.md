@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.11.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.4...@oomol/python-executor@0.11.5) (2024-08-28)
+
+
+### Code Refactoring
+
+* improve ci and publish files ([#153](https://github.com/oomol/oocana-python/issues/153)) ([41e207f](https://github.com/oomol/oocana-python/commit/41e207f4272d49fdbea7c0600b9fdf97ce04b705))
+* improve logger options and logic ([#151](https://github.com/oomol/oocana-python/issues/151)) ([567b305](https://github.com/oomol/oocana-python/commit/567b305f6ff63b6dd07b7842c000d6da819f6aee))
+* prepare service api ([#157](https://github.com/oomol/oocana-python/issues/157)) ([9c75547](https://github.com/oomol/oocana-python/commit/9c755471cf76fb6abd3458b7b698a3a3cf65dc96))
+
 ## [0.11.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.11.3...@oomol/python-executor@0.11.4) (2024-08-20)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.2...@oomol/python-executor@0.12.3) (2024-08-28)
+
+
+### Bug Fixes
+
+* plotly get context issue, use cdn, remove html margin ([#164](https://github.com/oomol/oocana-python/issues/164)) ([4098606](https://github.com/oomol/oocana-python/commit/40986064fc8259baa5799f979b82c4ad2940c74e))
+
 ## [0.12.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.1...@oomol/python-executor@0.12.2) (2024-08-28)
 
 

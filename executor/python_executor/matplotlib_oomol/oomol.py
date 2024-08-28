@@ -22,4 +22,4 @@ def show(*args, **kwargs):
                 payload = { "type": "image", "data": url }
                 context.preview(payload)
     else:
-        print('matplotlib_oomol: no globals().get("oomol")', file=sys.stderr)
+        print('matplotlib_oomol: no sys.modules["oomol"]', file=sys.stderr)

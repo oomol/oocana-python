@@ -1,3 +1,9 @@
+def add_matplot_module():
+    import sys
+    import os.path
+    dir = os.path.dirname(os.path.abspath(__file__))
+    oomol = os.path.join(dir, "matplot_oomol")
+    sys.path.insert(0, oomol)
 
 def import_helper(logger):
     # matplotlib 的 use() 替换

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.1...@oomol/python-executor@0.12.2) (2024-08-28)
+
+
+### Bug Fixes
+
+* missing matplotlib ([7b45c94](https://github.com/oomol/oocana-python/commit/7b45c9456f7b26718af99b46bf0336cc405a97c6))
+
 ## [0.12.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.0...@oomol/python-executor@0.12.1) (2024-08-28)
 
 

@@ -8,9 +8,10 @@ import logging
 
 from oocana import Mainframe, ServiceExecutePayload
 from .data import serviceMap
-from .block import run_block
+from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
+from .matplot_helper import import_helper, add_matplot_module
 
 logger = logging.getLogger(EXECUTOR_NAME)
 
@@ -54,6 +55,11 @@ async def setup(loop):
     else:
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
         logger.info("setup basic logging in console")
+
+    globals().setdefault('oomol', vars)
+
+    add_matplot_module()
+    import_helper(logger)
 
 
     def not_current_session(message):

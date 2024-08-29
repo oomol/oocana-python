@@ -2,15 +2,13 @@
   "name": "test",
   "private": true,
   "scripts": {
-    "broker": "node ./broker.mjs",
-    "start": "node ./demo.mjs"
+    "test": "node ./demo.mjs"
   },
   "dependencies": {
     "@oomol/oocana": "latest"
   },
   "packageManager": "pnpm@8.15.8",
   "devDependencies": {
-    "aedes": "^0.51.2",
     "remitter": "^0.4.2"
   }
 }

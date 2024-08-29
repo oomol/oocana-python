@@ -14,12 +14,12 @@ nodes:
       - handle: in
         value: 1
   - node_id: block-1
-    task: ../blocks/blk_e
+    task: blk_e
     inputs_from:
       - handle: in
         value: 1
   - node_id: block-2
-    task: ../blocks/blk_d
+    task: blk_d
     inputs_from:
       - handle: in
         from_node:

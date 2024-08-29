@@ -1,9 +1,9 @@
-from typing import Literal, Callable, Any, TypedDict, Optional, TypeAlias
+from typing import Literal, Callable, Any, TypedDict, Optional, TypeAlias, Union
 from .context import Context
 from .data import JobDict
 
 class ServiceContext(TypedDict):
-    block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any]
+    block_handler:  Union[Callable[[str, Any, Context], Any], dict[str, Callable[[Any, Context], Any]]]
 
 StopAtOption: TypeAlias = Optional[Literal["block_end", "session_end", "app_end", "never"]]
 

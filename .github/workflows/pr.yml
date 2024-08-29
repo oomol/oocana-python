@@ -34,8 +34,7 @@ jobs:
     if: ${{ needs.skip.outputs.should_skip != 'true' }}
     steps:
       - uses: actions/checkout@v4
-      - name: setup pdm
-        uses: pdm-project/setup-pdm@v4
+      - uses: pdm-project/setup-pdm@v4
         with:
           cache: true
       - name: install dependencies
@@ -52,5 +51,17 @@ jobs:
       - name: unittest
         run: |
           mosquitto -p 47688 -d
-          sleep 5
           pdm test
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: https://npm.pkg.github.com/
+          scope: '@oomol'
+      - name: test flow examples
+        run: |
+          mosquitto -p 47688 -d
+          source .venv/bin/activate
+          cd flow-examples
+          npm install
+          npm run test
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

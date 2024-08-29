@@ -53,6 +53,10 @@ jobs:
           mosquitto -p 47688 -d
           sleep 5
           pdm test
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: https://npm.pkg.github.com/
+          scope: '@oomol'
       - name: test flow examples
         run: |
           mosquitto -p 47688 -d
@@ -60,3 +64,5 @@ jobs:
           cd flow-examples
           npm install
           npm run test
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -34,7 +34,7 @@ async function run(flow) {
   const dispose = cli.events.on("BlockFinished", (event) => {
     if (event["error"]) {
       console.error("BlockFinished with error", event)
-      process.exitCode(-1)
+      process.exit(1);
     }
   })
 

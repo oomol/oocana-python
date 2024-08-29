@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.13.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.5...@oomol/python-executor@0.13.0) (2024-08-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* test service, add flow auto test ([#170](https://github.com/oomol/oocana-python/issues/170))
+
+### Features
+
+* test service, add flow auto test ([#170](https://github.com/oomol/oocana-python/issues/170)) ([2550582](https://github.com/oomol/oocana-python/commit/25505823a4916d3ddaf24616461ac813f12a416a))
+
 ## [0.12.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.4...@oomol/python-executor@0.12.5) (2024-08-29)
 
 

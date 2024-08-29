@@ -14,15 +14,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.env["PATH"] = `${path.join(__dirname, "..", "executor", "bin")}:${process.env["PATH"]}}`;
 async function main() {
   const files = await readdir(path.join(__dirname, "flows"));
-  for (const flow of files) {
-    await run(flow);
+  // TODO: 等 @oomol/oocana 更完善，进行并发测试
+  for (const file of files) {
+    await run(file);
   }
   // oocana 似乎会常驻，主动退出一下
   process.exit(0);
 }
 
 async function run(flow) {
-  console.log("run flow", flow);
+  const label = `run flow ${flow}`;
+  console.time(label);
   const cli = new Vocana();
   cli.events.on(remitter.ANY_EVENT, m => console.log("console every event:", m));
 
@@ -46,7 +48,7 @@ async function run(flow) {
   return new Promise((resolve, reject) => {
     // TODO: SessionFinished 还有可能是 flow 不合法，需要 @oomol/oocana 提供退出码
     cli.events.once("SessionFinished", () => {
-      console.log(flow, "SessionFinished");
+      console.timeEnd(label);
       dispose();
       resolve();
     });

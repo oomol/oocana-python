@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.3...@oomol/python-executor@0.12.4) (2024-08-29)
+
+
+### Code Refactoring
+
+* support show multiple figures, plotly set dark theme ([#166](https://github.com/oomol/oocana-python/issues/166)) ([409c79e](https://github.com/oomol/oocana-python/commit/409c79ee5b1b950f548a69051da8b72017917a49))
+
 ## [0.12.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.2...@oomol/python-executor@0.12.3) (2024-08-28)
 
 

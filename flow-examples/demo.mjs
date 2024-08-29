@@ -10,6 +10,8 @@ import { readdir } from "node:fs/promises";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+
+process.env["PATH"] = `${path.join(__dirname, "..", "executor", "bin")}:${process.env["PATH"]}}`;
 async function main() {
   const files = await readdir(path.join(__dirname, "flows"));
   for (const flow of files) {

@@ -4,7 +4,6 @@
 import  remitter from "remitter";
 import { Vocana } from "@oomol/oocana";
 import path from "node:path"
-import { exitCode } from "node:process";
 import { fileURLToPath } from "node:url";
 import { readdir } from "node:fs/promises";
 
@@ -35,7 +34,7 @@ async function run(flow) {
   const dispose = cli.events.on("BlockFinished", (event) => {
     if (event["error"]) {
       console.error("BlockFinished with error", event)
-      exitCode(-1)
+      process.exitCode(-1)
     }
   })
 

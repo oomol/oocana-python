@@ -171,9 +171,6 @@ async def setup(loop):
             f = fs.get()
             message = await f
             if message.get("service_executor") is not None:
-                if not_current_service(message):
-                    continue
-
                 service_dir = message.get("dir")
                 service_id = serviceMap.get(service_dir)
                 if service_id is None:

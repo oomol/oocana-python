@@ -2,7 +2,7 @@
   "name": "test",
   "private": true,
   "scripts": {
-    "start": "node ./demo.mjs"
+    "test": "node ./demo.mjs"
   },
   "dependencies": {
     "@oomol/oocana": "latest"

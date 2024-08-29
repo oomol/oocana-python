@@ -54,3 +54,10 @@ jobs:
           mosquitto -p 47688 -d
           sleep 5
           pdm test
+      - name: test flow examples
+        run: |
+          mosquitto -p 47688 -d
+          source .venv/bin/activate
+          cd flow-examples
+          pnpm install
+          pnpm run test

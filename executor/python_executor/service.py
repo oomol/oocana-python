@@ -143,5 +143,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     loop = asyncio.new_event_loop()
-    loop.run_until_complete(run_service(args.address, args.client_id))
+    loop.run_until_complete(run_service(args.address, args.service_id))
     loop.run_forever()

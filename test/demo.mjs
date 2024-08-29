@@ -18,6 +18,7 @@ async function main() {
     flowPath: path.join(__dirname, "flows", "basic.flow"),
     blockSearchPaths: [
       path.join(__dirname, "blocks"),
+      path.join(__dirname, "packages")
     ].join(","),
   });
 

@@ -6,12 +6,14 @@ import { Vocana } from "@oomol/oocana";
 import path from "node:path"
 import { exitCode } from "node:process";
 import { fileURLToPath } from "node:url";
+import { readdir } from "node:fs/promises";
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function main() {
-  for (const flow of ["basic", "multiple", "render", "service"]) {
+  const files = await readdir(path.join(__dirname, "flows"));
+  for (const flow of files) {
     await run(flow);
   }
 }

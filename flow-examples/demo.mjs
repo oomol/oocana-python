@@ -10,13 +10,15 @@ import { readdir } from "node:fs/promises";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-
+// 为了让 oocana 能够找到 python-executor
 process.env["PATH"] = `${path.join(__dirname, "..", "executor", "bin")}:${process.env["PATH"]}}`;
 async function main() {
   const files = await readdir(path.join(__dirname, "flows"));
   for (const flow of files) {
     await run(flow);
   }
+  // oocana 似乎会常驻，主动退出一下
+  process.exit(0);
 }
 
 async function run(flow) {

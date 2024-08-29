@@ -27,6 +27,7 @@ def import_helper(logger):
                 if var:
                     context = var.get('context')
 
+                    import re
                     from plotly.io import to_html # type: ignore
                     html = to_html(
                         fig_dict,
@@ -44,7 +45,7 @@ def import_helper(logger):
                     # If we fixed that later we can use include_plotlyjs=True instead.
 
                     # The generated html has default body margin 8px in chrome, remove it.
-                    html = html.replace('<body>', '<body style="margin:0">', 1)
+                    html = re.sub(r'<html[^>]*?>', r'\g<0><style>html { color-scheme: dark } body { overflow: hidden; margin: 0 }</style>', html, flags=re.I)
                     context.preview({ "type": "html", "data": html })
                 else:
                     logger.warning('plotly: no sys.modules["oomol"]')

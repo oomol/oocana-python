@@ -15,7 +15,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 async function main() {
   await cli.connect();
   await cli.runFlow({
-    flowPath: path.join(__dirname, "flows", "basic.flow"),
+    flowPath: path.join(__dirname, "flows", "service", "flow.oo.yaml"),
     blockSearchPaths: [
       path.join(__dirname, "blocks"),
       path.join(__dirname, "packages")

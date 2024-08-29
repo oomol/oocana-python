@@ -15,8 +15,11 @@ def import_helper(logger):
     # plotly 的 show() 替换
     try:
         import sys
+        import plotly.io as pio # type: ignore
         from plotly.io import renderers # type: ignore
         from plotly.io.base_renderers import ExternalRenderer # type: ignore
+
+        pio.templates.default = "plotly_dark"
 
         class OomolRenderer(ExternalRenderer):
             def render(self, fig_dict):

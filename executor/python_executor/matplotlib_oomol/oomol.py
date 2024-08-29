@@ -12,6 +12,7 @@ def show(*args, **kwargs):
     var = sys.modules["oomol"]
     if var:
         context = var.get('context')
+        images = []
         for figmanager in Gcf.get_all_fig_managers():
                 buffer = BytesIO()
                 figmanager.canvas.figure.savefig(buffer, format='png')
@@ -19,7 +20,9 @@ def show(*args, **kwargs):
                 png = buffer.getvalue()
                 buffer.close()
                 url = f'data:image/png;base64,{b64encode(png).decode('utf-8')}'
-                payload = { "type": "image", "data": url }
-                context.preview(payload)
+                images.append(url)
+        if images:
+            payload = { "type": "image", "data": images }
+            context.preview(payload)
     else:
         print('matplotlib_oomol: no sys.modules["oomol"]', file=sys.stderr)

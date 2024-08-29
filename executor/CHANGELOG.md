@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.4...@oomol/python-executor@0.12.5) (2024-08-29)
+
+
+### Code Refactoring
+
+* add dark theme to plotly html ([#168](https://github.com/oomol/oocana-python/issues/168)) ([e4bbda7](https://github.com/oomol/oocana-python/commit/e4bbda77989c4fb656d05d27b631ae227adcdcc9))
+
 ## [0.12.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.3...@oomol/python-executor@0.12.4) (2024-08-29)
 
 

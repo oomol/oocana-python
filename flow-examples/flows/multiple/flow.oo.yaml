@@ -7,7 +7,7 @@ nodes:
           source: |-
               from oocana import Context
               def main(inputs, context: Context):
-                  for i in range(10):
+                  for i in range(3):
                       context.output(i, "i")
                       context.output(i, "ii")
       outputs_def:

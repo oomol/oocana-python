@@ -19,21 +19,18 @@ pnpm install
 
 ## 启动测试
 
-需要三个进程
-
-1. 开启 broker
 ```shell
-cd test
-pnpm broker
+# macos 上安装 mosquitto 执行 brew install
+# 开启 broker 服务
+mosquitto -p 47688 -v
 ```
 
-2. 开启 executor
-```shell
-pdm run executor
-```
-
-3. 启动测试
 ```shell
 cd test
 pnpm start
 ```
+
+## TODO
+
+- [ ] @oomol/oocana 遇到 flow.oo.yaml 格式有问题时，会直接发出 SessionFinished 事件后直接退出。缺少退出码提示整个文件是否正常运行，导致测试无法覆盖这种情况。
+- [ ] 使用 renovate 更新当前项目的 @oomol/oocana 依赖，而不是直接 git ignore 掉 lock 文件。

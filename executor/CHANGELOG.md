@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.0...@oomol/python-executor@0.13.1) (2024-08-30)
+
+
+### Bug Fixes
+
+* use file path not node id ([#172](https://github.com/oomol/oocana-python/issues/172)) ([5824c99](https://github.com/oomol/oocana-python/commit/5824c994c30f80f3d46f134612e8cea45f43126b))
+
 ## [0.13.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.12.5...@oomol/python-executor@0.13.0) (2024-08-29)
 
 

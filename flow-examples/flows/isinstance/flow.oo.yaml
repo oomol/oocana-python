@@ -1,0 +1,10 @@
+nodes:
+  - node_id: aa
+    task : ./a
+  - node_id: bb
+    task : ./b
+    inputs_from:
+      - handle: b
+        from_node:
+          - node_id: aa
+            output_handle: a

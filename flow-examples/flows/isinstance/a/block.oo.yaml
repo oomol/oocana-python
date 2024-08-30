@@ -1,0 +1,9 @@
+executor: 
+  name: python
+  options:
+    entry: "../both/__init__.py"
+    function: a
+outputs_def:
+  - handle: a
+    json_schema:
+      contentMediaType: oomol/var

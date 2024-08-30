@@ -1,43 +1,43 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-env node */
 
-import  remitter from "remitter";
-import { Vocana } from "@oomol/oocana";
+import { Oocana } from "@oomol/oocana";
 import path from "node:path"
 import { fileURLToPath } from "node:url";
 import { readdir } from "node:fs/promises";
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// 为了让 oocana 能够找到 python-executor
 process.env["PATH"] = `${path.join(__dirname, "..", "executor", "bin")}:${process.env["PATH"]}}`;
+
 async function main() {
   const files = await readdir(path.join(__dirname, "flows"));
-  // TODO: 等 @oomol/oocana 更完善，进行并发测试
   for (const file of files) {
-    await run(file);
+    // TODO: executor 在启动后接受到其他 session started 的事件，自己会自动退出，因此无法同时运行多个。executor 应该自己的 session 结束以后，才做这个处理。
+    await run(file).catch((e) => {
+      console.error(`run flow ${file} failed`, e);
+      process.exit(1);
+    });
   }
-  // oocana 似乎会常驻，主动退出一下
-  process.exit(0);
 }
 
 async function run(flow) {
   const label = `run flow ${flow}`;
   console.time(label);
-  const cli = new Vocana();
-  cli.events.on(remitter.ANY_EVENT, m => console.log("console every event:", m));
 
+  const cli = new Oocana();
   await cli.connect();
-  await cli.runFlow({
+
+  const task = await cli.runFlow({
     flowPath: path.join(__dirname, "flows", flow, "flow.oo.yaml"),
     blockSearchPaths: [
       path.join(__dirname, "blocks"),
       path.join(__dirname, "packages")
     ].join(","),
+    sessionId: flow,
   });
 
-  const dispose = cli.events.on("BlockFinished", (event) => {
+  cli.events.on("BlockFinished", (event) => {
     if (event["error"]) {
       console.error("BlockFinished with error", event)
       process.exit(1);
@@ -45,17 +45,13 @@ async function run(flow) {
   })
 
 
-  return new Promise((resolve, reject) => {
-    // TODO: SessionFinished 还有可能是 flow 不合法，需要 @oomol/oocana 提供退出码
-    cli.events.once("SessionFinished", () => {
-      console.timeEnd(label);
-      dispose();
-      resolve();
-    });
-    setTimeout(() => {
-      reject("timeout");
-    }, 1000 * 25);
-  });
+  const code = await task.wait();
+  if (code !== 0) {
+    console.error(`run flow ${flow} failed with code ${code}`);
+    process.exit(1);
+  }
+  console.timeEnd(label);
+  cli.dispose();
 }
 
 main();

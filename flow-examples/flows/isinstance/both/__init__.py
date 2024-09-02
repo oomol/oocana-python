@@ -20,4 +20,4 @@ def b(inputs: dict, context: Context):
     if isinstance(i, Both):
         print("b in put isinstance is ", isinstance(i, Both))
     else:
-        exit(1) # 这样来达到 assert 的效果
+        raise ValueError("b is not Both")

@@ -22,6 +22,7 @@ async function main() {
 }
 
 async function run(flow) {
+  console.log(`run flow ${flow}`);
   const label = `run flow ${flow}`;
   console.time(label);
 

@@ -28,11 +28,11 @@ def createContext(
     if inputs_def is not None and inputs is not None:
         for k, v in inputs_def.items():
             input_def = InputHandleDef(**v)
-            if input_def.is_var_handle():
+            if input_def.is_var_handle(): # TODO: 即使是 var ，如果传递的是简单类型，也不会存在 store key 上。此时应该不需要 warning
                 try:
                     ref = StoreKey(**inputs[k])
                 except:  # noqa: E722
-                    print(f"not valid object ref: {inputs[k]}")
+                    logger.warn(f"not valid object ref: {inputs[k]}")
                     continue
                 value = store.get(ref)
                 if value is None:

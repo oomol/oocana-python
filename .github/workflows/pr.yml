@@ -57,6 +57,7 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@oomol'
       - name: test flow examples
+        timeout-minutes: 5
         run: |
           mosquitto -p 47688 -d
           source .venv/bin/activate

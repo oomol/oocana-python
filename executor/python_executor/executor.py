@@ -33,11 +33,12 @@ async def setup(loop):
     args = parser.parse_args()
 
     address: str = args.address
-    session_id: str = args.session_id
+    session_id: str = str(args.session_id)
+    client_id: str = str(args.client_id)
     log_dir: str = args.log_dir
     output: str = args.output
 
-    mainframe = Mainframe(address, args.client_id)
+    mainframe = Mainframe(address, client_id)
     mainframe.connect()
 
     # 这个日志，用来告知 bin 模式调用时，连接成功。所以这个格式要主动输出保持不变。
@@ -138,7 +139,7 @@ async def setup(loop):
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/{session_id}/ready", ask_ready)
     mainframe.subscribe('report', report_message)
 
-    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=args.client_id)
+    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=client_id)
 
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")
@@ -179,10 +180,10 @@ async def setup(loop):
                     run_service_block(message, service_id)
             # TODO: 把类型约束弄好
             elif message.get("type") == "ExecutorPing":
-                mainframe.publish(f"session/{session_id}", {"type": "ExecutorPong", "session_id": session_id, "executor_name": EXECUTOR_NAME, "client_id": args.client_id})
+                mainframe.publish(f"session/{session_id}", {"type": "ExecutorPong", "session_id": session_id, "executor_name": EXECUTOR_NAME, "client_id": client_id})
                 pass
             elif message.get("type") == "ExecutorReady":
-                mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=args.client_id)
+                mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=client_id)
             else:
                 if not_current_session(message):
                     continue

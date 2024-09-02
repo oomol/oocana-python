@@ -52,7 +52,7 @@ def load_module(file_path: str, source_dir=None):
         file_abs_path = file_path
     else:
         dirname = source_dir if source_dir else os.getcwd()
-        file_abs_path = os.path.join(dirname, file_path)
+        file_abs_path = os.path.abspath(os.path.join(dirname, file_path))
 
     if file_abs_path in sys.modules:
         return sys.modules[file_abs_path]

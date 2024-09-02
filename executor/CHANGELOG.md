@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.13.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.1...@oomol/python-executor@0.13.2) (2024-09-02)
+
+
+### Bug Fixes
+
+* mixing file path module conflict ([dfa9bb3](https://github.com/oomol/oocana-python/commit/dfa9bb3c67d5fd1d2ecd9e473a55d2eec9bfc4c9))
+* transform to str ([fd6c5bf](https://github.com/oomol/oocana-python/commit/fd6c5bf0c89600ca6e9d45b1248cd3147ab91c2f))
+* use abspath resolve relative path ([8a5b963](https://github.com/oomol/oocana-python/commit/8a5b9630985dc0c8ef84e6cb1a221571ecb3eb11))
+
 ## [0.13.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.0...@oomol/python-executor@0.13.1) (2024-08-30)
 
 

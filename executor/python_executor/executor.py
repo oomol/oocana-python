@@ -137,7 +137,8 @@ async def setup(loop):
                     p: str = m.__file__ # type: ignore
                     need_delete = True
                     for path in original_path:
-                        if p.startswith(path) and path != "":
+                        # matplotlib 会加载一些 奇怪的文件，file 为空，这里需要过滤掉。
+                        if p is not None and hasattr(p, "startswith") and p.startswith(path) and path != "":
                             need_delete = False
                             break
                     if need_delete:

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.2...@oomol/python-executor@0.13.3) (2024-09-03)
+
+
+### Bug Fixes
+
+* only remove module that in flow, keep dependencies modules in site-package ([#176](https://github.com/oomol/oocana-python/issues/176)) ([0c532c7](https://github.com/oomol/oocana-python/commit/0c532c71035d058e7f08265e0203367336709462))
+
 ## [0.13.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.1...@oomol/python-executor@0.13.2) (2024-09-02)
 
 

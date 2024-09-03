@@ -7,7 +7,7 @@ import sys
 import logging
 
 from oocana import Mainframe, ServiceExecutePayload
-from .data import serviceMap
+from .data import serviceMap, store
 from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
@@ -125,6 +125,7 @@ async def setup(loop):
             if not_current_session(message):
                 return
             
+            logger.info(f"session {session_id} finished, store: {store}")
             # session 结束，清理新增的模块。一般情况下，executor 已经是 session level 不需要处理，直接退出即可。
             # 这里是为了做 var 的缓存，所以需要清理。
             # 如果不做 var 可以直接退出。

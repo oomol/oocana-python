@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.3...@oomol/python-executor@0.13.4) (2024-09-03)
+
+
+### Bug Fixes
+
+* skip set value if no value in store ([24d95b8](https://github.com/oomol/oocana-python/commit/24d95b8041c66e83dae93cfe1ecd947a528c7509))
+
 ## [0.13.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.2...@oomol/python-executor@0.13.3) (2024-09-03)
 
 

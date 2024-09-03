@@ -34,10 +34,10 @@ def createContext(
                 except:  # noqa: E722
                     logger.warn(f"not valid object ref: {inputs[k]}")
                     continue
-                value = store.get(ref)
-                if value is None:
+                if ref in store:
+                    inputs[k] = store.get(ref)
+                else:
                     logger.error(f"object {ref} not found in store")
-                inputs[k] = value
             elif input_def.is_secret_handle():
                 inputs[k] = replace_secret(inputs[k], secretJson)
 

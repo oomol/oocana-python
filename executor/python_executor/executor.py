@@ -98,6 +98,7 @@ async def setup(loop):
         #     return
 
     original_keys = set(sys.modules.keys())
+    original_path = list(sys.path)
 
     def ping(message):
         nonlocal fs
@@ -124,12 +125,26 @@ async def setup(loop):
             if not_current_session(message):
                 return
             
-            # 每次运行结束，清理新增的模块
+            # session 结束，清理新增的模块。一般情况下，executor 已经是 session level 不需要处理，直接退出即可。
+            # 这里是为了做 var 的缓存，所以需要清理。
+            # 如果不做 var 可以直接退出。
             delete = set(sys.modules.keys()) - original_keys
             for key in delete:
-                del sys.modules[key]
-            
-            # sys.path 可能也需要清理。
+                # 不删除已经加载的依赖模块，只删除 block 引入的模块。有的库，例如 pandas 的 to_json api 在 linux 上二次初始化会出错。
+                m = sys.modules[key]
+                if hasattr(m, "__file__"):
+                    p: str = m.__file__ # type: ignore
+                    need_delete = True
+                    for path in original_path:
+                        if p.startswith(path) and path != "":
+                            need_delete = False
+                            break
+                    if need_delete:
+                        del sys.modules[key]
+                        logger.info(f"delete module {key} in file: {p}")
+
+            logger.info(f"reset sys.path from {sys.path} to {original_path}")
+            sys.path = original_path
         
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)

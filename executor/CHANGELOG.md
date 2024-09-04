@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.14.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.5...@oomol/python-executor@0.14.0) (2024-09-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* exit after current session finish ([#180](https://github.com/oomol/oocana-python/issues/180))
+
+### Features
+
+* exit after current session finish ([#180](https://github.com/oomol/oocana-python/issues/180)) ([6e50612](https://github.com/oomol/oocana-python/commit/6e5061236b8b2c42627706a78a93a036e01fa18f))
+
 ## [0.13.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.4...@oomol/python-executor@0.13.5) (2024-09-03)
 
 

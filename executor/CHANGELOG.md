@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.0...@oomol/python-executor@0.14.1) (2024-09-06)
+
+
+### Bug Fixes
+
+* use home dir path ([#183](https://github.com/oomol/oocana-python/issues/183)) ([a0597e9](https://github.com/oomol/oocana-python/commit/a0597e99ac7f814c2f6f51544e42d51db83c9c2e))
+
 ## [0.14.0](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.13.5...@oomol/python-executor@0.14.0) (2024-09-04)
 
 

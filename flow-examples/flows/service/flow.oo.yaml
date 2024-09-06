@@ -1,3 +1,4 @@
 nodes:
   - node_id: block-1
     service: app::one::a
+    method: main

@@ -1,0 +1,29 @@
+nodes:
+  - node_id: block-0
+    task: 
+      executor: 
+        name: python
+        options: 
+          source: |-
+            from oocana import Context
+            def main(inputs, context: Context):
+                return {"output": "count"}
+      outputs_def:
+        - handle: output
+    inputs_from:
+      - handle: in
+        value: 1
+  - node_id: block-1
+    task: blk_e
+    inputs_from:
+      - handle: in
+        value: 1
+  - node_id: block-2
+    task: blk_d
+    inputs_from:
+      - handle: in
+        from_node:
+          - node_id: block-1
+            output_handle: output
+          - node_id: block-0
+            output_handle: output

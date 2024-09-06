@@ -2,10 +2,11 @@ import logging
 import json
 from oocana import Mainframe, Context, StoreKey, BlockInfo, InputHandleDef
 from typing import Any, Dict
+import os
 
 # TODO: 名字统一从常量 module 中取
 logger = logging.getLogger("EXECUTOR_NAME")
-SECRET_FILE = "/home/ovm/app-config/oomol-secrets/secrets.json"
+SECRET_FILE =  os.path.expanduser("~") + "/app-config/oomol-secrets/secrets.json"
 
 def createContext(
     mainframe: Mainframe, session_id: str, job_id: str, store, output

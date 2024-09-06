@@ -6,6 +6,7 @@ from .mainframe import Mainframe
 from typing import Dict, Any
 from base64 import b64encode
 from io import BytesIO
+from .throtter import throttle
 from .preview import PreviewPayload
 from .data import EXECUTOR_NAME
 class OnlyEqualSelf:
@@ -178,12 +179,19 @@ class Context:
             },
         )
 
-
+    @throttle(0.3)
     def report_progress(self, progress: float | int):
         """report progress
 
         This api is used to report the progress of the block. but it just effect the ui progress not the real progress.
+        This api is throttled. the minimum interval is 0.3s. 
+        When you first call this api, it will report the progress immediately. After it invoked once, it will report the progress at the end of the throttling period.
 
+        |       0.25 s        |   0.2 s  |
+        first call       second call    third call  4 5 6 7's calls
+        |                     |          |          | | | |
+        | -------- 0.3 s -------- | -------- 0.3 s -------- |
+        invoke                  invoke                    invoke
         :param float | int progress: the progress of the block, the value should be in [0, 100].
         """
         self.__mainframe.report(

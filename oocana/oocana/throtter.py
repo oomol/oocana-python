@@ -13,10 +13,11 @@ def throttle(period):
             now = time.time()
             should_invoke = now - last_invoke_time > period
 
-            def invoke(args, kwargs):
-                nonlocal last_invoke_time
+            def invoke():
+                nonlocal last_invoke_time, timer, last_args, last_kwargs
                 last_invoke_time = time.time()
-                return fn(*args, **kwargs)
+                timer = None
+                return fn(*last_args, **last_kwargs)
 
             if should_invoke:
                 if timer:
@@ -28,8 +29,8 @@ def throttle(period):
                 last_args = args
                 last_kwargs = kwargs
                 if timer:
-                    timer.cancel()
-                timer = threading.Timer(period - (now - last_invoke_time), lambda: invoke(last_args, last_kwargs))
+                    return
+                timer = threading.Timer(period - (now - last_invoke_time), lambda: invoke())
                 timer.start()
 
         return wrapper

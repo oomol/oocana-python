@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.13.0...@oomol/python-sdk@0.13.1) (2024-09-06)
+
+
+### Features
+
+* implement throttle with leading ([#182](https://github.com/oomol/oocana-python/issues/182)) ([2078eb9](https://github.com/oomol/oocana-python/commit/2078eb9a6b852a52df958befb191eb1d44966d8d))
+
 ## [0.13.0](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.12.3...@oomol/python-sdk@0.13.0) (2024-08-29)
 
 

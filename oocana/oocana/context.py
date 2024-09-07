@@ -90,11 +90,15 @@ class Context:
                 self.__store[ref] = output
                 v = asdict(ref)
 
+        # 如果传入 key 在输出定义中不存在，直接忽略，不发送数据。但是 done 仍然生效。
         if self.__outputs_def is not None and self.__outputs_def.get(handle) is None:
             # TODO: 未来添加 warning 级别日志时，更改为 warning 而不是 error
             self.send_error(
                 f"Output handle key: [{handle}] is not defined in Block outputs schema."
             )
+            if done:
+                self.done()
+            return
 
         node_result = {
             "type": "BlockOutput",

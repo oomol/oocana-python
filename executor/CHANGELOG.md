@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.1...@oomol/python-executor@0.14.2) (2024-09-07)
+
+
+### Code Refactoring
+
+* follow new api ([10576bc](https://github.com/oomol/oocana-python/commit/10576bc07532b50c9211e682611786de6fa8983a))
+
 ## [0.14.1](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.0...@oomol/python-executor@0.14.1) (2024-09-06)
 
 

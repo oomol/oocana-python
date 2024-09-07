@@ -75,7 +75,7 @@ def output_return_object(obj, context: Context):
         pass
     elif isinstance(obj, dict):
         for k, v in obj.items():
-            context.output(v, k)
+            context.output(k, v)
         context.done()
     else:
         context.done(f"return object needs to be a dictionary, but get type: {type(obj)}")

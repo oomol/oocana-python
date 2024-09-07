@@ -7,5 +7,5 @@ def main(props, context: Context):
     context.log_json({"message": "Hello from Python blk_a"})
     obj = datetime.datetime.now()
     print("obj", obj)
-    context.output(obj, "my_output")
-    context.output("321321", "my_output1")
+    context.output("my_output", obj)
+    context.output("my_output1", "321321")

@@ -8,8 +8,8 @@ nodes:
               from oocana import Context
               def main(inputs, context: Context):
                   for i in range(3):
-                      context.output(i, "i")
-                      context.output(i, "ii")
+                      context.output("i", i)
+                      context.output("ii", i)
       outputs_def:
         - handle: i
         - handle: ii

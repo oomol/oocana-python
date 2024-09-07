@@ -7,7 +7,7 @@ import sys
 import logging
 
 from oocana import Mainframe, ServiceExecutePayload
-from .data import serviceMap, store
+from .data import service_map
 from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
@@ -136,7 +136,7 @@ async def setup(loop):
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")
         service_id = "-".join(["service", message.get("job_id")])
-        serviceMap[message.get("dir")] = service_id
+        service_map[message.get("dir")] = service_id
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         process = await asyncio.create_subprocess_shell(
@@ -150,7 +150,7 @@ async def setup(loop):
         # 等待子进程结束
         await process.wait()
         logger.info(f"service {service_id} exit")
-        serviceMap.pop(message.get("dir"))
+        service_map.pop(message.get("dir"))
         mainframe.unsubscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn")
     
 
@@ -165,7 +165,7 @@ async def setup(loop):
             message = await f
             if message.get("service_executor") is not None:
                 service_dir = message.get("dir")
-                service_id = serviceMap.get(service_dir)
+                service_id = service_map.get(service_dir)
                 if service_id is None:
                     asyncio.create_task(spawn_service(message))
                 else:

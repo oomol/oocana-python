@@ -3,6 +3,7 @@
         "aiomqtt",
         "dataframe",
         "iframe",
+        "matplot",
         "mqtt",
         "oocana",
         "paho",

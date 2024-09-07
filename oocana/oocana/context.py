@@ -77,24 +77,30 @@ class Context:
     def __is_basic_type(self, value: Any) -> bool:
         return isinstance(value, (int, float, str, bool))
 
-    def output(self, output, handle: str, done: bool = False):
+    def output(self, key: str, value: Any, done: bool = False):
+        """
+        output the value to the next block
 
-        v = output
+        key: str, the key of the output, should be defined in the block schema output defs, the field name is handle
+        value: Any, the value of the output
+        """
+
+        v = value
 
         if self.__outputs_def is not None:
-            output_def = self.__outputs_def.get(handle)
+            output_def = self.__outputs_def.get(key)
             if (
-                output_def is not None and output_def.is_var_handle() and not self.__is_basic_type(output) # 基础类型即使是变量也不放进 store，直接作为 json 内容传递
+                output_def is not None and output_def.is_var_handle() and not self.__is_basic_type(value) # 基础类型即使是变量也不放进 store，直接作为 json 内容传递
             ):
-                ref = self.__store_ref(handle)
-                self.__store[ref] = output
+                ref = self.__store_ref(key)
+                self.__store[ref] = value
                 v = asdict(ref)
 
         # 如果传入 key 在输出定义中不存在，直接忽略，不发送数据。但是 done 仍然生效。
-        if self.__outputs_def is not None and self.__outputs_def.get(handle) is None:
+        if self.__outputs_def is not None and self.__outputs_def.get(key) is None:
             # TODO: 未来添加 warning 级别日志时，更改为 warning 而不是 error
             self.send_error(
-                f"Output handle key: [{handle}] is not defined in Block outputs schema."
+                f"Output handle key: [{key}] is not defined in Block outputs schema."
             )
             if done:
                 self.done()
@@ -102,7 +108,7 @@ class Context:
 
         node_result = {
             "type": "BlockOutput",
-            "handle": handle,
+            "handle": key,
             "output": v,
             "done": done,
         }

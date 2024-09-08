@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.2...@oomol/python-executor@0.14.3) (2024-09-07)
+
+
+### Code Refactoring
+
+* rename api ([c58c425](https://github.com/oomol/oocana-python/commit/c58c4258c64c8eff88e595cad2f9ba0cc49e8819))
+* rename to snake_case and remove unused api ([c58c425](https://github.com/oomol/oocana-python/commit/c58c4258c64c8eff88e595cad2f9ba0cc49e8819))
+
 ## [0.14.2](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.1...@oomol/python-executor@0.14.2) (2024-09-07)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.3...@oomol/python-executor@0.14.4) (2024-09-08)
+
+
+### Features
+
+* remove unused api ([#188](https://github.com/oomol/oocana-python/issues/188)) ([c2f633e](https://github.com/oomol/oocana-python/commit/c2f633e7c951ac5b122c39ceb4d7259196b8de65))
+
 ## [0.14.3](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.2...@oomol/python-executor@0.14.3) (2024-09-07)
 
 

@@ -34,7 +34,7 @@ async def setup(loop):
 
     address: str = args.address
     session_id: str = str(args.session_id)
-    client_id: str = str(args.client_id)
+    client_id: str | None = str(args.client_id) if args.client_id is not None else None
     log_dir: str = args.log_dir
     output: str = args.output
 
@@ -127,11 +127,9 @@ async def setup(loop):
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
-    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/{session_id}/ping", ping)
-    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/{session_id}/ready", ask_ready)
     mainframe.subscribe('report', report_message)
 
-    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=client_id)
+    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME)
 
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")
@@ -170,12 +168,6 @@ async def setup(loop):
                     asyncio.create_task(spawn_service(message))
                 else:
                     run_service_block(message, service_id)
-            # TODO: 把类型约束弄好
-            elif message.get("type") == "ExecutorPing":
-                mainframe.publish(f"session/{session_id}", {"type": "ExecutorPong", "session_id": session_id, "executor_name": EXECUTOR_NAME, "client_id": client_id})
-                pass
-            elif message.get("type") == "ExecutorReady":
-                mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, client_id=client_id)
             else:
                 if not_current_session(message):
                     continue

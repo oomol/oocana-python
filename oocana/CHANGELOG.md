@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.1...@oomol/python-sdk@0.14.2) (2024-09-12)
+
+
+### Bug Fixes
+
+* improve python3.10 compatible ([867d7b2](https://github.com/oomol/oocana-python/commit/867d7b23cbc0e6df5e79409d0427f8c5d77762b9))
+
 ## [0.14.1](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.0...@oomol/python-sdk@0.14.1) (2024-09-08)
 
 

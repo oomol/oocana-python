@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.6](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.5...@oomol/python-executor@0.14.6) (2024-09-12)
+
+
+### Bug Fixes
+
+* improve python3.10 compatible ([867d7b2](https://github.com/oomol/oocana-python/commit/867d7b23cbc0e6df5e79409d0427f8c5d77762b9))
+
 ## [0.14.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.4...@oomol/python-executor@0.14.5) (2024-09-12)
 
 

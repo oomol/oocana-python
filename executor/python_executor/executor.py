@@ -97,18 +97,6 @@ async def setup(loop):
         # if not_current_session(message):
         #     return
 
-    def ping(message):
-        nonlocal fs
-        f = loop.create_future()
-        fs.put(f)
-        f.set_result({"type": "ExecutorPing"})
-
-    def ask_ready(message):
-        nonlocal fs
-        f = loop.create_future()
-        fs.put(f)
-        f.set_result({"type": "ExecutorReady"})
-
     def report_message(message):
         type = message.get("type")
 

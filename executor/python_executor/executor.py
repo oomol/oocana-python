@@ -103,7 +103,11 @@ async def setup(loop):
             if not_current_session(message):
                 return
             logger.info(f"session {session_id} finished, exit executor")
-            exit()
+            mainframe.disconnect() # TODO: 即使调用 disconnect，在 broker 上也无法看不到主动断开的信息，有时间再调查。
+            if os.getenv("IS_FORKED"): # fork 进程无法直接使用 sys.exit 退出
+                os._exit(0)
+            else:
+                sys.exit()
         
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)

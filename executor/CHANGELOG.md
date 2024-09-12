@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.14.5](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.4...@oomol/python-executor@0.14.5) (2024-09-12)
+
+
+### Bug Fixes
+
+* exit fail in child process ([07adce8](https://github.com/oomol/oocana-python/commit/07adce8457f1e7fefa4eb95ba0a9f050715ea3f8))
+
+
+### Code Refactoring
+
+* do not exit when new session start, only exit when current session finish ([703a4dd](https://github.com/oomol/oocana-python/commit/703a4dd6edb0f3ec6219ede309b96f380ddab25a))
+* remove unused function ([e81d5a5](https://github.com/oomol/oocana-python/commit/e81d5a5b144e4845287809c7277a7510ba9400fb))
+
 ## [0.14.4](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.3...@oomol/python-executor@0.14.4) (2024-09-08)
 
 

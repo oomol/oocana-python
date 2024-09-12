@@ -99,17 +99,11 @@ async def setup(loop):
 
     def report_message(message):
         type = message.get("type")
-
-        if type == "SessionStarted":
-            if not_current_session(message):
-                logger.info(f"new session {message.get('session_id')} started, exit current session {session_id} executor")
-                exit()
-            
-
-        elif type == "SessionFinished":
+        if type == "SessionFinished":
             if not_current_session(message):
                 return
-            exit(0)
+            logger.info(f"session {session_id} finished, exit executor")
+            exit()
         
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)

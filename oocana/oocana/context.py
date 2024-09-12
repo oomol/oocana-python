@@ -172,7 +172,7 @@ class Context:
             buffer.seek(0)
             png = buffer.getvalue()
             buffer.close()
-            url = f'data:image/png;base64,{b64encode(png).decode('utf-8')}'
+            url = f'data:image/png;base64,{b64encode(png).decode("utf-8")}'
             payload = { "type": "image", "data": url }
 
         return payload

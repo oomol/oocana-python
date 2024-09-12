@@ -68,7 +68,7 @@ class ServiceRuntime:
         fn = m.__dict__.get(service_config.get("function"))
         # TODO: 从 entry 附近查找到当前 Service 依赖的 module
         if not callable(fn):
-            raise Exception(f"function {service_config.get('function')} not found in {service_config.get("entry")}")
+            raise Exception(f"function {service_config.get('function')} not found in {service_config.get('entry')}")
         if inspect.iscoroutinefunction(fn):
             await fn(self)
         else:

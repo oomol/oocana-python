@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.8](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.7...@oomol/python-executor@0.14.8) (2024-09-14)
+
+
+### Bug Fixes
+
+* session level service should exit after session finished ([#195](https://github.com/oomol/oocana-python/issues/195)) ([2e4116d](https://github.com/oomol/oocana-python/commit/2e4116dda9dbd37f2d5629c4acf50892c9612465))
+
 ## [0.14.7](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.6...@oomol/python-executor@0.14.7) (2024-09-14)
 
 

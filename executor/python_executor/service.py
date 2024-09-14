@@ -5,6 +5,7 @@ from .context import createContext
 from threading import Timer
 import inspect
 import asyncio
+import os
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
 SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
@@ -38,13 +39,13 @@ class ServiceRuntime:
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
 
         mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.run_block)
+        self._setup_timer()
 
     def _setup_timer(self):
         if self._stop_at is None:
             return
         elif self._stop_at == "session_end":
-            # session level 的 executor，由于缓存的存在，不能立刻退出。要等到新 session 启动才退出
-            self._mainframe.subscribe(f"session/{self._config.get('session_id')}", lambda payload: self.exit() if payload.get("type") == "SessionStarted" and payload.get("session_id") != self._config.get("session_id") else None)
+            self._mainframe.subscribe("report", lambda payload: self.exit() if payload.get("type") == "SessionFinished" and payload.get("session_id") == self._config.get("session_id") else None)
         elif self._stop_at == "app_end":
             # TODO: app_end 有 executor 来中止？
             pass
@@ -78,7 +79,8 @@ class ServiceRuntime:
     def exit(self):
         self._mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{self._service_id}/exit", {})
         self._mainframe.disconnect()
-        exit(0)
+        # child process need call os._exit not sys.exit
+        os._exit(0)
 
     async def run_block(self, payload: ServiceExecutePayload):
         block_name = payload["block_name"]

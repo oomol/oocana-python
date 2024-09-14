@@ -17,6 +17,7 @@ class ServiceMessage(TypedDict):
     payload: Any
 
 
+# TODO: add service logger
 class ServiceRuntime:
 
     block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any] = dict()
@@ -47,10 +48,9 @@ class ServiceRuntime:
         elif self._stop_at == "session_end":
             self._mainframe.subscribe("report", lambda payload: self.exit() if payload.get("type") == "SessionFinished" and payload.get("session_id") == self._config.get("session_id") else None)
         elif self._stop_at == "app_end":
-            # TODO: app_end 有 executor 来中止？
+            # TODO: 增加 application 结束的 topic，或者 处理 broker 退出的事件。
             pass
         elif self._stop_at == "block_end":
-            # 在 run block 实现
             pass
 
     def __setitem__(self, key, value):

@@ -29,20 +29,20 @@ def import_helper(logger):
 
                     import re
                     from plotly.io import to_html # type: ignore
+                    from plotly.offline import get_plotlyjs_version # type: ignore
+
+                    cdn_ver = get_plotlyjs_version()
+                    cdn_url = f"https://cdn.jsdelivr.net/npm/plotly.js-dist-min@{cdn_ver}/plotly.min.js"
+
                     html = to_html(
                         fig_dict,
-                        include_plotlyjs="cdn", # <-- See comments below.
+                        include_plotlyjs=cdn_url,
                         include_mathjax="cdn",
                         full_html=True,
                         default_width="100%",
                         default_height="100%",
                         validate=False,
                     )
-
-                    # ^ The cdn may be hard to fetch.
-                    # We use CDN here because the html is about 3 MB long,
-                    # but the handler seems only support 100 kB long data.
-                    # If we fixed that later we can use include_plotlyjs=True instead.
 
                     # The generated html has default body margin 8px in chrome, remove it.
                     html = re.sub(r'<html[^>]*?>', r'\g<0><style>html { color-scheme: dark } body { overflow: hidden; margin: 0 }</style>', html, flags=re.I)

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.7](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.6...@oomol/python-executor@0.14.7) (2024-09-14)
+
+
+### Code Refactoring
+
+* plotly.js use another cdn ([#193](https://github.com/oomol/oocana-python/issues/193)) ([30b3864](https://github.com/oomol/oocana-python/commit/30b38645dab3505563b7ae68afc881178a5585e9))
+
 ## [0.14.6](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.5...@oomol/python-executor@0.14.6) (2024-09-12)
 
 

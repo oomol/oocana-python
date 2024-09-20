@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.3](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.2...@oomol/python-sdk@0.14.3) (2024-09-20)
+
+
+### Features
+
+* **sdk:** filter out whitespace logs ([#200](https://github.com/oomol/oocana-python/issues/200)) ([5e788d1](https://github.com/oomol/oocana-python/commit/5e788d1dffac1a963d210148cdbfdce61105fe64))
+
 ## [0.14.2](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.1...@oomol/python-sdk@0.14.2) (2024-09-12)
 
 

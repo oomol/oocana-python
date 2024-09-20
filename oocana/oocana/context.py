@@ -213,9 +213,8 @@ class Context:
             }
         )
 
-    __all_whitespace_matcher = re.compile(r"^\s*$")
     def report_log(self, line: str, stdio: str = "stdout"):
-        if self.__all_whitespace_matcher.fullmatch(line) is not None:
+        if not line.isspace():
             self.__mainframe.report(
                 self.block_info,
                 {

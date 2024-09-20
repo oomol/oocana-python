@@ -213,14 +213,15 @@ class Context:
         )
 
     def report_log(self, line: str, stdio: str = "stdout"):
-        self.__mainframe.report(
-            self.block_info,
-            {
-                "type": "BlockLog",
-                "log": line,
-                stdio: stdio,
-            },
-        )
+        if not line.isspace():
+            self.__mainframe.report(
+                self.block_info,
+                {
+                    "type": "BlockLog",
+                    "log": line,
+                    stdio: stdio,
+                },
+            )
 
     def log_json(self, payload):
         self.__mainframe.report(

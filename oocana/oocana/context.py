@@ -1,4 +1,3 @@
-import re
 from dataclasses import asdict
 from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict

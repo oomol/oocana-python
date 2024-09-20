@@ -1,3 +1,4 @@
+import re
 from dataclasses import asdict
 from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
@@ -212,15 +213,17 @@ class Context:
             }
         )
 
+    __all_whitespace_matcher = re.compile(r"^\s*$")
     def report_log(self, line: str, stdio: str = "stdout"):
-        self.__mainframe.report(
-            self.block_info,
-            {
-                "type": "BlockLog",
-                "log": line,
-                stdio: stdio,
-            },
-        )
+        if self.__all_whitespace_matcher.fullmatch(line) is not None:
+            self.__mainframe.report(
+                self.block_info,
+                {
+                    "type": "BlockLog",
+                    "log": line,
+                    stdio: stdio,
+                },
+            )
 
     def log_json(self, payload):
         self.__mainframe.report(

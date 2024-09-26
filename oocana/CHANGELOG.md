@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.4](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.3...@oomol/python-sdk@0.14.4) (2024-09-26)
+
+
+### Code Refactoring
+
+* **sdk:** remove log whitespace check ([#205](https://github.com/oomol/oocana-python/issues/205)) ([596a446](https://github.com/oomol/oocana-python/commit/596a446dd1685572452119c8e72d9714a8347aa6))
+
 ## [0.14.3](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.2...@oomol/python-sdk@0.14.3) (2024-09-20)
 
 

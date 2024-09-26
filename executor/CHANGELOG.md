@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.9](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.8...@oomol/python-executor@0.14.9) (2024-09-26)
+
+
+### Features
+
+* skip if not current package ([#203](https://github.com/oomol/oocana-python/issues/203)) ([98b70eb](https://github.com/oomol/oocana-python/commit/98b70eba80cf9f0ce58c2adb89a02fec2d463164))
+
 ## [0.14.8](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.7...@oomol/python-executor@0.14.8) (2024-09-14)
 
 

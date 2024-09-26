@@ -23,6 +23,7 @@ async def setup(loop):
     parser.add_argument("--session-id", help="executor subscribe session id", required=True)
     parser.add_argument("--client-id", help="mqtt client id")
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
+    parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     home_directory = os.path.expanduser("~")
 
     # TODO: 迁移到 .oocana 下
@@ -37,6 +38,7 @@ async def setup(loop):
     client_id: str | None = str(args.client_id) if args.client_id is not None else None
     log_dir: str = args.log_dir
     output: str = args.output
+    package: str | None = args.package
 
     mainframe = Mainframe(address, client_id)
     mainframe.connect()
@@ -69,12 +71,20 @@ async def setup(loop):
     
     def not_current_service(message):
         return message.get("service_id") != service_id
+    
+    def not_current_package(message):
+        if package is None:
+            return False
+        return message.get("package") != package
 
     # 目前的 mqtt 库，在 subscribe 回调里 publish 消息会导致死锁无法工作，参考 https://github.com/eclipse/paho.mqtt.python/issues/527 或者 https://stackoverflow.com/a/36964192/4770006
     # 通过这种方式来绕过，所有需要 callback 后 publish message 的情况，都需要使用 future 类似方式来绕过。
     fs = queue.Queue()
     def execute_block(message):
         if not_current_session(message):
+            return
+
+        if not_current_package(message):
             return
 
         nonlocal fs
@@ -84,6 +94,9 @@ async def setup(loop):
     
     def execute_service_block(message):
         if not_current_session(message):
+            return
+        
+        if not_current_package(message):
             return
 
         nonlocal fs

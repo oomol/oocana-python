@@ -13,6 +13,7 @@ import sys
 import importlib
 import importlib.util
 import contextvars
+import threading
 
 vars = contextvars.ContextVar('context')
 
@@ -46,6 +47,8 @@ class ExecutePayload:
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
+lock = threading.Lock()
+
 def load_module(file_path: str, source_dir=None):
 
     if (os.path.isabs(file_path)):
@@ -53,18 +56,18 @@ def load_module(file_path: str, source_dir=None):
     else:
         dirname = source_dir if source_dir else os.getcwd()
         file_abs_path = os.path.abspath(os.path.join(dirname, file_path))
+    with lock:
+        if file_abs_path in sys.modules:
+            return sys.modules[file_abs_path]
 
-    if file_abs_path in sys.modules:
-        return sys.modules[file_abs_path]
+        module_dir = os.path.dirname(file_abs_path)
+        sys.path.insert(0, module_dir)
 
-    module_dir = os.path.dirname(file_abs_path)
-    sys.path.insert(0, module_dir)
+        file_spec = importlib.util.spec_from_file_location(file_abs_path, file_abs_path)
+        module = importlib.util.module_from_spec(file_spec)  # type: ignore
+        sys.modules[file_abs_path] = module
 
-    file_spec = importlib.util.spec_from_file_location(file_abs_path, file_abs_path)
-    module = importlib.util.module_from_spec(file_spec)  # type: ignore
-    sys.modules[file_abs_path] = module
-
-    file_spec.loader.exec_module(module)  # type: ignore
+        file_spec.loader.exec_module(module)  # type: ignore
     return module
 
 

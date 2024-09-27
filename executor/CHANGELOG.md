@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.10](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.9...@oomol/python-executor@0.14.10) (2024-09-27)
+
+
+### Bug Fixes
+
+* lock load module function ([#206](https://github.com/oomol/oocana-python/issues/206)) ([1e88c25](https://github.com/oomol/oocana-python/commit/1e88c2590c4d084d1c2122f2a62e841a0655c55d))
+
 ## [0.14.9](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.8...@oomol/python-executor@0.14.9) (2024-09-26)
 
 

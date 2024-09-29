@@ -20,5 +20,8 @@
     "python.testing.pytestArgs": [
         "oocana",
         "executor"
-    ]
+    ],
+    "git.branchProtection": ["main"],
+    "git.branchProtectionPrompt": "alwaysCommitToNewBranch",
+    "git.branchRandomName.enable": true
 }

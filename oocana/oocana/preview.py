@@ -4,6 +4,7 @@ from typing import Any, TypedDict, List, Literal, TypeAlias
 class TablePreviewData(TypedDict):
     columns: List[str | int | float]
     rows: List[List[str | int | float | bool]]
+    row_count: int | None
 
 class TablePreviewPayload(TypedDict):
     type: Literal['table']

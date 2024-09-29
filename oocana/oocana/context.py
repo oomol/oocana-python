@@ -7,7 +7,7 @@ from typing import Dict, Any
 from base64 import b64encode
 from io import BytesIO
 from .throtter import throttle
-from .preview import PreviewPayload
+from .preview import PreviewPayload, TablePreviewData
 from .data import EXECUTOR_NAME
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
@@ -159,7 +159,8 @@ class Context:
                     rows_tail = data_tail.get("data", [])
                     rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail
-                payload["data"] = { "rows": rows, "columns": columns, "row_count": row_count }
+                data: TablePreviewData = { "rows": rows, "columns": columns, "row_count": row_count }
+                payload = { "type": "table", "data": data }
         
         return payload
 

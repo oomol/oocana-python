@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.5](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.4...@oomol/python-sdk@0.14.5) (2024-09-29)
+
+
+### Bug Fixes
+
+* **table:** fix context preview table type ([#208](https://github.com/oomol/oocana-python/issues/208)) ([3c9efe5](https://github.com/oomol/oocana-python/commit/3c9efe59ee6316969ef7226904d77eddde873bda))
+* use table preview data in code ([a11dddf](https://github.com/oomol/oocana-python/commit/a11dddfee14cc5744919da5670b5ec73a23c566b))
+
 ## [0.14.4](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.3...@oomol/python-sdk@0.14.4) (2024-09-26)
 
 

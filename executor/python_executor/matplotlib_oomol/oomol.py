@@ -19,7 +19,8 @@ def show(*args, **kwargs):
                 buffer.seek(0)
                 png = buffer.getvalue()
                 buffer.close()
-                url = f'data:image/png;base64,{b64encode(png).decode('utf-8')}'
+                base64Data = b64encode(png).decode('utf-8')
+                url = f'data:image/png;base64,{base64Data}'
                 images.append(url)
         if images:
             payload = { "type": "image", "data": images }

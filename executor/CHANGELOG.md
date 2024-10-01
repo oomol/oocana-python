@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.11](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.10...@oomol/python-executor@0.14.11) (2024-09-30)
+
+
+### Bug Fixes
+
+* **python_executor:** 3.10 f-string SyntaxError ([#210](https://github.com/oomol/oocana-python/issues/210)) ([bc875f4](https://github.com/oomol/oocana-python/commit/bc875f49a13e75c2c973b8fbd8d54bfef34dbe2b))
+
 ## [0.14.10](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.9...@oomol/python-executor@0.14.10) (2024-09-27)
 
 

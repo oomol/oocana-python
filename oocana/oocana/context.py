@@ -98,8 +98,7 @@ class Context:
 
         # 如果传入 key 在输出定义中不存在，直接忽略，不发送数据。但是 done 仍然生效。
         if self.__outputs_def is not None and self.__outputs_def.get(key) is None:
-            # TODO: 未来添加 warning 级别日志时，更改为 warning 而不是 error
-            self.send_error(
+            self.send_warning(
                 f"Output handle key: [{key}] is not defined in Block outputs schema."
             )
             if done:
@@ -119,7 +118,7 @@ class Context:
 
     def done(self, error: str | None = None):
         if self.__is_done:
-            # TODO: 添加 warning 日志，提示重复报错
+            self.send_warning("done has been called multiple times, will be ignored.")
             return
         self.__is_done = True
         if error is None:
@@ -231,6 +230,9 @@ class Context:
                 "json": payload,
             },
         )
+
+    def send_warning(self, warning: str):
+        self.__mainframe.send(self.job_info, {"type": "BlockWarning", "warning": warning})
 
     def send_error(self, error: str):
         '''

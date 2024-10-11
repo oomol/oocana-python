@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.6](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.5...@oomol/python-sdk@0.14.6) (2024-10-11)
+
+
+### Features
+
+* add warning message ([#213](https://github.com/oomol/oocana-python/issues/213)) ([2654162](https://github.com/oomol/oocana-python/commit/26541628658ba6b81b83d52fb6b114035e85cadb))
+* rename error api ([#214](https://github.com/oomol/oocana-python/issues/214)) ([5b0f9be](https://github.com/oomol/oocana-python/commit/5b0f9beaaef3ee97ca48143a588a551ab561d4bc))
+
 ## [0.14.5](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.4...@oomol/python-sdk@0.14.5) (2024-09-29)
 
 

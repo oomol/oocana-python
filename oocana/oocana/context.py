@@ -233,4 +233,11 @@ class Context:
         )
 
     def send_error(self, error: str):
+        '''
+        deprecated, use error(error) instead.
+        consider to remove in the future.
+        '''
+        self.error(error)
+
+    def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})

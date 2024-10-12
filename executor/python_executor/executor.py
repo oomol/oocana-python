@@ -12,8 +12,25 @@ from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
 from .matplot_helper import import_helper, add_matplot_module
+from typing import Literal
 
 logger = logging.getLogger(EXECUTOR_NAME)
+
+
+# 日志目录 ~/.oocana/executor/{session_id}/[python-{suffix}.log | python.log]
+def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
+
+    if output == "file":
+        logger_file = os.path.join(os.path.expanduser("~"), ".oocana", "executor", session_id, f"python-{suffix}.log") if suffix is not None else os.path.join(os.path.expanduser("~"), ".oocana", "executor", session_id, "python.log")
+
+        if not os.path.exists(logger_file):
+            os.makedirs(os.path.dirname(logger_file), exist_ok=True)
+
+        print(f"setup logging in file {logger_file}")
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s', filename=logger_file)
+    else:
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s')
+
 
 async def setup(loop):
 
@@ -21,9 +38,9 @@ async def setup(loop):
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--session-id", help="executor subscribe session id", required=True)
-    parser.add_argument("--client-id", help="mqtt client id")
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
+    parser.add_argument("--suffix", help="suffix for log file", default=None)
     home_directory = os.path.expanduser("~")
 
     # TODO: 迁移到 .oocana 下
@@ -35,29 +52,18 @@ async def setup(loop):
 
     address: str = args.address
     session_id: str = str(args.session_id)
-    client_id: str | None = str(args.client_id) if args.client_id is not None else None
-    log_dir: str = args.log_dir
-    output: str = args.output
+    output: Literal["console", "file"] = args.output
     package: str | None = args.package
+    suffix: str | None = args.suffix
 
-    mainframe = Mainframe(address, client_id)
+    mainframe = Mainframe(address)
     mainframe.connect()
 
-    # 这个日志，用来告知 bin 模式调用时，连接成功。所以这个格式要主动输出保持不变。
     print(f"connecting to broker {address} success")
-    # Python 以子进程启动时，输出不会立刻出现。而我们在业务上需要这一行日志，所以主动 flush 一次。
     sys.stdout.flush()
 
-    if output == "file":
-        logger_file = os.path.join(log_dir, f'python-{session_id}.log')
-        if not os.path.exists(logger_file):
-            os.makedirs(os.path.dirname(logger_file), exist_ok=True)
-
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s', filename=logger_file)
-        print(f"setup basic logging in file {logger_file}")
-    else:
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-        logger.info("setup basic logging in console")
+    config_logger(session_id, suffix, output)
+    logger.info("executor start") if package is None else logger.info(f"executor start with package {package}")
 
     # TODO: 透传给其他模块的 全局变量。比较 hack。后续考虑优化，或者把变量共享到另一个文件。使用见 oomol.py
     sys.modules['oomol'] = vars # type: ignore

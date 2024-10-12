@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.12](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.11...@oomol/python-executor@0.14.12) (2024-10-12)
+
+
+### Features
+
+* change log dir to support multiple executor instance ([#216](https://github.com/oomol/oocana-python/issues/216)) ([4bf548c](https://github.com/oomol/oocana-python/commit/4bf548c5b3e31df1bff106e3cc40363de89fca93))
+
 ## [0.14.11](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.10...@oomol/python-executor@0.14.11) (2024-09-30)
 
 

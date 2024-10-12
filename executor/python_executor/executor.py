@@ -38,7 +38,6 @@ async def setup(loop):
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--session-id", help="executor subscribe session id", required=True)
-    parser.add_argument("--client-id", help="mqtt client id")
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     parser.add_argument("--suffix", help="suffix for log file", default=None)
@@ -53,12 +52,11 @@ async def setup(loop):
 
     address: str = args.address
     session_id: str = str(args.session_id)
-    client_id: str | None = str(args.client_id) if args.client_id is not None else None
     output: Literal["console", "file"] = args.output
     package: str | None = args.package
     suffix: str | None = args.suffix
 
-    mainframe = Mainframe(address, client_id)
+    mainframe = Mainframe(address)
     mainframe.connect()
 
     print(f"connecting to broker {address} success")

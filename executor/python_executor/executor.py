@@ -134,7 +134,7 @@ async def setup(loop):
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
     mainframe.subscribe('report', report_message)
 
-    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME)
+    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, package)
 
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")

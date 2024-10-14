@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.13](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.12...@oomol/python-executor@0.14.13) (2024-10-14)
+
+
+### Features
+
+* executor ready add package field ([ca2e0f5](https://github.com/oomol/oocana-python/commit/ca2e0f5e4e581a50c03dde791e43d6645f4004ae))
+
 ## [0.14.12](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.11...@oomol/python-executor@0.14.12) (2024-10-12)
 
 

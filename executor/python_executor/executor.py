@@ -79,8 +79,6 @@ async def setup(loop):
         return message.get("service_id") != service_id
     
     def not_current_package(message):
-        if package is None:
-            return False
         return message.get("package") != package
 
     # 目前的 mqtt 库，在 subscribe 回调里 publish 消息会导致死锁无法工作，参考 https://github.com/eclipse/paho.mqtt.python/issues/527 或者 https://stackoverflow.com/a/36964192/4770006

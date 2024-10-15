@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.14](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.13...@oomol/python-executor@0.14.14) (2024-10-15)
+
+
+### Bug Fixes
+
+* none package executor should only accept none package filed block ([870150d](https://github.com/oomol/oocana-python/commit/870150d8e8ced143ec4c69dadeb2802e8cb62a17))
+
 ## [0.14.13](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.12...@oomol/python-executor@0.14.13) (2024-10-14)
 
 

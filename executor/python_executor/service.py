@@ -70,11 +70,17 @@ class ServiceRuntime:
         # TODO: 从 entry 附近查找到当前 Service 依赖的 module
         if not callable(fn):
             raise Exception(f"function {service_config.get('function')} not found in {service_config.get('entry')}")
+
         if inspect.iscoroutinefunction(fn):
+            async def run(): # type: ignore
             await fn(self)
+            import threading
+            threading.Thread(target=run_async_code, args=(run(),)).start()
         else:
+            def run():
             fn(self)
-        await self.run_block(self._config)
+            import threading
+            threading.Thread(target=run).start()
     
     def exit(self):
         self._mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{self._service_id}/exit", {})

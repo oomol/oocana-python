@@ -8,6 +8,7 @@ import logging
 
 from oocana import Mainframe, ServiceExecutePayload
 from .data import service_map
+from .utils import run_in_new_thread, run_async_code
 from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
@@ -32,8 +33,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s')
 
 
-async def setup(loop):
-
+async def setup():
     import argparse
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
@@ -84,6 +84,8 @@ async def setup(loop):
     # 目前的 mqtt 库，在 subscribe 回调里 publish 消息会导致死锁无法工作，参考 https://github.com/eclipse/paho.mqtt.python/issues/527 或者 https://stackoverflow.com/a/36964192/4770006
     # 通过这种方式来绕过，所有需要 callback 后 publish message 的情况，都需要使用 future 类似方式来绕过。
     fs = queue.Queue()
+    loop = asyncio.get_event_loop()
+
     def execute_block(message):
         if not_current_session(message):
             return
@@ -174,25 +176,13 @@ async def setup(loop):
             else:
                 if not_current_session(message):
                     continue
-                run_in_background(message, mainframe)
+                run_block_in_new_thread(message, mainframe)
 
-def run_async_code(async_func):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(async_func)
-    loop.run_forever()
-
-# 先凑合用线程跑，后续再考虑优化
-def run_in_background(message, mainframe: Mainframe):
+def run_block_in_new_thread(message, mainframe: Mainframe):
 
     async def run():
         await run_block(message, mainframe)
-    import threading
-    threading.Thread(target=run_async_code, args=(run(),)).start()
+    run_in_new_thread(run)
 
 if __name__ == '__main__':
-
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(setup(loop))
-    loop.close()
+    run_async_code(setup())

@@ -174,16 +174,14 @@ async def setup(loop):
             else:
                 if not_current_session(message):
                     continue
-                run_in_background(message, mainframe)
+                run_block_in_new_thread(message, mainframe)
 
 def run_async_code(async_func):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(async_func)
-    loop.run_forever()
 
-# 先凑合用线程跑，后续再考虑优化
-def run_in_background(message, mainframe: Mainframe):
+def run_block_in_new_thread(message, mainframe: Mainframe):
 
     async def run():
         await run_block(message, mainframe)

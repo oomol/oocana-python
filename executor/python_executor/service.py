@@ -2,6 +2,7 @@ from typing import Callable, Any, TypedDict
 from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption
 from .block import output_return_object, load_module
 from .context import createContext
+from .utils import run_async_code_and_loop, loop_in_new_thread, run_async_code
 from threading import Timer
 import inspect
 import asyncio
@@ -123,20 +124,12 @@ class ServiceRuntime:
             self._timer = Timer(self._keep_alive or DEFAULT_BLOCK_ALIVE_TIME, self.exit)
             self._timer.start()
 
-def run_async_code(async_func):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(async_func)
-    loop.run_forever()
-
 def config_callback(payload: Any, mainframe: Mainframe, service_id: str):
     service = ServiceRuntime(payload, mainframe, service_id)
 
     async def run():
         await service.run()
-
-    import threading
-    threading.Thread(target=run_async_code, args=(run(),)).start()
+    loop_in_new_thread(run)
 
 
 async def run_service(address, service_id):
@@ -154,6 +147,4 @@ if __name__ == "__main__":
     parser.add_argument("--service-id", help="service id")
     args = parser.parse_args()
 
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(run_service(args.address, args.service_id))
-    loop.run_forever()
+    run_async_code_and_loop(run_service(args.address, args.service_id))

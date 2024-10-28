@@ -73,14 +73,18 @@ class ServiceRuntime:
 
         if inspect.iscoroutinefunction(fn):
             async def run(): # type: ignore
-            await fn(self)
+                await fn(self)
             import threading
             threading.Thread(target=run_async_code, args=(run(),)).start()
         else:
             def run():
-            fn(self)
+                fn(self)
             import threading
             threading.Thread(target=run).start()
+    
+        # TODO: 更好的方式运行
+        await asyncio.sleep(3)
+        await self.run_block(self._config)
     
     def exit(self):
         self._mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{self._service_id}/exit", {})

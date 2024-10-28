@@ -52,9 +52,6 @@ async def run_executor(address: str, session_id: str, package: str | None):
     def not_current_session(message):
         return message.get("session_id") != session_id
     
-    def not_current_service(message):
-        return message.get("service_id") != service_id
-    
     def not_current_package(message):
         return message.get("package") != package
 

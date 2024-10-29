@@ -2,7 +2,7 @@ from typing import Callable, Any, TypedDict
 from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption
 from .block import output_return_object, load_module
 from .context import createContext
-from .utils import run_async_code_and_loop, loop_in_new_thread, run_async_code
+from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread
 from threading import Timer
 import inspect
 import asyncio
@@ -75,8 +75,7 @@ class ServiceRuntime:
         if inspect.iscoroutinefunction(fn):
             async def run(): # type: ignore
                 await fn(self)
-            import threading
-            threading.Thread(target=run_async_code, args=(run(),)).start()
+            run_in_new_thread(run)
         else:
             def run():
                 fn(self)

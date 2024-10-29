@@ -17,7 +17,6 @@ from typing import Literal
 
 logger = logging.getLogger(EXECUTOR_NAME)
 
-
 # 日志目录 ~/.oocana/executor/{session_id}/[python-{suffix}.log | python.log]
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
 
@@ -33,28 +32,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s')
 
 
-async def setup():
-    import argparse
-    parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
-    parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
-    parser.add_argument("--session-id", help="executor subscribe session id", required=True)
-    parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
-    parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
-    parser.add_argument("--suffix", help="suffix for log file", default=None)
-    home_directory = os.path.expanduser("~")
-
-    # TODO: 迁移到 .oocana 下
-    default_log_dir = os.path.join(home_directory, ".oomol-studio", "executor")
-    parser.add_argument("--log-dir", help="log file's directory. need output option be file", default=default_log_dir)
-
-
-    args = parser.parse_args()
-
-    address: str = args.address
-    session_id: str = str(args.session_id)
-    output: Literal["console", "file"] = args.output
-    package: str | None = args.package
-    suffix: str | None = args.suffix
+async def run_executor(address: str, session_id: str, package: str | None):
 
     mainframe = Mainframe(address)
     mainframe.connect()
@@ -62,7 +40,6 @@ async def setup():
     print(f"connecting to broker {address} success")
     sys.stdout.flush()
 
-    config_logger(session_id, suffix, output)
     logger.info("executor start") if package is None else logger.info(f"executor start with package {package}")
 
     # TODO: 透传给其他模块的 全局变量。比较 hack。后续考虑优化，或者把变量共享到另一个文件。使用见 oomol.py
@@ -74,9 +51,6 @@ async def setup():
 
     def not_current_session(message):
         return message.get("session_id") != session_id
-    
-    def not_current_service(message):
-        return message.get("service_id") != service_id
     
     def not_current_package(message):
         return message.get("package") != package
@@ -185,4 +159,24 @@ def run_block_in_new_thread(message, mainframe: Mainframe):
     run_in_new_thread(run)
 
 if __name__ == '__main__':
-    run_async_code(setup())
+
+    import argparse
+    parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
+    parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
+    parser.add_argument("--session-id", help="executor subscribe session id", required=True)
+    parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
+    parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
+    parser.add_argument("--suffix", help="suffix for log file", default=None)
+    home_directory = os.path.expanduser("~")
+
+    args = parser.parse_args()
+
+    address: str = args.address
+    session_id: str = str(args.session_id)
+    output: Literal["console", "file"] = args.output
+    package: str | None = args.package
+    suffix: str | None = args.suffix
+
+    config_logger(session_id, suffix, output)
+
+    run_async_code(run_executor(address=address, session_id=session_id, package=package))

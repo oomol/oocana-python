@@ -1,5 +1,5 @@
-from typing import Callable, Any, TypedDict
-from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption
+from typing import Callable, Any
+from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption, ServiceContextAbstractClass, ServiceMessage
 from .block import output_return_object, load_module
 from .context import createContext
 from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, base_dir
@@ -11,12 +11,6 @@ import os
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
 SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
-
-class ServiceMessage(TypedDict):
-    job_id: str
-    node_id: str
-    flow_path: str
-    payload: Any
 
 # ~/.oocana/executor/services/{service_id}/python.log
 def config_logger(service_id: str):
@@ -30,9 +24,8 @@ def config_logger(service_id: str):
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s', filename=logger_file)
 
 
-class ServiceRuntime:
+class ServiceRuntime(ServiceContextAbstractClass):
 
-    block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any] = dict()
     _store = {}
     _config: ServiceExecutePayload
     _mainframe: Mainframe
@@ -40,12 +33,13 @@ class ServiceRuntime:
     _timer: Timer | None = None
     _stop_at: StopAtOption
     _keep_alive: int | None = None
-    needs_notify_ready = False
+    _registered = asyncio.futures.Future()
 
     _runningBlocks = set()
     _jobs = set()
 
     def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_id: str):
+        self._block_handler = dict()
         self._config = config
         self._mainframe = mainframe
         self._service_id = service_id
@@ -70,6 +64,19 @@ class ServiceRuntime:
         if key == "block_handler":
             self.block_handler = value
 
+    @property
+    def block_handler(self):
+        return self._block_handler
+    
+    @block_handler.setter
+    def block_handler(self, value):
+        self._block_handler = value
+        if not self.waiting_ready_notify:
+            self._registered.set_result(None)
+    
+    def notify_ready(self):
+        self._registered.set_result(None)
+
     def add_message_callback(self, callback: Callable[[ServiceMessage], Any]):
         def filter(payload):
             if payload.get("job_id") in self._jobs:
@@ -93,8 +100,6 @@ class ServiceRuntime:
             import threading
             threading.Thread(target=run).start()
     
-        # TODO: 更好的方式运行
-        await asyncio.sleep(3)
         await self.run_block(self._config)
     
     def exit(self):
@@ -104,6 +109,7 @@ class ServiceRuntime:
         os._exit(0)
 
     async def run_block(self, payload: ServiceExecutePayload):
+        await self._registered
         block_name = payload["block_name"]
         job_id = payload["job_id"]
 

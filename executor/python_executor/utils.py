@@ -25,3 +25,7 @@ def run_in_new_thread(async_func):
 
 def loop_in_new_thread(async_func):
     threading.Thread(target=run_async_code_and_loop, args=(async_func(),)).start()
+
+def base_dir() -> str:
+    from os.path import expanduser, join
+    return join(expanduser("~"), ".oocana", "executor")

@@ -26,11 +26,19 @@ class ServiceContextAbstractClass(ABC):
     def __setitem__(self, key: str, value: Any):
         pass
     
-    waiting_ready_notify: bool
-    """set to True if the service need to wait for the ready signal before start. default is false which means the service will start immediately after block_handler is set.
-        this function need to be called before set block_handler
-        after set this function, developer need call notify_ready manually when the service is ready to start, otherwise the service will not run block
-    """
+    @property
+    @abstractmethod
+    def waiting_ready_notify(self) -> bool:
+        """set to True if the service need to wait for the ready signal before start. default is false which means the service will start immediately after block_handler is set.
+            this function need to be called before set block_handler
+            after set this function, developer need call notify_ready manually when the service is ready to start, otherwise the service will not run block
+        """
+        pass
+
+    @waiting_ready_notify.setter
+    @abstractmethod
+    def waiting_ready_notify(self, value: bool):
+        pass
 
     def notify_ready(self):
         """notify the service that the service is ready to start. this function need to be called after waiting_ready_notify is set to True otherwise this function has no effect"""

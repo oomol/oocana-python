@@ -34,6 +34,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
     _stop_at: StopAtOption
     _keep_alive: int | None = None
     _registered = asyncio.futures.Future()
+    _waiting_ready_notify = False
 
     _runningBlocks = set()
     _jobs = set()
@@ -63,6 +64,14 @@ class ServiceRuntime(ServiceContextAbstractClass):
     def __setitem__(self, key: str, value: Any):
         if key == "block_handler":
             self.block_handler = value
+
+    @property
+    def waiting_ready_notify(self) -> bool:
+        return self._waiting_ready_notify
+    
+    @waiting_ready_notify.setter
+    def waiting_ready_notify(self, value: bool):
+        self._waiting_ready_notify = value
 
     @property
     def block_handler(self) -> BlockHandler:

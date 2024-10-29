@@ -1,7 +1,7 @@
 from typing import Literal, Callable, Any, TypedDict, Optional, TypeAlias, Union
 from .context import Context
 from .data import JobDict
-from abc import ABC
+from abc import ABC, abstractmethod
 
 class ServiceMessage(TypedDict):
     job_id: str
@@ -9,8 +9,19 @@ class ServiceMessage(TypedDict):
     flow_path: str
     payload: Any
 
+type BlockHandler = Union[Callable[[str, Any, Context], Any], dict[str, Callable[[Any, Context], Any]]]
+
 class ServiceContextAbstractClass(ABC):
-    block_handler:  Union[Callable[[str, Any, Context], Any], dict[str, Callable[[Any, Context], Any]]]
+    
+    @property
+    @abstractmethod
+    def block_handler(self) -> BlockHandler:
+        pass
+    
+    @block_handler.setter
+    @abstractmethod
+    def block_handler(self, value: BlockHandler):
+        pass
 
     def __setitem__(self, key: str, value: Any):
         pass

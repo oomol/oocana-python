@@ -1,5 +1,5 @@
 from typing import Callable, Any
-from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption, ServiceContextAbstractClass, ServiceMessage
+from oocana import ServiceExecutePayload, Mainframe, StopAtOption, ServiceContextAbstractClass, ServiceMessage, BlockHandler
 from .block import output_return_object, load_module
 from .context import createContext
 from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, base_dir
@@ -60,16 +60,16 @@ class ServiceRuntime(ServiceContextAbstractClass):
         elif self._stop_at == "block_end":
             pass
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any):
         if key == "block_handler":
             self.block_handler = value
 
     @property
-    def block_handler(self):
+    def block_handler(self) -> BlockHandler:
         return self._block_handler
     
     @block_handler.setter
-    def block_handler(self, value):
+    def block_handler(self, value: BlockHandler):
         self._block_handler = value
         if not self.waiting_ready_notify:
             self._registered.set_result(None)

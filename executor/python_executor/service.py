@@ -8,6 +8,7 @@ import inspect
 import asyncio
 import logging
 import os
+import threading
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
 SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
@@ -33,7 +34,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
     _timer: Timer | None = None
     _stop_at: StopAtOption
     _keep_alive: int | None = None
-    _registered = asyncio.futures.Future() # TODO: 会存在非 different loop 问题。如果出现问题，再考虑用 其他 API 或者直接粗暴轮询等待。
+    _registered = threading.Event()
     _waiting_ready_notify = False
 
     _runningBlocks = set()
@@ -88,10 +89,10 @@ class ServiceRuntime(ServiceContextAbstractClass):
     def block_handler(self, value: BlockHandler):
         self._block_handler = value
         if not self.waiting_ready_notify:
-            self._registered.set_result(None)
+            self._registered.set()
     
     def notify_ready(self):
-        self._registered.set_result(None)
+        self._registered.set()
 
     def add_message_callback(self, callback: Callable[[ServiceMessage], Any]):
         def filter(payload):
@@ -125,7 +126,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
         os._exit(0)
 
     async def run_block(self, payload: ServiceExecutePayload):
-        await self._registered
+        self._registered.wait()
         block_name = payload["block_name"]
         job_id = payload["job_id"]
 

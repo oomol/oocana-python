@@ -1,27 +1,32 @@
-from typing import Callable, Any, TypedDict
-from oocana import Context, ServiceExecutePayload, Mainframe, StopAtOption
+from typing import Callable, Any
+from oocana import ServiceExecutePayload, Mainframe, StopAtOption, ServiceContextAbstractClass, ServiceMessage, BlockHandler
 from .block import output_return_object, load_module
 from .context import createContext
-from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread
+from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, base_dir
 from threading import Timer
 import inspect
 import asyncio
+import logging
 import os
+import threading
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
 SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
 
-class ServiceMessage(TypedDict):
-    job_id: str
-    node_id: str
-    flow_path: str
-    payload: Any
+# ~/.oocana/executor/services/{service_id}/python.log
+def config_logger(service_id: str):
+    import os.path
+    # TODO: 目前 service log 与 executor log 分离，没有关联关系。会导致导出日志时，无法导出。后续再优化处理
+    logger_file = os.path.join(base_dir(), "services", service_id, "python.log")
+
+    if not os.path.exists(logger_file):
+        os.makedirs(os.path.dirname(logger_file), exist_ok=True)
+
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s', filename=logger_file)
 
 
-# TODO: add service logger
-class ServiceRuntime:
+class ServiceRuntime(ServiceContextAbstractClass):
 
-    block_handler: dict[str, Callable[[Any, Context], Any]] | Callable[[str, Any, Context], Any] = dict()
     _store = {}
     _config: ServiceExecutePayload
     _mainframe: Mainframe
@@ -29,19 +34,29 @@ class ServiceRuntime:
     _timer: Timer | None = None
     _stop_at: StopAtOption
     _keep_alive: int | None = None
+    _registered = threading.Event()
+    _waiting_ready_notify = False
 
     _runningBlocks = set()
     _jobs = set()
 
     def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_id: str):
+        self._block_handler = dict()
         self._config = config
         self._mainframe = mainframe
         self._service_id = service_id
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
 
-        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.run_block)
+        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.execute_callback)
         self._setup_timer()
+
+    def execute_callback(self, payload: ServiceExecutePayload):
+
+        async def run():
+            await self.run_block(payload)
+        
+        run_in_new_thread(run)
 
     def _setup_timer(self):
         if self._stop_at is None:
@@ -49,14 +64,35 @@ class ServiceRuntime:
         elif self._stop_at == "session_end":
             self._mainframe.subscribe("report", lambda payload: self.exit() if payload.get("type") == "SessionFinished" and payload.get("session_id") == self._config.get("session_id") else None)
         elif self._stop_at == "app_end":
-            # TODO: 增加 application 结束的 topic，或者 处理 broker 退出的事件。
+            # app 暂停可以直接先不管
             pass
         elif self._stop_at == "block_end":
             pass
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any):
         if key == "block_handler":
             self.block_handler = value
+
+    @property
+    def waiting_ready_notify(self) -> bool:
+        return self._waiting_ready_notify
+    
+    @waiting_ready_notify.setter
+    def waiting_ready_notify(self, value: bool):
+        self._waiting_ready_notify = value
+
+    @property
+    def block_handler(self) -> BlockHandler:
+        return self._block_handler
+    
+    @block_handler.setter
+    def block_handler(self, value: BlockHandler):
+        self._block_handler = value
+        if not self.waiting_ready_notify:
+            self._registered.set()
+    
+    def notify_ready(self):
+        self._registered.set()
 
     def add_message_callback(self, callback: Callable[[ServiceMessage], Any]):
         def filter(payload):
@@ -68,22 +104,19 @@ class ServiceRuntime:
         service_config = self._config.get("service_executor")
         m = load_module(service_config.get("entry"), self._config.get("dir"))
         fn = m.__dict__.get(service_config.get("function"))
-        # TODO: 从 entry 附近查找到当前 Service 依赖的 module
         if not callable(fn):
             raise Exception(f"function {service_config.get('function')} not found in {service_config.get('entry')}")
 
         if inspect.iscoroutinefunction(fn):
-            async def run(): # type: ignore
+            async def async_run():
                 await fn(self)
-            run_in_new_thread(run)
+            run_in_new_thread(async_run)
         else:
             def run():
                 fn(self)
             import threading
             threading.Thread(target=run).start()
     
-        # TODO: 更好的方式运行
-        await asyncio.sleep(3)
         await self.run_block(self._config)
     
     def exit(self):
@@ -93,6 +126,7 @@ class ServiceRuntime:
         os._exit(0)
 
     async def run_block(self, payload: ServiceExecutePayload):
+        self._registered.wait()
         block_name = payload["block_name"]
         job_id = payload["job_id"]
 
@@ -145,5 +179,7 @@ if __name__ == "__main__":
     parser.add_argument("--address", help="mqtt address", required=True)
     parser.add_argument("--service-id", help="service id")
     args = parser.parse_args()
+
+    config_logger(args.service_id)
 
     run_async_code_and_loop(run_service(args.address, args.service_id))

@@ -13,7 +13,6 @@ process.env["PATH"] = `${path.join(__dirname, "..", "executor", "bin")}:${proces
 async function main() {
   const files = await readdir(path.join(__dirname, "flows"));
   for (const file of files) {
-    // TODO: executor 在启动后接受到其他 session started 的事件，自己会自动退出，因此无法同时运行多个。executor 应该自己的 session 结束以后，才做这个处理。
     await run(file).catch((e) => {
       console.error(`run flow ${file} failed`, e);
       process.exit(1);

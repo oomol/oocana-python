@@ -1,5 +1,6 @@
 import threading
 import asyncio
+from typing import Callable, Awaitable, Any
 
 def run_async_code(async_func):
     loop = asyncio.new_event_loop()
@@ -20,8 +21,12 @@ def run_async_code_and_loop(async_func):
     finally:
         loop.close()
 
-def run_in_new_thread(async_func):
+def run_in_new_thread(async_func: Callable[[], Awaitable[Any]]):
     threading.Thread(target=run_async_code, args=(async_func(),)).start()
 
-def loop_in_new_thread(async_func):
+def loop_in_new_thread(async_func: Callable[[], Awaitable[Any]]):
     threading.Thread(target=run_async_code_and_loop, args=(async_func(),)).start()
+
+def base_dir() -> str:
+    from os.path import expanduser, join
+    return join(expanduser("~"), ".oocana", "executor")

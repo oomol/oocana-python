@@ -47,8 +47,15 @@ class ServiceRuntime(ServiceContextAbstractClass):
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
 
-        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.run_block)
+        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.execute_callback)
         self._setup_timer()
+
+    def execute_callback(self, payload: ServiceExecutePayload):
+
+        async def run():
+            await self.run_block(payload)
+        
+        run_in_new_thread(run)
 
     def _setup_timer(self):
         if self._stop_at is None:

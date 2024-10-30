@@ -33,7 +33,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
     _timer: Timer | None = None
     _stop_at: StopAtOption
     _keep_alive: int | None = None
-    _registered = asyncio.futures.Future()
+    _registered = asyncio.futures.Future() # TODO: 会存在非 different loop 问题。如果出现问题，再考虑用 其他 API 或者直接粗暴轮询等待。
     _waiting_ready_notify = False
 
     _runningBlocks = set()

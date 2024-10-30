@@ -108,9 +108,9 @@ class ServiceRuntime(ServiceContextAbstractClass):
             raise Exception(f"function {service_config.get('function')} not found in {service_config.get('entry')}")
 
         if inspect.iscoroutinefunction(fn):
-            async def run(): # type: ignore
+            async def async_run():
                 await fn(self)
-            run_in_new_thread(run)
+            run_in_new_thread(async_run)
         else:
             def run():
                 fn(self)

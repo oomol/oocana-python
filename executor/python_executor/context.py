@@ -8,7 +8,7 @@ logger = logging.getLogger("EXECUTOR_NAME")
 SECRET_FILE =  os.path.expanduser("~") + "/app-config/oomol-secrets/secrets.json"
 
 def createContext(
-    mainframe: Mainframe, session_id: str, job_id: str, store, output
+    mainframe: Mainframe, session_id: str, job_id: str, store, output, tmp_dir: str
 ) -> Context:
 
     node_props = mainframe.notify_block_ready(session_id, job_id)
@@ -46,7 +46,7 @@ def createContext(
     
     blockInfo = BlockInfo(**node_props)
 
-    return Context(inputs, blockInfo, mainframe, store, output)
+    return Context(inputs, blockInfo, mainframe, store, output, tmp_dir)
 
 def replace_secret(path: str, secretJson: dict | None) -> str:
     if secretJson is None:

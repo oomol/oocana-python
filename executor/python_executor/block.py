@@ -85,12 +85,12 @@ def output_return_object(obj, context: Context):
 
 logger = logging.getLogger("EXECUTOR_NAME")
 
-async def run_block(message, mainframe: Mainframe):
+async def run_block(message, mainframe: Mainframe, tmp_dir: str):
 
     logger.info(f"block {message.get('job_id')} start")
     try:
         payload = ExecutePayload(**message)
-        context = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs)
+        context = createContext(mainframe, payload.session_id, payload.job_id, store, payload.outputs, tmp_dir)
     except Exception:
         traceback_str = traceback.format_exc()
         # rust 那边会保证传过来的 message 一定是符合格式的，所以这里不应该出现异常。这里主要是防止 rust 修改错误。

@@ -20,7 +20,7 @@ class TestExecutorCLI(unittest.TestCase):
         self.assertIsNone(code, "HTTP server failed to start or exit.")
 
     def test_cli(self):
-        cli_command = [sys.executable, "-u", "-m", "python_executor.executor", "--session-id", "test-session", "--tmp-dir", "/tmp"]
+        cli_command = [sys.executable, "-u", "-m", "python_executor.executor", "--session-id", "test-session", "--session-dir", "/tmp"]
 
         print("Starting CLI tool... in", executor_parent_dir)
 

@@ -36,19 +36,19 @@ class ServiceRuntime(ServiceContextAbstractClass):
     _keep_alive: int | None = None
     _registered = threading.Event()
     _waiting_ready_notify = False
-    _tmp_dir: str
+    _session_dir: str
 
     _runningBlocks = set()
     _jobs = set()
 
-    def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_id: str, tmp_dir: str):
+    def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_id: str, session_dir: str):
         self._block_handler = dict()
         self._config = config
         self._mainframe = mainframe
         self._service_id = service_id
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
-        self._tmp_dir = tmp_dir
+        self._session_dir = session_dir
 
         mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.execute_callback)
         self._setup_timer()
@@ -139,7 +139,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
         self._runningBlocks.add(job_id)
         self._jobs.add(job_id)
 
-        context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"], self._tmp_dir)
+        context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"], self._session_dir)
 
         if isinstance(self.block_handler, dict):
             handler = self.block_handler.get(block_name)
@@ -159,18 +159,18 @@ class ServiceRuntime(ServiceContextAbstractClass):
             self._timer = Timer(self._keep_alive or DEFAULT_BLOCK_ALIVE_TIME, self.exit)
             self._timer.start()
 
-def config_callback(payload: Any, mainframe: Mainframe, service_id: str, tmp_dir: str):
-    service = ServiceRuntime(payload, mainframe, service_id, tmp_dir)
+def config_callback(payload: Any, mainframe: Mainframe, service_id: str, session_dir: str):
+    service = ServiceRuntime(payload, mainframe, service_id, session_dir)
 
     async def run():
         await service.run()
     loop_in_new_thread(run)
 
 
-async def run_service(address, service_id, tmp_dir):
+async def run_service(address, service_id, session_dir):
     mainframe = Mainframe(address, service_id)
     mainframe.connect()
-    mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", lambda payload: config_callback(payload, mainframe, service_id, tmp_dir))
+    mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", lambda payload: config_callback(payload, mainframe, service_id, session_dir))
     await asyncio.sleep(1)
     mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn", {})
 
@@ -179,10 +179,10 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
     parser.add_argument("--address", help="mqtt address", required=True)
-    parser.add_argument("--tmp-dir", required=True)
+    parser.add_argument("--session-dir", required=True)
     parser.add_argument("--service-id", help="service id")
     args = parser.parse_args()
 
     config_logger(args.service_id)
 
-    run_async_code_and_loop(run_service(args.address, args.service_id, args.tmp_dir))
+    run_async_code_and_loop(run_service(args.address, args.service_id, args.session_dir))

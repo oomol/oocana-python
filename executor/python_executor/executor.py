@@ -32,7 +32,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s')
 
 
-async def run_executor(address: str, session_id: str, package: str | None, tmp_dir: str):
+async def run_executor(address: str, session_id: str, package: str | None, session_dir: str):
 
     mainframe = Mainframe(address)
     mainframe.connect()
@@ -117,7 +117,7 @@ async def run_executor(address: str, session_id: str, package: str | None, tmp_d
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         process = await asyncio.create_subprocess_shell(
-            f"python -u -m python_executor.service --address {address} --service-id {service_id} --tmp-dir {tmp_dir}",
+            f"python -u -m python_executor.service --address {address} --service-id {service_id} --tmp-dir {session_dir}",
             cwd=parent_dir
         )
 
@@ -150,12 +150,12 @@ async def run_executor(address: str, session_id: str, package: str | None, tmp_d
             else:
                 if not_current_session(message):
                     continue
-                run_block_in_new_thread(message, mainframe, tmp_dir=tmp_dir)
+                run_block_in_new_thread(message, mainframe, session_dir=session_dir)
 
-def run_block_in_new_thread(message, mainframe: Mainframe, tmp_dir: str):
+def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str):
 
     async def run():
-        await run_block(message, mainframe, tmp_dir=tmp_dir)
+        await run_block(message, mainframe, session_dir=session_dir)
     run_in_new_thread(run)
 
 if __name__ == '__main__':
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="run executor with address, session-id, tmp-dir")
     parser.add_argument("--session-id", help="executor subscribe session id", required=True)
     parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
-    parser.add_argument("--tmp-dir", help="tmp dir for executor", required=True)
+    parser.add_argument("--session-dir", help="a tmp dir for whole session", required=True)
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     parser.add_argument("--suffix", help="suffix for log file", default=None)
@@ -177,8 +177,8 @@ if __name__ == '__main__':
     output: Literal["console", "file"] = args.output
     package: str | None = args.package
     suffix: str | None = args.suffix
-    tmp_dir: str = args.tmp_dir
+    session_dir: str = args.session_dir
 
     config_logger(session_id, suffix, output)
 
-    run_async_code(run_executor(address=address, session_id=session_id, package=package, tmp_dir=tmp_dir))
+    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir))

@@ -21,10 +21,10 @@ class Context:
     __store: Any
     __is_done: bool = False
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
-    __tmp_dir: str
+    __session_dir: str
 
     def __init__(
-        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, tmp_dir: str
+        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, session_dir: str
     ) -> None:
 
         self.__block_info = blockInfo
@@ -38,11 +38,13 @@ class Context:
             for k, v in outputs.items():
                 outputs_defs[k] = HandleDef(**v)
         self.__outputs_def = outputs_defs
-        self.__tmp_dir = tmp_dir
+        self.__session_dir = session_dir
 
     @property
-    def tmp_dir(self) -> str:
-        return self.__tmp_dir
+    def session_dir(self) -> str:
+        """a temporary directory for the current session, all blocks in the one session will share the same directory.
+        """
+        return self.__session_dir
 
     @property
     def keepAlive(self):

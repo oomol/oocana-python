@@ -117,7 +117,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         process = await asyncio.create_subprocess_shell(
-            f"python -u -m python_executor.service --address {address} --service-id {service_id} --tmp-dir {session_dir}",
+            f"python -u -m python_executor.service --address {address} --service-id {service_id} --session-dir {session_dir}",
             cwd=parent_dir
         )
 

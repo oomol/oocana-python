@@ -21,9 +21,10 @@ class Context:
     __store: Any
     __is_done: bool = False
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
+    __tmp_dir: str
 
     def __init__(
-        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs
+        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, tmp_dir: str
     ) -> None:
 
         self.__block_info = blockInfo
@@ -37,6 +38,11 @@ class Context:
             for k, v in outputs.items():
                 outputs_defs[k] = HandleDef(**v)
         self.__outputs_def = outputs_defs
+        self.__tmp_dir = tmp_dir
+
+    @property
+    def tmp_dir(self) -> str:
+        return self.__tmp_dir
 
     @property
     def keepAlive(self):

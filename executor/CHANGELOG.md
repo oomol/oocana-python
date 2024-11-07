@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.14.15](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.14...@oomol/python-executor@0.14.15) (2024-11-07)
+
+
+### Features
+
+* add session dir ([#224](https://github.com/oomol/oocana-python/issues/224)) ([9f988dd](https://github.com/oomol/oocana-python/commit/9f988dda4565d78ba45f63dfb1fa9eb0ee5f7c9a))
+* improve async code ([#220](https://github.com/oomol/oocana-python/issues/220)) ([2349251](https://github.com/oomol/oocana-python/commit/2349251a9ec8063a91e26e07723073007dcc8014))
+
+
+### Code Refactoring
+
+* improve logic ([#222](https://github.com/oomol/oocana-python/issues/222)) ([7f8bb26](https://github.com/oomol/oocana-python/commit/7f8bb26624c8a37b6a8551ada6d478d88c018db6))
+* improve service ([#223](https://github.com/oomol/oocana-python/issues/223)) ([13422da](https://github.com/oomol/oocana-python/commit/13422da51dec6a211f684ec71d5f396acb0540a8))
+
 ## [0.14.14](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.13...@oomol/python-executor@0.14.14) (2024-10-15)
 
 

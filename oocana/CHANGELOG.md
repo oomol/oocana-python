@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.8](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.7...@oomol/python-sdk@0.14.8) (2024-11-07)
+
+
+### Features
+
+* add session dir ([#224](https://github.com/oomol/oocana-python/issues/224)) ([9f988dd](https://github.com/oomol/oocana-python/commit/9f988dda4565d78ba45f63dfb1fa9eb0ee5f7c9a))
+
+
+### Code Refactoring
+
+* improve service ([#223](https://github.com/oomol/oocana-python/issues/223)) ([13422da](https://github.com/oomol/oocana-python/commit/13422da51dec6a211f684ec71d5f396acb0540a8))
+
 ## [0.14.7](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.6...@oomol/python-sdk@0.14.7) (2024-10-14)
 
 

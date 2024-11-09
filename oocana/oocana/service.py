@@ -9,7 +9,7 @@ class ServiceMessage(TypedDict):
     flow_path: str
     payload: Any
 
-type BlockHandler = Union[Callable[[str, Any, Context], Any], dict[str, Callable[[Any, Context], Any]]]
+BlockHandler: TypeAlias = Union[Callable[[str, Any, Context], Any], dict[str, Callable[[Any, Context], Any]]]
 
 class ServiceContextAbstractClass(ABC):
     

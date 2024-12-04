@@ -43,6 +43,38 @@ def createContext(
 
     elif inputs is None:
         inputs = {}
+
+    inputs_def_patch: Dict[str, list[Any]] | None = node_props.get("inputs_def_patch")
+
+    if inputs_def_patch is not None:
+        for k, v in inputs_def_patch.items():
+            input_value = inputs.get(k)
+            if input_value is not None:
+                for patch in v:
+                    is_secret = patch.get("schema", {}).get("contentMediaType") == "oomol/secret"
+                    if not is_secret:
+                        continue
+                    
+                    path = patch.get("path")
+                    if path is None:
+                        inputs[k] = replace_secret(input_value, secretJson)
+                    elif isinstance(path, str) and path in input_value:
+                        input_value[path] = replace_secret(input_value[path], secretJson)
+                    elif isinstance(path, int) and path < len(input_value):
+                        input_value[path] = replace_secret(input_value[path], secretJson)
+                    elif isinstance(path, list):
+                        tmp = input_value
+                        for p in path[:-1]:
+                            tmp = tmp.get(p)
+                            if tmp is None:
+                                logger.error(f"invalid path: {path}")
+                                break
+                        if tmp is not None:
+                            tmp[path[-1]] = replace_secret(tmp[path[-1]], secretJson)
+                    else:
+                        logger.error(f"invalid path: {path}")
+
+
     
     blockInfo = BlockInfo(**node_props)
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.16](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.15...@oomol/python-executor@0.14.16) (2024-12-05)
+
+
+### Features
+
+* apply secret patch ([#227](https://github.com/oomol/oocana-python/issues/227)) ([113fd07](https://github.com/oomol/oocana-python/commit/113fd07bda719e0c1b49228874e3f79f62617f02))
+
 ## [0.14.15](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.14...@oomol/python-executor@0.14.15) (2024-11-07)
 
 

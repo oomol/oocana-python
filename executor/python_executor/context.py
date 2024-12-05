@@ -65,7 +65,7 @@ def createContext(
                     elif isinstance(path, list):
                         tmp = input_value
                         for p in path[:-1]:
-                            tmp = tmp.get(p)
+                            tmp = tmp[p]
                             if tmp is None:
                                 logger.error(f"invalid path: {path}")
                                 break

@@ -9,7 +9,7 @@ SECRET_FILE =  os.path.expanduser("~") + "/app-config/oomol-secrets/secrets.json
 
 def replace_secret(
     value: Any,
-    root_def: Dict[str, Any],
+    root_def: Dict[str, InputHandleDef],
     patch: Dict[str, Any] | None = None,
 ) -> Any:
     if not isinstance(value, dict):
@@ -25,9 +25,9 @@ def replace_secret(
         secretJson = None
     
     for k, v in value.items():
-        if root_def.get(k) is None:
+        input_def = root_def.get(k)
+        if input_def is None:
             continue
-        input_def = InputHandleDef(**root_def.get(k, {}))
         if input_def.is_secret_handle():
             value[k] = get_secret(v, secretJson)
         # 为了保持功能聚焦，var 部分在 Context 那边重新迭代处理。var 只在根目录，同时重复迭代开销不大。如果要递归，还是要合并进来。

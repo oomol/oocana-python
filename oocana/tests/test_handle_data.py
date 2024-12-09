@@ -24,7 +24,7 @@ class TestHandleData(unittest.TestCase):
         self.assertEqual(handle_def.handle, "test")
         self.assertIsNotNone(handle_def.json_schema)
         
-        json_schema = cast(handle_data.JsonSchema, handle_def.json_schema)
+        json_schema = cast(handle_data.FieldSchema, handle_def.json_schema)
         self.assertEqual(json_schema.contentMediaType, "oomol/bin")
 
         d = fixture.copy()

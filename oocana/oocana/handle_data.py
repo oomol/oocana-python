@@ -1,22 +1,6 @@
 from dataclasses import dataclass
-from typing import Any, Optional, Literal, TypeAlias
-
-
-ContentMediaType: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
-
-@dataclass(frozen=True, kw_only=True)
-class JsonSchema:
-    """ The JSON schema of the handle. It contains the schema of the handle's content.
-        but we only need the contentMediaType to check the handle's type here.
-    """
-
-    contentMediaType: Optional[ContentMediaType] = None
-    """The media type of the content of the schema."""
-
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            object.__setattr__(self, key, value)
-
+from typing import Any, Optional
+from .schema import FieldSchema, ContentMediaType
 
 @dataclass(frozen=True, kw_only=True)
 class HandleDef:
@@ -25,7 +9,7 @@ class HandleDef:
     handle: str
     """The name of the handle. it should be unique in handle list."""
 
-    json_schema: Optional[JsonSchema] = None
+    json_schema: Optional[FieldSchema] = None
     """The schema of the handle. It is used to validate the handle's content."""
 
     name: Optional[str] = None
@@ -37,8 +21,8 @@ class HandleDef:
         if "handle" not in kwargs:
             raise ValueError("missing attr key: 'handle'")
         json_schema = self.json_schema
-        if json_schema is not None and not isinstance(json_schema, JsonSchema):
-            object.__setattr__(self, "json_schema", JsonSchema(**json_schema))
+        if json_schema is not None and not isinstance(json_schema, FieldSchema):
+            object.__setattr__(self, "json_schema", FieldSchema.generate_schema(json_schema))
 
     def check_handle_type(self, type: ContentMediaType) -> bool:
         if self.handle is None:

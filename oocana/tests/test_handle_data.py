@@ -65,12 +65,12 @@ class TestHandleData(unittest.TestCase):
             "handle": "auto_slices",
             "json_schema": {
                 "items": {
-                "properties": {
-                    "begin": { "type": "number" },
-                    "end": { "type": "number" }
-                },
-                "required": ["begin", "end"],
-                "type": "object"
+                    "properties": {
+                        "begin": { "type": "number" },
+                        "end": { "type": "number" }
+                    },
+                    "required": ["begin", "end"],
+                    "type": "object"
                 },
                 "type": "array"
             }
@@ -94,13 +94,13 @@ class TestHandleData(unittest.TestCase):
             "handle": "auto_slices",
             "json_schema": {
                 "items": {
-                "properties": {
-                    "begin": { "type": "number" },
-                    "end": { "type": "number" }
-                },
-                "required": ["begin", "end"],
-                "type": "object"
-                },
+                    "properties": {
+                        "begin": { "type": "number" },
+                        "end": { "type": "number" }
+                    },
+                    "required": ["begin", "end"],
+                    "type": "object"
+                    },
                 "type": "array"
             }
         }

@@ -38,7 +38,7 @@ class HandleDef:
             raise ValueError("missing attr key: 'handle'")
         json_schema = self.json_schema
         if json_schema is not None and not isinstance(json_schema, JsonSchema):
-                object.__setattr__(self, "json_schema", JsonSchema(**json_schema))
+            object.__setattr__(self, "json_schema", JsonSchema(**json_schema))
 
     def check_handle_type(self, type: ContentMediaType) -> bool:
         if self.handle is None:

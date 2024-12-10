@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.10](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.9...@oomol/python-sdk@0.14.10) (2024-12-10)
+
+
+### Features
+
+* support sub secret replace ([#229](https://github.com/oomol/oocana-python/issues/229)) ([1582881](https://github.com/oomol/oocana-python/commit/158288144e21fa6fd3c21f5c89ab04b02f98339a))
+
 ## [0.14.9](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.8...@oomol/python-sdk@0.14.9) (2024-11-09)
 
 

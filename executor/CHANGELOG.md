@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.17](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.16...@oomol/python-executor@0.14.17) (2024-12-10)
+
+
+### Features
+
+* support sub secret replace ([#229](https://github.com/oomol/oocana-python/issues/229)) ([1582881](https://github.com/oomol/oocana-python/commit/158288144e21fa6fd3c21f5c89ab04b02f98339a))
+
 ## [0.14.16](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.15...@oomol/python-executor@0.14.16) (2024-12-05)
 
 

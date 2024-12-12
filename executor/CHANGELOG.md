@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.19](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.18...@oomol/python-executor@0.14.19) (2024-12-12)
+
+
+### Features
+
+* add bin feature by base64 ([#233](https://github.com/oomol/oocana-python/issues/233)) ([ec43e10](https://github.com/oomol/oocana-python/commit/ec43e10ec897b18e48361abc2c1f3bd53be23232))
+
 ## [0.14.18](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.17...@oomol/python-executor@0.14.18) (2024-12-12)
 
 

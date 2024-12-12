@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.11](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.10...@oomol/python-sdk@0.14.11) (2024-12-12)
+
+
+### Features
+
+* add bin feature by base64 ([#233](https://github.com/oomol/oocana-python/issues/233)) ([ec43e10](https://github.com/oomol/oocana-python/commit/ec43e10ec897b18e48361abc2c1f3bd53be23232))
+
 ## [0.14.10](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.9...@oomol/python-sdk@0.14.10) (2024-12-10)
 
 

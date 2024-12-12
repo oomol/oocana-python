@@ -103,6 +103,13 @@ class Context:
                 ref = self.__store_ref(key)
                 self.__store[ref] = value
                 v = asdict(ref)
+            elif output_def is not None and output_def.is_bin_handle():
+                if not isinstance(value, bytes):
+                    self.send_warning(
+                        f"Output handle key: [{key}] is defined as binary, but the value is not bytes."
+                    )
+                    return
+                v = b64encode(value)
 
         # 如果传入 key 在输出定义中不存在，直接忽略，不发送数据。但是 done 仍然生效。
         if self.__outputs_def is not None and self.__outputs_def.get(key) is None:

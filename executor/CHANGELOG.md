@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.18](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.17...@oomol/python-executor@0.14.18) (2024-12-12)
+
+
+### Features
+
+* add package to sys.path ([0c474e0](https://github.com/oomol/oocana-python/commit/0c474e0719ab02233c36bfb058cfb6476da43965))
+
 ## [0.14.17](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.16...@oomol/python-executor@0.14.17) (2024-12-10)
 
 

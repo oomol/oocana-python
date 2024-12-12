@@ -39,6 +39,9 @@ class HandleDef:
     def is_secret_handle(self) -> bool:
         return self.check_handle_type("oomol/secret")
 
+    def is_bin_handle(self) -> bool:
+        return self.check_handle_type("oomol/bin")
+
 @dataclass(frozen=True, kw_only=True)
 class InputHandleDef(HandleDef):
 

@@ -2,6 +2,7 @@ import logging
 from oocana import Mainframe, Context, StoreKey, BlockInfo, InputHandleDef
 from typing import Dict
 from .secret import replace_secret
+from base64 import b64decode
 
 logger = logging.getLogger("EXECUTOR_NAME")
 
@@ -38,6 +39,11 @@ def createContext(
                     inputs[k] = store.get(ref)
                 else:
                     logger.error(f"object {ref} not found in store")
+            elif input_def.is_bin_handle():
+                base64_str = v.get("value")
+                # decode base64 string to bytes
+                b = b64decode(base64_str)
+                inputs[k] = b
 
 
     if inputs is None:

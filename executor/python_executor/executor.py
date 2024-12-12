@@ -48,6 +48,12 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
     add_matplot_module()
     import_helper(logger)
 
+    # add package to sys.path
+    if package is not None:
+        sys.path.append(package)
+    elif os.path.exists("/app/workspace"):
+        sys.path.append("/app/workspace")
+
 
     def not_current_session(message):
         return message.get("session_id") != session_id

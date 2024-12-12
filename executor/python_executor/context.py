@@ -40,9 +40,7 @@ def createContext(
                 else:
                     logger.error(f"object {ref} not found in store")
             elif input_def.is_bin_handle():
-                base64_str = v.get("value")
-                # decode base64 string to bytes
-                b = b64decode(base64_str)
+                b = b64decode(v)
                 inputs[k] = b
 
 

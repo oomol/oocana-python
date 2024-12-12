@@ -1,0 +1,56 @@
+nodes:
+  - task:
+      ui:
+        default_width: 450
+      inputs_def:
+        - handle: in
+          description: Input
+          json_schema:
+            type: string
+          value: input value
+      outputs_def:
+        - handle: out
+          description: Output
+          json_schema:
+            contentMediaType: oomol/bin
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#1.py
+    title: "Python #1"
+    icon: ":logos:python:"
+    node_id: +python#1
+    inputs_from:
+      - handle: in
+        value: aa
+  - node_id: +python#2
+    node_type: task_node
+    title: "Python #2"
+    task:
+      ui:
+        default_width: 450
+      inputs_def:
+        - handle: a
+          description: Input
+          json_schema:
+            contentMediaType: oomol/bin
+          value: input value
+      outputs_def:
+        - handle: out
+          description: Output
+          json_schema:
+            type: string
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#2.py
+          spawn: false
+    inputs_from:
+      - handle: in
+        from_node:
+          - node_id: +python#1
+            output_handle: out
+      - handle: a
+        from_node:
+          - node_id: +python#1
+            output_handle: out

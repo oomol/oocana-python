@@ -12,7 +12,6 @@ import os
 import threading
 
 DEFAULT_BLOCK_ALIVE_TIME = 10
-SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
 
 # 两种文件，根据是否有 session id 来区分：
 # 1. 跨 session service（global service）： ~/.oocana/services/{service_hash}.log

@@ -177,10 +177,11 @@ async def run_service(address, service_id, session_dir):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="run service with mqtt address and client id")
+    parser = argparse.ArgumentParser(description="run service")
     parser.add_argument("--address", help="mqtt address", required=True)
+    parser.add_argument("--service-hash", help="service hash", required=True)
+    parser.add_argument("--session-id", help="session id")
     parser.add_argument("--session-dir", required=True)
-    parser.add_argument("--service-id", help="service id")
     args = parser.parse_args()
 
     config_logger(args.service_id)

@@ -3,7 +3,7 @@ from oocana import ServiceExecutePayload, Mainframe, StopAtOption, ServiceContex
 from .block import output_return_object, load_module
 from .context import createContext
 from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, oocana_dir
-from .topic import service_config_topic, ServiceTopicParams, ReportStatusPayload, prepare_report_topic, shutdown_action_topic, run_action_topic, service_message_topic, exit_report_topic
+from .topic import service_config_topic, ServiceTopicParams, ReportStatusPayload, prepare_report_topic, shutdown_action_topic, run_action_topic, service_message_topic, exit_report_topic, status_report_topic
 from threading import Timer
 import inspect
 import asyncio
@@ -41,6 +41,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
     _waiting_ready_notify = False
     _session_dir: str
     _topic_params: ServiceTopicParams
+    _report_timer: Timer | None = None
 
     _runningBlocks = set()
     _jobs = set()
@@ -63,6 +64,18 @@ class ServiceRuntime(ServiceContextAbstractClass):
         mainframe.subscribe(run_action_topic(self._topic_params), self.run_action_callback)
         mainframe.subscribe(shutdown_action_topic(self._topic_params), self.shutdown_callback)
         self._setup_timer()
+        self.report_status()
+
+    # post message every 5 seconds
+    def report_status(self):
+        payload: ReportStatusPayload = {
+            "service_hash": self._service_hash,
+            "session_id": self._session_id,
+            "executor": "python"
+        }
+        self._mainframe.publish(status_report_topic(), payload)
+        self._report_timer = Timer(5, self.report_status)
+        self._report_timer.start()
 
     # 不能直接在 callback 里面调用 mainframe publish 所以 callback 都要单独开
     def shutdown_callback(self, payload: Any):

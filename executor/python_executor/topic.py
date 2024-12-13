@@ -59,5 +59,5 @@ def exit_report_topic() -> str:
 def service_config_topic(params: ServiceTopicParams) -> str:
     return "/".join([prefix(params.get('session_id')), params['service_hash'], service_config_suffix])
 
-def report_status_topic() -> str:
+def status_report_topic() -> str:
     return status_topic

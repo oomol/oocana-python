@@ -12,7 +12,7 @@ from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .matplot_helper import import_helper, add_matplot_module
 from typing import Literal
-from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams, ReportStatusPayload, exit_report_topic, report_status_topic
+from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams, ReportStatusPayload, exit_report_topic, status_report_topic
 
 logger = logging.getLogger(EXECUTOR_NAME)
 service_store: dict[str, Literal["launching", "running"]] = {}
@@ -125,7 +125,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
     mainframe.subscribe('report', report_message)
     mainframe.subscribe(exit_report_topic(), service_exit)
-    mainframe.subscribe(report_status_topic(), service_status)
+    mainframe.subscribe(status_report_topic(), service_status)
 
     mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, package)
 

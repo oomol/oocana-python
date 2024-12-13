@@ -3,7 +3,7 @@ from oocana import ServiceExecutePayload, Mainframe, StopAtOption, ServiceContex
 from .block import output_return_object, load_module
 from .context import createContext
 from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, oocana_dir
-from .topic import service_config_topic, ServiceTopicParams, ReportStatusPayload, prepare_report_topic, run_action_topic, service_message_topic, exit_report_topic
+from .topic import service_config_topic, ServiceTopicParams, ReportStatusPayload, prepare_report_topic, shutdown_action_topic, run_action_topic, service_message_topic, exit_report_topic
 from threading import Timer
 import inspect
 import asyncio
@@ -61,7 +61,16 @@ class ServiceRuntime(ServiceContextAbstractClass):
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
 
         mainframe.subscribe(run_action_topic(self._topic_params), self.run_action_callback)
+        mainframe.subscribe(shutdown_action_topic(self._topic_params), self.shutdown_callback)
         self._setup_timer()
+
+    # 不能直接在 callback 里面调用 mainframe publish 所以 callback 都要单独开
+    def shutdown_callback(self, payload: Any):
+        
+        async def shutdown():
+            self.exit()
+        
+        run_in_new_thread(shutdown)
 
     def run_action_callback(self, payload: ServiceExecutePayload):
 

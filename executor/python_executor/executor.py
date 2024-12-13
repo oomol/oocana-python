@@ -7,7 +7,6 @@ import sys
 import logging
 
 from oocana import Mainframe, ServiceExecutePayload
-from .data import service_map
 from .utils import run_in_new_thread, run_async_code, oocana_dir
 from .block import run_block, vars
 from oocana import EXECUTOR_NAME
@@ -16,6 +15,7 @@ from typing import Literal
 from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams
 
 logger = logging.getLogger(EXECUTOR_NAME)
+service_map = {}
 
 # 日志目录 ~/.oocana/executor/{session_id}/[python-{suffix}.log | python.log]
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
@@ -155,12 +155,14 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             f = fs.get()
             message = await f
             if message.get("service_executor") is not None:
-                service_dir = message.get("dir")
-                service_id = service_map.get(service_dir)
-                if service_id is None:
+                service_hash = message.get("service_hash")
+                status = service_map.get(service_hash)
+                if status is None:
                     asyncio.create_task(spawn_service(message))
-                else:
+                elif status == "running":
                     run_service_block(message)
+                else: # TODO: 等待 service 启动完成，再执行发送信息
+                    logger.warning(f"waiting service {service_hash} ready")
             else:
                 if not_current_session(message):
                     continue

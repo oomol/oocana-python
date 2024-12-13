@@ -15,7 +15,7 @@ from typing import Literal
 from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams
 
 logger = logging.getLogger(EXECUTOR_NAME)
-service_map = {}
+service_store: dict[str, Literal["launching", "running"]] = {}
 
 # 日志目录 ~/.oocana/executor/{session_id}/[python-{suffix}.log | python.log]
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
@@ -120,6 +120,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")
         service_hash = message.get("service_hash")
+        service_store[service_hash] = "launching"
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
@@ -133,11 +134,19 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             "session_id": session_id
         }
 
-        mainframe.subscribe(prepare_report_topic(params), lambda _: mainframe.publish(service_config_topic(params), message))
+        def send_service_config(params: ServiceTopicParams, message: ServiceExecutePayload):
+
+            async def run():
+                mainframe.publish(service_config_topic(params), message)
+                service_store[service_hash] = "running"
+            run_in_new_thread(run)
+
+        # FIXME: mqtt 不能在 subscribe 后立即 publish，需要修复。
+        mainframe.subscribe(prepare_report_topic(params), lambda _: send_service_config(params, message))
 
         await process.wait()
         logger.info(f"service {service_hash} exit")
-        service_map.pop(message.get("dir"))
+        del service_store[service_hash]
     
 
     def run_service_block(message: ServiceExecutePayload):
@@ -156,13 +165,13 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             message = await f
             if message.get("service_executor") is not None:
                 service_hash = message.get("service_hash")
-                status = service_map.get(service_hash)
+                status = service_store.get(service_hash)
                 if status is None:
                     asyncio.create_task(spawn_service(message))
                 elif status == "running":
                     run_service_block(message)
-                else: # TODO: 等待 service 启动完成，再执行发送信息
-                    logger.warning(f"waiting service {service_hash} ready")
+                elif status == "launching":
+                    fs.put(f)
             else:
                 if not_current_session(message):
                     continue

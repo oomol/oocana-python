@@ -11,9 +11,9 @@ from .data import service_map
 from .utils import run_in_new_thread, run_async_code, oocana_dir
 from .block import run_block, vars
 from oocana import EXECUTOR_NAME
-from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
 from .matplot_helper import import_helper, add_matplot_module
 from typing import Literal
+from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams
 
 logger = logging.getLogger(EXECUTOR_NAME)
 
@@ -119,28 +119,35 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
 
     async def spawn_service(message: ServiceExecutePayload):
         logger.info(f"create new service {message.get('dir')}")
-        service_id = "-".join(["service", message.get("job_id")])
-        service_map[message.get("dir")] = service_id
+        service_hash = message.get("service_hash")
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+        # TODO: 跨 session 的 service 不传递 session_id
         process = await asyncio.create_subprocess_shell(
-            f"python -u -m python_executor.service --address {address} --service-id {service_id} --session-dir {session_dir}",
+            f"python -u -m python_executor.service --address {address} --session-id {session_id}  --service-hash {service_hash} --session-dir {session_dir}",
             cwd=parent_dir
         )
+        params: ServiceTopicParams = {
+            "serviceHash": service_hash,
+            "sessionId": session_id
+        }
 
-        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn", lambda _: mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", message))
+        mainframe.subscribe(prepare_report_topic(params), lambda _: mainframe.publish(service_config_topic(params), message))
 
-
-        # 等待子进程结束
         await process.wait()
-        logger.info(f"service {service_id} exit")
+        logger.info(f"service {service_hash} exit")
         service_map.pop(message.get("dir"))
-        mainframe.unsubscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn")
     
 
-    def run_service_block(message: ServiceExecutePayload, service_id: str):
+    def run_service_block(message: ServiceExecutePayload):
         logger.info(f"service block {message.get('job_id')} start")
-        mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", message)
+        service_hash = message.get("service_hash")
+        params: ServiceTopicParams = {
+            "serviceHash": service_hash,
+            "sessionId": session_id
+        }
+        mainframe.publish(run_action_topic(params), message)
 
     while True:
         await asyncio.sleep(1)
@@ -153,7 +160,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
                 if service_id is None:
                     asyncio.create_task(spawn_service(message))
                 else:
-                    run_service_block(message, service_id)
+                    run_service_block(message)
             else:
                 if not_current_session(message):
                     continue

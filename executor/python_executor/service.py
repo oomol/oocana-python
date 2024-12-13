@@ -3,6 +3,7 @@ from oocana import ServiceExecutePayload, Mainframe, StopAtOption, ServiceContex
 from .block import output_return_object, load_module
 from .context import createContext
 from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, oocana_dir
+from .topic import service_config_topic, ServiceTopicParams, ReportStatusPayload, prepare_report_topic, run_action_topic, service_message_topic, exit_report_topic
 from threading import Timer
 import inspect
 import asyncio
@@ -31,30 +32,38 @@ class ServiceRuntime(ServiceContextAbstractClass):
     _store = {}
     _config: ServiceExecutePayload
     _mainframe: Mainframe
-    _service_id: str
+    _service_hash: str
+    _session_id: str | None = None
     _timer: Timer | None = None
     _stop_at: StopAtOption
     _keep_alive: int | None = None
     _registered = threading.Event()
     _waiting_ready_notify = False
     _session_dir: str
+    _topic_params: ServiceTopicParams
 
     _runningBlocks = set()
     _jobs = set()
 
-    def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_id: str, session_dir: str):
+    def __init__(self, config: ServiceExecutePayload, mainframe: Mainframe, service_hash: str, session_dir: str, session_id: str | None = None):
         self._block_handler = dict()
         self._config = config
         self._mainframe = mainframe
-        self._service_id = service_id
+        self._service_hash = service_hash
+        self._session_id = session_id
+        self._session_dir = session_dir
+        self._topic_params = {
+            "serviceHash": service_hash,
+            "sessionId": session_id
+        }
+
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
-        self._session_dir = session_dir
 
-        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/execute", self.execute_callback)
+        mainframe.subscribe(run_action_topic(self._topic_params), self.run_action_callback)
         self._setup_timer()
 
-    def execute_callback(self, payload: ServiceExecutePayload):
+    def run_action_callback(self, payload: ServiceExecutePayload):
 
         async def run():
             await self.run_block(payload)
@@ -101,7 +110,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
         def filter(payload):
             if payload.get("job_id") in self._jobs:
                 callback(payload)
-        self._mainframe.subscribe(f"service/{self._service_id}", filter)
+        self._mainframe.subscribe(service_message_topic, filter)
 
     async def run(self):
         service_config = self._config.get("service_executor")
@@ -123,7 +132,14 @@ class ServiceRuntime(ServiceContextAbstractClass):
         await self.run_block(self._config)
     
     def exit(self):
-        self._mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{self._service_id}/exit", {})
+
+        payload: ReportStatusPayload = {
+            "serviceHash": self._service_hash,
+            "sessionId": self._session_id,
+            "executor": "python"
+        }
+
+        self._mainframe.publish(exit_report_topic(), payload)
         self._mainframe.disconnect()
         # child process need call os._exit not sys.exit
         os._exit(0)
@@ -160,7 +176,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
             self._timer = Timer(self._keep_alive or DEFAULT_BLOCK_ALIVE_TIME, self.exit)
             self._timer.start()
 
-def config_callback(payload: Any, mainframe: Mainframe, service_id: str, session_dir: str):
+def setup_service(payload: Any, mainframe: Mainframe, service_id: str, session_dir: str):
     service = ServiceRuntime(payload, mainframe, service_id, session_dir)
 
     async def run():
@@ -168,12 +184,17 @@ def config_callback(payload: Any, mainframe: Mainframe, service_id: str, session
     loop_in_new_thread(run)
 
 
-async def run_service(address, service_id, session_dir):
-    mainframe = Mainframe(address, service_id)
+async def run_service(address: str, service_hash: str, session_id: str | None, session_dir: str):
+    mainframe = Mainframe(address, service_hash)
     mainframe.connect()
-    mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", lambda payload: config_callback(payload, mainframe, service_id, session_dir))
+
+    params: ServiceTopicParams = {
+        "sessionId": session_id,
+        "serviceHash": service_hash
+    }
+    mainframe.subscribe(service_config_topic(params), lambda payload: setup_service(payload, mainframe, service_hash, session_dir))
     await asyncio.sleep(1)
-    mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn", {})
+    mainframe.publish(prepare_report_topic(params), {})
 
 
 if __name__ == "__main__":
@@ -185,6 +206,10 @@ if __name__ == "__main__":
     parser.add_argument("--session-dir", required=True)
     args = parser.parse_args()
 
-    config_logger(args.service_hash, args.session_id)
+    address: str = args.address
+    service_hash: str = args.service_hash
+    session_id: str | None = args.session_id
+    session_dir: str = args.session_dir
 
-    run_async_code_and_loop(run_service(args.address, args.service_id, args.session_dir))
+    config_logger(service_hash, session_id)
+    run_async_code_and_loop(run_service(address, service_hash, session_id, session_dir))

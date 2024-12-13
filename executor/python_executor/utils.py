@@ -27,6 +27,6 @@ def run_in_new_thread(async_func: Callable[[], Awaitable[Any]]):
 def loop_in_new_thread(async_func: Callable[[], Awaitable[Any]]):
     threading.Thread(target=run_async_code_and_loop, args=(async_func(),)).start()
 
-def base_dir() -> str:
+def oocana_dir() -> str:
     from os.path import expanduser, join
-    return join(expanduser("~"), ".oocana", "executor")
+    return join(expanduser("~"), ".oocana")

@@ -8,7 +8,7 @@ import logging
 
 from oocana import Mainframe, ServiceExecutePayload
 from .data import service_map
-from .utils import run_in_new_thread, run_async_code, base_dir
+from .utils import run_in_new_thread, run_async_code, oocana_dir
 from .block import run_block, vars
 from oocana import EXECUTOR_NAME
 from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
@@ -21,7 +21,8 @@ logger = logging.getLogger(EXECUTOR_NAME)
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
 
     if output == "file":
-        logger_file = os.path.join(base_dir(), session_id, f"python-{suffix}.log") if suffix is not None else os.path.join(os.path.expanduser("~"), ".oocana", "executor", session_id, "python.log")
+        executor_dir = os.path.join(oocana_dir(), "executor", session_id)
+        logger_file = os.path.join(executor_dir, f"python-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
 
         if not os.path.exists(logger_file):
             os.makedirs(os.path.dirname(logger_file), exist_ok=True)

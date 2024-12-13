@@ -2,7 +2,7 @@ from typing import Callable, Any
 from oocana import ServiceExecutePayload, Mainframe, StopAtOption, ServiceContextAbstractClass, ServiceMessage, BlockHandler
 from .block import output_return_object, load_module
 from .context import createContext
-from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, base_dir
+from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, oocana_dir
 from threading import Timer
 import inspect
 import asyncio
@@ -13,11 +13,12 @@ import threading
 DEFAULT_BLOCK_ALIVE_TIME = 10
 SERVICE_EXECUTOR_TOPIC_PREFIX = "executor/service"
 
-# ~/.oocana/executor/services/{service_id}/python.log
-def config_logger(service_id: str):
+# 两种文件，根据是否有 session id 来区分：
+# 1. 跨 session service（global service）： ~/.oocana/services/{service_hash}.log
+# 2. session service： ~/.oocana/executor/{session_id}/{service_hash}.log
+def config_logger(service_hash: str, session_id: str | None):
     import os.path
-    # TODO: 目前 service log 与 executor log 分离，没有关联关系。会导致导出日志时，无法导出。后续再优化处理
-    logger_file = os.path.join(base_dir(), "services", service_id, "python.log")
+    logger_file = os.path.join(oocana_dir(), "services", service_hash + ".log") if session_id is None else os.path.join(oocana_dir(), "executor", session_id, service_hash + ".log") 
 
     if not os.path.exists(logger_file):
         os.makedirs(os.path.dirname(logger_file), exist_ok=True)
@@ -184,6 +185,6 @@ if __name__ == "__main__":
     parser.add_argument("--session-dir", required=True)
     args = parser.parse_args()
 
-    config_logger(args.service_id)
+    config_logger(args.service_hash, args.session_id)
 
     run_async_code_and_loop(run_service(args.address, args.service_id, args.session_dir))

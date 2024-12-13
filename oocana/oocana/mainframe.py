@@ -104,7 +104,7 @@ class Mainframe:
     def publish(self, topic, payload):
         self.client.publish(topic, json.dumps(payload, ignore_nan=True), qos=1)
     
-    def subscribe(self, topic, callback):
+    def subscribe(self, topic: str, callback):
         def on_message(_client, _userdata, message):
             logger.info("receive topic: {} payload: {}".format(topic, message.payload))
             payload = json.loads(message.payload)

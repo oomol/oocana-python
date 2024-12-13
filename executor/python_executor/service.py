@@ -53,8 +53,8 @@ class ServiceRuntime(ServiceContextAbstractClass):
         self._session_id = session_id
         self._session_dir = session_dir
         self._topic_params = {
-            "serviceHash": service_hash,
-            "sessionId": session_id
+            "service_hash": service_hash,
+            "session_id": session_id
         }
 
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
@@ -143,8 +143,8 @@ class ServiceRuntime(ServiceContextAbstractClass):
     def exit(self):
 
         payload: ReportStatusPayload = {
-            "serviceHash": self._service_hash,
-            "sessionId": self._session_id,
+            "service_hash": self._service_hash,
+            "session_id": self._session_id,
             "executor": "python"
         }
 
@@ -198,8 +198,8 @@ async def run_service(address: str, service_hash: str, session_id: str | None, s
     mainframe.connect()
 
     params: ServiceTopicParams = {
-        "sessionId": session_id,
-        "serviceHash": service_hash
+        "session_id": session_id,
+        "service_hash": service_hash
     }
     mainframe.subscribe(service_config_topic(params), lambda payload: setup_service(payload, mainframe, service_hash, session_dir))
     await asyncio.sleep(1)

@@ -129,8 +129,8 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             cwd=parent_dir
         )
         params: ServiceTopicParams = {
-            "serviceHash": service_hash,
-            "sessionId": session_id
+            "service_hash": service_hash,
+            "session_id": session_id
         }
 
         mainframe.subscribe(prepare_report_topic(params), lambda _: mainframe.publish(service_config_topic(params), message))
@@ -144,8 +144,8 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
         logger.info(f"service block {message.get('job_id')} start")
         service_hash = message.get("service_hash")
         params: ServiceTopicParams = {
-            "serviceHash": service_hash,
-            "sessionId": session_id
+            "service_hash": service_hash,
+            "session_id": session_id
         }
         mainframe.publish(run_action_topic(params), message)
 

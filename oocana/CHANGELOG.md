@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.12](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.11...@oomol/python-sdk@0.14.12) (2024-12-16)
+
+
+### Features
+
+* **type:** add more preview payload types ([#236](https://github.com/oomol/oocana-python/issues/236)) ([ee259a3](https://github.com/oomol/oocana-python/commit/ee259a39574dae5a3ed6ba5175e4340cd9dab0e1))
+
 ## [0.14.11](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.10...@oomol/python-sdk@0.14.11) (2024-12-12)
 
 

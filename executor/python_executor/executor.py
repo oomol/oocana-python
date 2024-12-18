@@ -135,11 +135,18 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-        # TODO: 跨 session 的 service 不传递 session_id
-        process = await asyncio.create_subprocess_shell(
-            f"python -u -m python_executor.service --address {address} --session-id {session_id}  --service-hash {service_hash} --session-dir {session_dir}",
-            cwd=parent_dir
-        )
+        is_global_service = message.get("service_executor").get("stop_at") in ["app_end", "never"]
+
+        if is_global_service:
+            process = await asyncio.create_subprocess_shell(
+                f"python -u -m python_executor.service --address {address}  --service-hash {service_hash} --session-dir {session_dir}",
+                cwd=parent_dir
+            )
+        else:
+            process = await asyncio.create_subprocess_shell(
+                f"python -u -m python_executor.service --address {address} --session-id {session_id}  --service-hash {service_hash} --session-dir {session_dir}",
+                cwd=parent_dir
+            )
         params: ServiceTopicParams = {
             "service_hash": service_hash,
             "session_id": session_id

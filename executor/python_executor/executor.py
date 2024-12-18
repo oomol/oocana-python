@@ -189,6 +189,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
                 elif status == "running":
                     run_service_block(message)
                 elif status == "launching":
+                    logger.info(f"service {service_hash} is launching, set message back to fs to wait next time")
                     fs.put(f)
             else:
                 if not_current_session(message):

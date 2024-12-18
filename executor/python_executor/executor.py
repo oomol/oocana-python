@@ -176,9 +176,6 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             message = await f
             if message.get("service_executor") is not None:
                 service_hash = message.get("service_hash")
-                # TODO: 应该让 oocana 计算 service_hash，这里是 workaround
-                if service_hash is None:
-                    service_hash = package + message.get("service_executor", {}).get("name") if package is not None else message.get("service_executor", {}).get("name")
                 status = service_store.get(service_hash)
                 if status is None:
                     asyncio.create_task(spawn_service(message, service_hash))

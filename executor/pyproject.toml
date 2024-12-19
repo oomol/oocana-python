@@ -1,6 +1,6 @@
 [project]
 name = "python-executor"
-version = "0.14.19"
+version = "0.14.20"
 authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},
     {name = "yleaf", email = "11785335+leavesster@users.noreply.github.com"},

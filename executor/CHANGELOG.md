@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.14.20](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.19...@oomol/python-executor@0.14.20) (2024-12-19)
+
+
+### Features
+
+* add global shutdown ([#239](https://github.com/oomol/oocana-python/issues/239)) ([f1bb6f9](https://github.com/oomol/oocana-python/commit/f1bb6f91f3471370a98888109c6f318475ffe09f))
+* support global service ([#235](https://github.com/oomol/oocana-python/issues/235)) ([def49c0](https://github.com/oomol/oocana-python/commit/def49c0cd0ac96a1bbade1f0f2f3134863bf1741))
+* write binary to file instead of base64 ([#240](https://github.com/oomol/oocana-python/issues/240)) ([715a8cc](https://github.com/oomol/oocana-python/commit/715a8cca8c0efb84710fd94a0f8e2498d5f367ff))
+
 ## [0.14.19](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.18...@oomol/python-executor@0.14.19) (2024-12-12)
 
 

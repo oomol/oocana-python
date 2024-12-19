@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.13](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.12...@oomol/python-sdk@0.14.13) (2024-12-19)
+
+
+### Features
+
+* support global service ([#235](https://github.com/oomol/oocana-python/issues/235)) ([def49c0](https://github.com/oomol/oocana-python/commit/def49c0cd0ac96a1bbade1f0f2f3134863bf1741))
+* write binary to file instead of base64 ([#240](https://github.com/oomol/oocana-python/issues/240)) ([715a8cc](https://github.com/oomol/oocana-python/commit/715a8cca8c0efb84710fd94a0f8e2498d5f367ff))
+
 ## [0.14.12](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.11...@oomol/python-sdk@0.14.12) (2024-12-16)
 
 

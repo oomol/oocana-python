@@ -2,7 +2,7 @@ import logging
 from oocana import Mainframe, Context, StoreKey, BlockInfo, InputHandleDef
 from typing import Dict
 from .secret import replace_secret
-from base64 import b64decode
+import os.path
 
 logger = logging.getLogger("EXECUTOR_NAME")
 
@@ -40,9 +40,16 @@ def createContext(
                 else:
                     logger.error(f"object {ref} not found in store")
             elif input_def.is_bin_handle():
-                b = b64decode(v)
-                inputs[k] = b
+                if isinstance(v, str):
+                    # check file path v is exist
+                    if not os.path.exists(v):
+                        logger.error(f"file {v} for oomol/bin is not found")
+                        continue
 
+                    with open(v, "rb") as f:
+                        inputs[k] = f.read()
+                else:
+                    logger.error(f"not valid bin handle: {v}")
 
     if inputs is None:
         inputs = {}

@@ -123,7 +123,7 @@ class Context:
                     return
 
                 if os.path.exists(bin_file):
-                    v = f"{self.session_dir}/{key}"
+                    v = bin_file
                 else:
                     self.send_warning(
                         f"Output handle key: [{key}] is defined as binary, but the file is not written."

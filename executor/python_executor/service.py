@@ -3,7 +3,7 @@ from oocana import ServiceExecutePayload, Mainframe, StopAtOption, ServiceContex
 from .block import output_return_object, load_module
 from .context import createContext
 from .utils import run_async_code_and_loop, loop_in_new_thread, run_in_new_thread, oocana_dir
-from .topic import service_config_topic, ServiceTopicParams, ReportStatusPayload, prepare_report_topic, shutdown_action_topic, run_action_topic, service_message_topic, exit_report_topic, status_report_topic
+from .topic import service_config_topic, ServiceTopicParams, ReportStatusPayload, prepare_report_topic, shutdown_action_topic, run_action_topic, service_message_topic, exit_report_topic, status_report_topic,global_shutdown_topic
 from threading import Timer
 import inspect
 import asyncio
@@ -62,6 +62,8 @@ class ServiceRuntime(ServiceContextAbstractClass):
 
         mainframe.subscribe(run_action_topic(self._topic_params), self.run_action_callback)
         mainframe.subscribe(shutdown_action_topic(self._topic_params), self.shutdown_callback)
+        mainframe.subscribe(global_shutdown_topic, self.shutdown_callback)
+
         self._setup_timer()
         self.report_status()
 

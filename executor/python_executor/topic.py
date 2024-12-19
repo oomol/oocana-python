@@ -1,8 +1,8 @@
 from typing import Optional, TypedDict
 
-status_topic = "/service/report/status"
-exit_topic = "/service/report/exit"
-
+status_topic = "service/report/status"
+exit_topic = "service/report/exit"
+global_shutdown_topic = "service/global/action/shutdown"
 
 class ReportStatusPayload(TypedDict):
     service_hash: str
@@ -10,7 +10,7 @@ class ReportStatusPayload(TypedDict):
     executor: str
 
 # prefix
-global_service_topic_prefix = "/service/python"
+global_service_topic_prefix = "service/python"
 service_topic_prefix = "/{session_id}/service/python"
 
 # action suffix

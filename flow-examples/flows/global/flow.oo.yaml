@@ -1,0 +1,6 @@
+nodes:
+  - node_id: block-1
+    service: app::global::b
+    inputs_from:
+      - handle: one
+        value: "aa"

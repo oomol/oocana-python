@@ -7,21 +7,22 @@ import sys
 import logging
 
 from oocana import Mainframe, ServiceExecutePayload
-from .data import service_map
-from .utils import run_in_new_thread, run_async_code, base_dir
+from .utils import run_in_new_thread, run_async_code, oocana_dir
 from .block import run_block, vars
 from oocana import EXECUTOR_NAME
-from .service import SERVICE_EXECUTOR_TOPIC_PREFIX
 from .matplot_helper import import_helper, add_matplot_module
 from typing import Literal
+from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams, ReportStatusPayload, exit_report_topic, status_report_topic
 
 logger = logging.getLogger(EXECUTOR_NAME)
+service_store: dict[str, Literal["launching", "running"]] = {}
 
 # 日志目录 ~/.oocana/executor/{session_id}/[python-{suffix}.log | python.log]
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
 
     if output == "file":
-        logger_file = os.path.join(base_dir(), session_id, f"python-{suffix}.log") if suffix is not None else os.path.join(os.path.expanduser("~"), ".oocana", "executor", session_id, "python.log")
+        executor_dir = os.path.join(oocana_dir(), "executor", session_id)
+        logger_file = os.path.join(executor_dir, f"python-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
 
         if not os.path.exists(logger_file):
             os.makedirs(os.path.dirname(logger_file), exist_ok=True)
@@ -90,6 +91,16 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
         fs.put(f)
         f.set_result(message)
 
+    def service_exit(message: ReportStatusPayload):
+        service_hash = message.get("service_hash")
+        if service_hash in service_store:
+            del service_store[service_hash]
+
+    def service_status(message: ReportStatusPayload):
+        service_hash = message.get("service_hash")
+        if service_hash in service_store:
+            service_store[service_hash] = "running"
+
     # 现在 session 要保留 var 进行 rerun 缓存，所以这个回调目前不处理。如果 var 功能保留，这个回调就直接删除。
     def drop(message):
         pass
@@ -113,33 +124,57 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
     mainframe.subscribe('report', report_message)
+    mainframe.subscribe(exit_report_topic(), service_exit)
+    mainframe.subscribe(status_report_topic(), service_status)
 
     mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, package)
 
-    async def spawn_service(message: ServiceExecutePayload):
+    async def spawn_service(message: ServiceExecutePayload, service_hash: str):
         logger.info(f"create new service {message.get('dir')}")
-        service_id = "-".join(["service", message.get("job_id")])
-        service_map[message.get("dir")] = service_id
+        service_store[service_hash] = "launching"
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        process = await asyncio.create_subprocess_shell(
-            f"python -u -m python_executor.service --address {address} --service-id {service_id} --session-dir {session_dir}",
-            cwd=parent_dir
-        )
 
-        mainframe.subscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn", lambda _: mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", message))
+        is_global_service = message.get("service_executor").get("stop_at") in ["app_end", "never"]
 
+        if is_global_service:
+            process = await asyncio.create_subprocess_shell(
+                f"python -u -m python_executor.service --address {address}  --service-hash {service_hash} --session-dir {session_dir}",
+                cwd=parent_dir
+            )
+        else:
+            process = await asyncio.create_subprocess_shell(
+                f"python -u -m python_executor.service --address {address} --session-id {session_id}  --service-hash {service_hash} --session-dir {session_dir}",
+                cwd=parent_dir
+            )
+        params: ServiceTopicParams = {
+            "service_hash": service_hash,
+            "session_id": session_id
+        }
 
-        # 等待子进程结束
+        def send_service_config(params: ServiceTopicParams, message: ServiceExecutePayload):
+
+            async def run():
+                mainframe.publish(service_config_topic(params), message)
+                service_store[service_hash] = "running"
+            run_in_new_thread(run)
+
+        # FIXME: mqtt 不能在 subscribe 后立即 publish，需要修复。
+        mainframe.subscribe(prepare_report_topic(params), lambda _: send_service_config(params, message))
+
         await process.wait()
-        logger.info(f"service {service_id} exit")
-        service_map.pop(message.get("dir"))
-        mainframe.unsubscribe(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/spawn")
+        logger.info(f"service {service_hash} exit")
+        del service_store[service_hash]
     
 
-    def run_service_block(message: ServiceExecutePayload, service_id: str):
+    def run_service_block(message: ServiceExecutePayload):
         logger.info(f"service block {message.get('job_id')} start")
-        mainframe.publish(f"{SERVICE_EXECUTOR_TOPIC_PREFIX}/{service_id}/config", message)
+        service_hash = message.get("service_hash")
+        params: ServiceTopicParams = {
+            "service_hash": service_hash,
+            "session_id": session_id
+        }
+        mainframe.publish(run_action_topic(params), message)
 
     while True:
         await asyncio.sleep(1)
@@ -147,12 +182,15 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             f = fs.get()
             message = await f
             if message.get("service_executor") is not None:
-                service_dir = message.get("dir")
-                service_id = service_map.get(service_dir)
-                if service_id is None:
-                    asyncio.create_task(spawn_service(message))
-                else:
-                    run_service_block(message, service_id)
+                service_hash = message.get("service_hash")
+                status = service_store.get(service_hash)
+                if status is None:
+                    asyncio.create_task(spawn_service(message, service_hash))
+                elif status == "running":
+                    run_service_block(message)
+                elif status == "launching":
+                    logger.info(f"service {service_hash} is launching, set message back to fs to wait next time")
+                    fs.put(f)
             else:
                 if not_current_session(message):
                     continue

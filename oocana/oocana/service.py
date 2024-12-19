@@ -65,3 +65,4 @@ class ServiceExecutePayload(JobDict):
     block_name: str
     service_executor: ServiceExecutor
     outputs: dict
+    service_hash: str

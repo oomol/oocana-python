@@ -1,2 +1,1 @@
 store = {}
-service_map = {}

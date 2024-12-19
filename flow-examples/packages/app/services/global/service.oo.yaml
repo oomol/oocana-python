@@ -2,7 +2,10 @@ executor:
   name: python
   entry: ./main.py
   function: main
+  stop_at: never
 blocks:
-  - name: a
+  - name: b
+    inputs_def:
+      - handle: one
     outputs_def:
       - handle: two

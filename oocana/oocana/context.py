@@ -9,6 +9,7 @@ from io import BytesIO
 from .throtter import throttle
 from .preview import PreviewPayload, TablePreviewData
 from .data import EXECUTOR_NAME
+import os.path
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
         return self is value
@@ -109,7 +110,25 @@ class Context:
                         f"Output handle key: [{key}] is defined as binary, but the value is not bytes."
                     )
                     return
-                v = b64encode(value)
+                
+                bin_file = f"{self.session_dir}/binary/{self.session_id}/{key}"
+                os.makedirs(os.path.dirname(bin_file), exist_ok=True)
+                try:
+                    with open(bin_file, "wb") as f:
+                        f.write(value)
+                except IOError as e:
+                    self.send_warning(
+                        f"Output handle key: [{key}] is defined as binary, but an error occurred while writing the file: {e}"
+                    )
+                    return
+
+                if os.path.exists(bin_file):
+                    v = f"{self.session_dir}/{key}"
+                else:
+                    self.send_warning(
+                        f"Output handle key: [{key}] is defined as binary, but the file is not written."
+                    )
+                    return
 
         # 如果传入 key 在输出定义中不存在，直接忽略，不发送数据。但是 done 仍然生效。
         if self.__outputs_def is not None and self.__outputs_def.get(key) is None:

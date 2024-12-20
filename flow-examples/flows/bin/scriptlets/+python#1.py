@@ -1,5 +1,4 @@
 from oocana import Context
-from base64 import b64encode, b64decode
 def main(inputs: dict, context: Context):
 
   # your code

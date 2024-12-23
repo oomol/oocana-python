@@ -177,7 +177,7 @@ async def run_block(message, mainframe: Mainframe, session_dir: str):
                         result = fn(context.inputs, context)
             except ExitFunctionException as e:
                 if e.args[0] is not None:
-                    context.done("block call exit with message: " + e.args[0])
+                    context.done("block call exit with message: " + str(e.args[0]))
                 else:
                     context.done()
             except Exception:

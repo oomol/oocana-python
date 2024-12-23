@@ -5,7 +5,7 @@ import os
 import queue
 import sys
 import logging
-
+from . import hook
 from oocana import Mainframe, ServiceExecutePayload
 from .utils import run_in_new_thread, run_async_code, oocana_dir
 from .block import run_block, vars
@@ -117,7 +117,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             if os.getenv("IS_FORKED"): # fork 进程无法直接使用 sys.exit 退出
                 os._exit(0)
             else:
-                sys.exit()
+                hook.original_exit(0)
         
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)

@@ -1,0 +1,5 @@
+executor: 
+  name: python
+  options:
+    entry: "main.py"
+    function: main

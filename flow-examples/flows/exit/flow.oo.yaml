@@ -1,0 +1,5 @@
+nodes:
+  - node_id: block-1
+    task: ./a
+  - node_id: block-2
+    task: ./b

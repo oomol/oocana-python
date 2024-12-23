@@ -17,11 +17,11 @@ from .topic import prepare_report_topic, service_config_topic, run_action_topic,
 logger = logging.getLogger(EXECUTOR_NAME)
 service_store: dict[str, Literal["launching", "running"]] = {}
 
-# 日志目录 ~/.oocana/executor/{session_id}/[python-{suffix}.log | python.log]
+# 日志目录 ~/.oocana/sessions/{session_id}/[python-{suffix}.log | python.log]
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
 
     if output == "file":
-        executor_dir = os.path.join(oocana_dir(), "executor", session_id)
+        executor_dir = os.path.join(oocana_dir(), "sessions", session_id)
         logger_file = os.path.join(executor_dir, f"python-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
 
         if not os.path.exists(logger_file):

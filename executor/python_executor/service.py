@@ -14,11 +14,11 @@ import threading
 DEFAULT_BLOCK_ALIVE_TIME = 10
 
 # 两种文件，根据是否有 session id 来区分：
-# 1. 跨 session service（global service）： ~/.oocana/services/{service_hash}.log
-# 2. session service： ~/.oocana/executor/{session_id}/{service_hash}.log
+# 1. session service： ~/.oocana/sessions/{session_id}/python-{service_hash}.log
+# 2. 跨 session service（global service）： ~/.oocana/services/python-{service_hash}.log
 def config_logger(service_hash: str, session_id: str | None):
     import os.path
-    logger_file = os.path.join(oocana_dir(), "services", service_hash + ".log") if session_id is None else os.path.join(oocana_dir(), "executor", session_id, service_hash + ".log") 
+    logger_file = os.path.join(oocana_dir(), "services", "python-" + service_hash + ".log") if session_id is None else os.path.join(oocana_dir(), "sessions", session_id, "python-" + service_hash + ".log") 
 
     if not os.path.exists(logger_file):
         os.makedirs(os.path.dirname(logger_file), exist_ok=True)

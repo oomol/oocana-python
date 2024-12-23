@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.22](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.21...@oomol/python-executor@0.14.22) (2024-12-23)
+
+
+### Code Refactoring
+
+* move log location ([#243](https://github.com/oomol/oocana-python/issues/243)) ([1d509a1](https://github.com/oomol/oocana-python/commit/1d509a13bebd38fcd87ad79ffb4373de69021e44))
+
 ## [0.14.21](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.20...@oomol/python-executor@0.14.21) (2024-12-23)
 
 

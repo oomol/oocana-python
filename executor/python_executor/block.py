@@ -8,6 +8,7 @@ import traceback
 import logging
 from .data import store
 from .context import createContext
+from .hook import ExitFunctionException
 import os
 import sys
 import importlib
@@ -174,6 +175,11 @@ async def run_block(message, mainframe: Mainframe, session_dir: str):
                         result = fn(context) if only_context_param else fn(context.inputs)
                     else:
                         result = fn(context.inputs, context)
+            except ExitFunctionException as e:
+                if e.args[0] is not None:
+                    context.done("block call exit with message: " + str(e.args[0]))
+                else:
+                    context.done()
             except Exception:
                 traceback_str = traceback.format_exc()
 

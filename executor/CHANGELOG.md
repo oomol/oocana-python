@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.21](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.20...@oomol/python-executor@0.14.21) (2024-12-23)
+
+
+### Features
+
+* replace exit ([#241](https://github.com/oomol/oocana-python/issues/241)) ([22b867b](https://github.com/oomol/oocana-python/commit/22b867b914a2cf9c4820e7b60e5849cfb4f5c3e9))
+
 ## [0.14.20](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.19...@oomol/python-executor@0.14.20) (2024-12-19)
 
 

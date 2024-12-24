@@ -155,38 +155,31 @@ async def run_block(message, mainframe: Mainframe, session_dir: str):
         params_count = len(signature.parameters)
         result = None
         traceback_str = None
-        # 多进程的 stdout 和 stderr 是互相独立不影响的；
-        # 目前使用的多线程的 stdout 和 stderr 是共享的，导致目前的 redirect_stdout 和 redirect_stderr 会捕获到其他线程的输出。
-        with redirect_stderr(StringIO()) as stderr, redirect_stdout(StringIO()) as stdout:
-            try:
-                if inspect.iscoroutinefunction(fn):
-                    if params_count == 0:
-                        result = await fn()
-                    elif params_count == 1:
-                        only_context_param = list(signature.parameters.values())[0].annotation is Context
-                        result = await fn(context) if only_context_param else await fn(context.inputs)
-                    else:
-                        result = await fn(context.inputs, context)
-                else:
-                    if params_count == 0:
-                        result = fn()
-                    elif params_count == 1:
-                        only_context_param = list(signature.parameters.values())[0].annotation is Context
-                        result = fn(context) if only_context_param else fn(context.inputs)
-                    else:
-                        result = fn(context.inputs, context)
-            except ExitFunctionException as e:
-                if e.args[0] is not None:
-                    context.done("block call exit with message: " + str(e.args[0]))
-                else:
-                    context.done()
-            except Exception:
-                traceback_str = traceback.format_exc()
 
-        for line in stdout.getvalue().splitlines():
-            context.report_log(line)
-        for line in stderr.getvalue().splitlines():
-            context.report_log(line, "stderr")
+        try:
+            if inspect.iscoroutinefunction(fn):
+                if params_count == 0:
+                    result = await fn()
+                elif params_count == 1:
+                    only_context_param = list(signature.parameters.values())[0].annotation is Context
+                    result = await fn(context) if only_context_param else await fn(context.inputs)
+                else:
+                    result = await fn(context.inputs, context)
+            else:
+                if params_count == 0:
+                    result = fn()
+                elif params_count == 1:
+                    only_context_param = list(signature.parameters.values())[0].annotation is Context
+                    result = fn(context) if only_context_param else fn(context.inputs)
+                else:
+                    result = fn(context.inputs, context)
+        except ExitFunctionException as e:
+            if e.args[0] is not None:
+                context.done("block call exit with message: " + str(e.args[0]))
+            else:
+                context.done()
+        except Exception:
+            traceback_str = traceback.format_exc()
 
         if traceback_str is not None:
             context.done(traceback_str)

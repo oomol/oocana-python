@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.23](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.22...@oomol/python-executor@0.14.23) (2024-12-24)
+
+
+### Features
+
+* capture print and send mqtt message immediately ([#245](https://github.com/oomol/oocana-python/issues/245)) ([7acb212](https://github.com/oomol/oocana-python/commit/7acb2127555dc4ca0495f11adf3241b68382ac42))
+
 ## [0.14.22](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.21...@oomol/python-executor@0.14.22) (2024-12-23)
 
 

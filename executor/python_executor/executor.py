@@ -8,7 +8,7 @@ import logging
 from . import hook
 from oocana import Mainframe, ServiceExecutePayload
 from .utils import run_in_new_thread, run_async_code, oocana_dir
-from .block import run_block, vars
+from .block import run_block
 from oocana import EXECUTOR_NAME
 from .matplot_helper import import_helper, add_matplot_module
 from typing import Literal

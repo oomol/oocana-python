@@ -11,10 +11,9 @@ import os
 import sys
 import importlib
 import importlib.util
-from contextvars import ContextVar
 import threading
+from .data import vars
 
-vars: ContextVar[Context] = ContextVar('context')
 
 class ExecutorOptionsDict(TypedDict):
     function: Optional[str]

@@ -3,7 +3,10 @@ from builtins import exit as global_exit
 from typing import TypeAlias, Any
 import sys
 import builtins
-from .block import vars, logger
+from .data import vars
+import logging
+
+logger = logging.getLogger("EXECUTOR_NAME")
 
 class ExitFunctionException(Exception):
     pass

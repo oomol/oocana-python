@@ -22,6 +22,7 @@ def sys_global_exit(status: _ExitCode = None) -> None:
 
 def global_print(*values: object, sep: str | None = " ", end: str | None = "\n", file: Any | None = None, flush: bool = False) -> None:
     
+    context = None  # 初始化 context 变量
     try:
         context = vars.get()
     except LookupError:

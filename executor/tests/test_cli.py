@@ -30,7 +30,7 @@ class TestExecutorCLI(unittest.TestCase):
 
         code = process.poll()
 
-        self.assertIsNone(code, "CLI tool failed to start or exit.")
+        self.assertIsNone(code, f"CLI tool failed to start or exit with code {code}")
 
         process.send_signal(signal.SIGINT)
 

@@ -13,10 +13,10 @@ import os
 import sys
 import importlib
 import importlib.util
-import contextvars
+from contextvars import ContextVar
 import threading
 
-vars = contextvars.ContextVar('context')
+vars: ContextVar[Context] = ContextVar('context')
 
 class ExecutorOptionsDict(TypedDict):
     function: Optional[str]

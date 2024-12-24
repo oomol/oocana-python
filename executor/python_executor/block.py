@@ -1,8 +1,6 @@
 from oocana import Context, Mainframe
 from dataclasses import dataclass
 from typing import Optional, TypedDict
-from contextlib import redirect_stderr, redirect_stdout
-from io import StringIO
 import inspect
 import traceback
 import logging

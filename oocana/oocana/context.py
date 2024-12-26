@@ -266,7 +266,7 @@ class Context:
         )
 
     def send_warning(self, warning: str):
-        self.__mainframe.send(self.job_info, {"type": "BlockWarning", "warning": warning})
+        self.__mainframe.report(self.block_info, {"type": "BlockWarning", "warning": warning})
 
     def send_error(self, error: str):
         '''

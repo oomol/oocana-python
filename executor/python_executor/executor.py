@@ -28,9 +28,9 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
             os.makedirs(os.path.dirname(logger_file), exist_ok=True)
 
         print(f"setup logging in file {logger_file}")
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s', filename=logger_file)
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s', filename=logger_file)
     else:
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(filename)s:%(lineno)d} - %(message)s')
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s')
 
 
 async def run_executor(address: str, session_id: str, package: str | None, session_dir: str):

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.14](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.13...@oomol/python-sdk@0.14.14) (2024-12-26)
+
+
+### Bug Fixes
+
+* use report topic for warning message ([#248](https://github.com/oomol/oocana-python/issues/248)) ([19371b2](https://github.com/oomol/oocana-python/commit/19371b2caff03fbc9837b0aa10a74d118df35f12))
+
 ## [0.14.13](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.12...@oomol/python-sdk@0.14.13) (2024-12-19)
 
 

@@ -2,7 +2,7 @@
 
 from matplotlib.backend_bases import Gcf # type: ignore
 from matplotlib.backends.backend_agg import FigureCanvasAgg # type: ignore
-from ..data import vars
+from python_executor.data import vars
 
 FigureCanvas = FigureCanvasAgg
 

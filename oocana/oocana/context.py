@@ -7,7 +7,7 @@ from typing import Dict, Any
 from base64 import b64encode
 from io import BytesIO
 from .throtter import throttle
-from .preview import PreviewPayload, TablePreviewData
+from .preview import PreviewPayload, TablePreviewData, DataFrame, ShapeDataFrame, PartialDataFrame
 from .data import EXECUTOR_NAME
 import os.path
 class OnlyEqualSelf:
@@ -172,19 +172,18 @@ class Context:
         )
     
     def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
-        # payload is a dataframe
-        if hasattr(payload, "__dataframe__") and hasattr(payload, "to_dict"):
+        if isinstance(payload, DataFrame):
             payload = { "type": "table", "data": payload }
 
-        if isinstance(payload, dict) and payload.get("type") is not None and payload["type"] == "table":
-            df: Any = payload.get("data")
-            if hasattr(df, "__dataframe__") and hasattr(df, "to_dict"):
+        if isinstance(payload, dict) and payload.get("type") == "table":
+            df = payload.get("data")
+            if isinstance(df, ShapeDataFrame):
                 row_count = df.shape[0]
                 if row_count <= 10:
                     data = df.to_dict(orient='split')
                     columns = data.get("columns", [])
                     rows = data.get("data", [])
-                else:
+                elif isinstance(df, PartialDataFrame):
                     data_columns = loads(df.head(5).to_json(orient='split'))
                     columns = data_columns.get("columns", [])
                     rows_head = data_columns.get("data", [])
@@ -192,8 +191,13 @@ class Context:
                     rows_tail = data_tail.get("data", [])
                     rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail
+                else:
+                    print("dataframe more than 10 rows but not support head and tail is not supported")
+                    return payload
                 data: TablePreviewData = { "rows": rows, "columns": columns, "row_count": row_count }
                 payload = { "type": "table", "data": data }
+            else:
+                print("dataframe is not support shape property")
         
         return payload
 

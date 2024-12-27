@@ -1,5 +1,36 @@
 
-from typing import Any, TypedDict, List, Literal, TypeAlias, Union
+from typing import Any, TypedDict, List, Literal, TypeAlias, Union, Protocol, runtime_checkable
+
+# this class is for pandas.DataFrame
+@runtime_checkable
+class DataFrame(Protocol):
+
+    def __dataframe__(self, *args: Any, **kwargs: Any) -> Any:
+        ...
+
+    def to_dict(self, *args: Any, **kwargs: Any) -> Any:
+        ...
+
+@runtime_checkable
+class JsonAble(Protocol):
+
+    def to_json(self, *args: Any, **kwargs: Any) -> Any:
+        ...
+
+@runtime_checkable
+class ShapeDataFrame(DataFrame, Protocol):
+
+    @property
+    def shape(self) -> tuple[int, int]:
+        ...
+
+@runtime_checkable
+class PartialDataFrame(Protocol):
+    def head(self, *args: Any, **kwargs: Any) -> JsonAble:
+        ...
+    
+    def tail(self, *args: Any, **kwargs: Any) -> JsonAble:
+        ...
 
 class TablePreviewData(TypedDict):
     columns: List[str | int | float]
@@ -26,6 +57,10 @@ class MediaPreviewPayload(TypedDict):
     type: Literal["image", 'video', 'audio', 'markdown', "iframe", "html"]
     data: str
 
+class PandasPreviewPayload(TypedDict):
+    type: Literal['table']
+    data: DataFrame
+
 class DefaultPreviewPayload:
     type: str
     data: Any
@@ -36,5 +71,7 @@ PreviewPayload: TypeAlias = Union[
     JSONPreviewPayload,
     ImagePreviewPayload,
     MediaPreviewPayload,
+    DataFrame,
+    PandasPreviewPayload,
     DefaultPreviewPayload
 ]

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.24](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.23...@oomol/python-executor@0.14.24) (2024-12-27)
+
+
+### Features
+
+* use pathname for detail logger ([8a18767](https://github.com/oomol/oocana-python/commit/8a18767cc0dcc2edb7ddf3c5d66b878b0579f7d5))
+
+
+### Bug Fixes
+
+* use context vars to directly pass context instead of sys.modules ([#251](https://github.com/oomol/oocana-python/issues/251)) ([14aeca1](https://github.com/oomol/oocana-python/commit/14aeca1b3984643fa8d7892876b1764722b92689))
+
 ## [0.14.23](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.22...@oomol/python-executor@0.14.23) (2024-12-24)
 
 

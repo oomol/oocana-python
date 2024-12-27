@@ -43,9 +43,6 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
 
     logger.info("executor start") if package is None else logger.info(f"executor start with package {package}")
 
-    # TODO: 透传给其他模块的 全局变量。比较 hack。后续考虑优化，或者把变量共享到另一个文件。使用见 oomol.py
-    sys.modules['oomol'] = vars # type: ignore
-
     add_matplot_module()
     import_helper(logger)
 

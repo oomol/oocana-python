@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.15](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.14...@oomol/python-sdk@0.14.15) (2024-12-27)
+
+
+### Code Refactoring
+
+* add dataFrame protocol to better support ([#254](https://github.com/oomol/oocana-python/issues/254)) ([9687502](https://github.com/oomol/oocana-python/commit/9687502850c02de224dee426785e4880fa103771))
+
 ## [0.14.14](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.13...@oomol/python-sdk@0.14.14) (2024-12-26)
 
 

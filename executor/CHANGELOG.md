@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.25](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.24...@oomol/python-executor@0.14.25) (2024-12-27)
+
+
+### Bug Fixes
+
+* update import path for vars in oomol.py ([#252](https://github.com/oomol/oocana-python/issues/252)) ([2e74bfc](https://github.com/oomol/oocana-python/commit/2e74bfc0a2ab96d12c4268afbca761e22a06199f))
+
 ## [0.14.24](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.23...@oomol/python-executor@0.14.24) (2024-12-27)
 
 

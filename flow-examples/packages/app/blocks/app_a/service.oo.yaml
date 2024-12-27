@@ -1,9 +1,0 @@
-title: service-example
-executor:
-  name: python
-  entry: main.py
-  function: main
-blocks:
-  - name: one
-    outputs_def:
-      - handle: a

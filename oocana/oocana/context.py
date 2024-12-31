@@ -3,7 +3,7 @@ from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
-from typing import Dict, Any
+from typing import Dict, Any, TypedDict
 from base64 import b64encode
 from io import BytesIO
 from .throtter import throttle
@@ -13,6 +13,11 @@ import os.path
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
         return self is value
+
+class OOMOL_LLM_ENV(TypedDict):
+    base_url: str
+    token: str
+    models: list[str]
 
 class Context:
     __inputs: Dict[str, Any]
@@ -74,6 +79,14 @@ class Context:
     @property
     def node_id(self) -> str:
         return self.__block_info.stacks[-1].get("node_id", None)
+    
+    @property
+    def oomol_llm_env(self) -> OOMOL_LLM_ENV:
+        return {
+            "base_url": os.getenv("OOMOL_LLM_BASE_URL", ""),
+            "token": os.getenv("OOMOL_LLM_TOKEN", ""),
+            "models": os.getenv("OOMOL_LLM_MODELS", "").split(","),
+        }
 
     def __store_ref(self, handle: str):
         return StoreKey(

@@ -16,7 +16,7 @@ class OnlyEqualSelf:
 
 class OOMOL_LLM_ENV(TypedDict):
     base_url: str
-    token: str
+    api_key: str
     models: list[str]
 
 class Context:
@@ -84,7 +84,7 @@ class Context:
     def oomol_llm_env(self) -> OOMOL_LLM_ENV:
         return {
             "base_url": os.getenv("OOMOL_LLM_BASE_URL", ""),
-            "token": os.getenv("OOMOL_LLM_TOKEN", ""),
+            "api_key": os.getenv("OOMOL_LLM_API_KEY", ""),
             "models": os.getenv("OOMOL_LLM_MODELS", "").split(","),
         }
 

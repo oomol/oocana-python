@@ -28,7 +28,8 @@ def replace_secret(
         input_def = root_def.get(k)
         if input_def is None:
             continue
-        if input_def.is_secret_handle():
+        # 如果是 None 就不替换，直接透传。只有 nullable 的情况下才会出现 None
+        if input_def.is_secret_handle() and v is not None:
             value[k] = get_secret(v, secretJson)
         # 为了保持功能聚焦，var 部分在 Context 那边重新迭代处理。var 只在根目录，同时重复迭代开销不大。如果要递归，还是要合并进来。
         elif isinstance(input_def.json_schema, ObjectFieldSchema) or isinstance(input_def.json_schema, ArrayFieldSchema):

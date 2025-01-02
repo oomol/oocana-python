@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.26](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.25...@oomol/python-executor@0.14.26) (2025-01-02)
+
+
+### Features
+
+* return None when secret is null ([086ea55](https://github.com/oomol/oocana-python/commit/086ea55df55001f1ca9a04722bbf0d379f67c329))
+
 ## [0.14.25](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.24...@oomol/python-executor@0.14.25) (2024-12-27)
 
 

@@ -82,6 +82,8 @@ class Context:
     
     @property
     def oomol_llm_env(self) -> OOMOL_LLM_ENV:
+        """this is a dict contains the oomol llm environment variables
+        """
         return {
             "base_url": os.getenv("OOMOL_LLM_BASE_URL", ""),
             "api_key": os.getenv("OOMOL_LLM_API_KEY", ""),

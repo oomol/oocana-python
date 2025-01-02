@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.17](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.16...@oomol/python-sdk@0.14.17) (2025-01-02)
+
+
+### Features
+
+* update context llm env name ([d7f06ce](https://github.com/oomol/oocana-python/commit/d7f06ce24a656fbc50ad029cd52cf529a2015bd5))
+
 ## [0.14.16](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.15...@oomol/python-sdk@0.14.16) (2024-12-31)
 
 

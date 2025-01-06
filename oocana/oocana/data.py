@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypedDict
+from typing import TypedDict, NotRequired
 
 EXECUTOR_NAME = "python"
 
@@ -11,7 +11,7 @@ class BlockDict(TypedDict):
     session_id: str
     job_id: str
     stacks: list
-    block_path: str | None
+    block_path: NotRequired[str]
 
 # dataclass 默认字段必须一一匹配
 # 如果多一个或者少一个字段，就会报错。
@@ -51,6 +51,13 @@ class BlockInfo:
         return {"session_id": self.session_id, "job_id": self.job_id}
 
     def block_dict(self) -> BlockDict:
+        if self.block_path is None:
+            return {
+                "session_id": self.session_id,
+                "job_id": self.job_id,
+                "stacks": self.stacks,
+            }
+
         return {
             "session_id": self.session_id,
             "job_id": self.job_id,

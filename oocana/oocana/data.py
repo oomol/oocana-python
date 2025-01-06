@@ -50,7 +50,7 @@ class BlockInfo:
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
         for key in self.__annotations__.keys():
-            if key not in kwargs:
+            if key not in kwargs and key != "block_path":
                 raise ValueError(f"missing key {key}")
 
     def job_info(self) -> JobDict:

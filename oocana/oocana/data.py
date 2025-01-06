@@ -11,7 +11,7 @@ class BlockDict(TypedDict):
     session_id: str
     job_id: str
     stacks: list
-    block_path: str
+    block_path: str | None
 
 # dataclass 默认字段必须一一匹配
 # 如果多一个或者少一个字段，就会报错。
@@ -38,7 +38,7 @@ class BlockInfo:
     session_id: str
     job_id: str
     stacks: list
-    block_path: str
+    block_path: str | None = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

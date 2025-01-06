@@ -8,10 +8,16 @@ class JobDict(TypedDict):
     job_id: str
 
 class BlockDict(TypedDict):
+
+    try:
+        from typing import NotRequired, Required, TypedDict  # type: ignore
+    except ImportError:
+        from typing_extensions import NotRequired, Required, TypedDict
+
     session_id: str
     job_id: str
     stacks: list
-    block_path: str
+    block_path: NotRequired[str]
 
 # dataclass 默认字段必须一一匹配
 # 如果多一个或者少一个字段，就会报错。
@@ -38,19 +44,26 @@ class BlockInfo:
     session_id: str
     job_id: str
     stacks: list
-    block_path: str
+    block_path: str | None = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
         for key in self.__annotations__.keys():
-            if key not in kwargs:
+            if key not in kwargs and key != "block_path":
                 raise ValueError(f"missing key {key}")
 
     def job_info(self) -> JobDict:
         return {"session_id": self.session_id, "job_id": self.job_id}
 
     def block_dict(self) -> BlockDict:
+        if self.block_path is None:
+            return {
+                "session_id": self.session_id,
+                "job_id": self.job_id,
+                "stacks": self.stacks,
+            }
+
         return {
             "session_id": self.session_id,
             "job_id": self.job_id,

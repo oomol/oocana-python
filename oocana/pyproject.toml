@@ -5,6 +5,7 @@ description = "python implement of oocana to give a context for oocana block"
 dependencies = [
     "paho-mqtt>=2",
     "simplejson>=3.19.2",
+    "typing-extensions>=4.12.2",
 ]
 requires-python = ">=3.9"
 license = {text = "MIT"}

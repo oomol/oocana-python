@@ -30,7 +30,6 @@ class TestData(unittest.TestCase):
     def test_block_info_missing(self):
         block_info_dict = {
             "session_id": "session_id_one",
-            "job_id": "job_id_one",
             "stacks": ["stack1", "stack2"],
         }
 

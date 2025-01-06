@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.18](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.17...@oomol/python-sdk@0.14.18) (2025-01-06)
+
+
+### Features
+
+* **type:** make block path not required ([#264](https://github.com/oomol/oocana-python/issues/264)) ([b2b2da5](https://github.com/oomol/oocana-python/commit/b2b2da5264dc68306314e8d2894c95634e0ddd3a))
+
 ## [0.14.17](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.16...@oomol/python-sdk@0.14.17) (2025-01-02)
 
 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypedDict, NotRequired
+from typing import TypedDict
 
 EXECUTOR_NAME = "python"
 
@@ -8,6 +8,12 @@ class JobDict(TypedDict):
     job_id: str
 
 class BlockDict(TypedDict):
+
+    try:
+        from typing import NotRequired, Required, TypedDict  # type: ignore
+    except ImportError:
+        from typing_extensions import NotRequired, Required, TypedDict
+
     session_id: str
     job_id: str
     stacks: list

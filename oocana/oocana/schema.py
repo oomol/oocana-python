@@ -6,11 +6,11 @@ OomolType = Literal["oomol/var", "oomol/secret", "oomol/bin"]
 
 ContentMediaType: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
 
-def is_bin_value(dict: BinValueDict | Any):
-    if isinstance(dict, str):
+def is_bin_value(d: BinValueDict | Any):
+    if isinstance(d, dict) is False:
         return False
-    d = cast(BinValueDict, dict)
-    return d.get("__OOMOL_TYPE__") == "oomol/bin" and isinstance(d.get("path") , str) 
+    dd = cast(BinValueDict, d)
+    return dd.get("__OOMOL_TYPE__") == "oomol/bin" and isinstance(dd.get("path") , str) 
 
 def is_array_dict(dict: Dict):
     return dict.get("type") == "array"

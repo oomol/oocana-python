@@ -1,5 +1,5 @@
 import logging
-from oocana import Mainframe, Context, StoreKey, BlockInfo, InputHandleDef
+from oocana import Mainframe, Context, StoreKey, BlockInfo, InputHandleDef, is_bin_value
 from typing import Dict
 from .secret import replace_secret
 import os.path
@@ -39,14 +39,15 @@ def createContext(
                     inputs[k] = store.get(ref)
                 else:
                     logger.error(f"object {ref} not found in store")
-            elif input_def.is_bin_handle():
-                if isinstance(v, str):
+            elif is_bin_value(v):
+                path = v.get("path")
+                if isinstance(path, str):
                     # check file path v is exist
-                    if not os.path.exists(v):
-                        logger.error(f"file {v} for oomol/bin is not found")
+                    if not os.path.exists(path):
+                        logger.error(f"file {path} for oomol/bin is not found")
                         continue
 
-                    with open(v, "rb") as f:
+                    with open(path, "rb") as f:
                         inputs[k] = f.read()
                 else:
                     logger.error(f"not valid bin handle: {v}")

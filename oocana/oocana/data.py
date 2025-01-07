@@ -1,7 +1,11 @@
 from dataclasses import dataclass
-from typing import TypedDict
+from typing import TypedDict, Literal
 
 EXECUTOR_NAME = "python"
+
+class BinValueDict(TypedDict):
+    path: str
+    __OOMOL_TYPE__: Literal["oomol/bin"]
 
 class JobDict(TypedDict):
     session_id: str

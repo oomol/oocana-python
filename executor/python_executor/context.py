@@ -44,7 +44,7 @@ def createContext(
                 if isinstance(path, str):
                     # check file path v is exist
                     if not os.path.exists(path):
-                        logger.error(f"file {v} for oomol/bin is not found")
+                        logger.error(f"file {path} for oomol/bin is not found")
                         continue
 
                     with open(path, "rb") as f:

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.19](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.18...@oomol/python-sdk@0.14.19) (2025-01-07)
+
+
+### Features
+
+* use special field to mark binary value ([#266](https://github.com/oomol/oocana-python/issues/266)) ([9705ee2](https://github.com/oomol/oocana-python/commit/9705ee224fb9379184686a2f3750a0c9867a2638))
+
 ## [0.14.18](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.17...@oomol/python-sdk@0.14.18) (2025-01-06)
 
 

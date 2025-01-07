@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.27](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.26...@oomol/python-executor@0.14.27) (2025-01-07)
+
+
+### Features
+
+* use special field to mark binary value ([#266](https://github.com/oomol/oocana-python/issues/266)) ([9705ee2](https://github.com/oomol/oocana-python/commit/9705ee224fb9379184686a2f3750a0c9867a2638))
+
 ## [0.14.26](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.25...@oomol/python-executor@0.14.26) (2025-01-02)
 
 

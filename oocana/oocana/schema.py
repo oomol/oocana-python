@@ -1,9 +1,16 @@
-from typing import Literal, Dict, Optional, TypeAlias
+from typing import Literal, Dict, Optional, TypeAlias, Any, cast
 from dataclasses import dataclass
+from .data import BinValueDict
 
 OomolType = Literal["oomol/var", "oomol/secret", "oomol/bin"]
 
 ContentMediaType: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
+
+def is_bin_value(dict: BinValueDict | Any):
+    if isinstance(dict, str):
+        return False
+    d = cast(BinValueDict, dict)
+    return d.get("__OOMOL_TYPE__") == "oomol/bin" and d.get("path") == "string"
 
 def is_array_dict(dict: Dict):
     return dict.get("type") == "array"

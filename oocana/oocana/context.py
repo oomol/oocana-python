@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from json import loads
-from .data import BlockInfo, StoreKey, JobDict, BlockDict
+from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
 from typing import Dict, Any, TypedDict
@@ -138,7 +138,11 @@ class Context:
                     return
 
                 if os.path.exists(bin_file):
-                    v = bin_file
+                    bin_value: BinValueDict = {
+                        "__OOMOL_TYPE__": "oomol/bin",
+                        "path": bin_file,
+                    }
+                    v = bin_value
                 else:
                     self.send_warning(
                         f"Output handle key: [{key}] is defined as binary, but the file is not written."

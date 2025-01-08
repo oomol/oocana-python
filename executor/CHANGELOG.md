@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.28](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.27...@oomol/python-executor@0.14.28) (2025-01-08)
+
+
+### Code Refactoring
+
+* use wrapper value to combine var value, and use fixed field for all wrapper value ([#268](https://github.com/oomol/oocana-python/issues/268)) ([1cdca46](https://github.com/oomol/oocana-python/commit/1cdca46011d1b09e9cf3c0476efcfdde163e2983))
+
 ## [0.14.27](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.26...@oomol/python-executor@0.14.27) (2025-01-07)
 
 

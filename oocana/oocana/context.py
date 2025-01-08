@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from json import loads
-from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict
+from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
 from typing import Dict, Any, TypedDict
@@ -118,7 +118,11 @@ class Context:
             ):
                 ref = self.__store_ref(key)
                 self.__store[ref] = value
-                v = asdict(ref)
+                d: VarValueDict = {
+                    "__OOMOL_TYPE__": "oomol/var",
+                    "value": asdict(ref)
+                }
+                v = d
             elif output_def is not None and output_def.is_bin_handle():
                 if not isinstance(value, bytes):
                     self.send_warning(

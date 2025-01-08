@@ -1,6 +1,6 @@
 from typing import Literal, Dict, Optional, TypeAlias, Any, cast
 from dataclasses import dataclass
-from .data import BinValueDict
+from .data import BinValueDict, VarValueDict
 
 OomolType = Literal["oomol/var", "oomol/secret", "oomol/bin"]
 
@@ -10,7 +10,13 @@ def is_bin_value(d: BinValueDict | Any):
     if isinstance(d, dict) is False:
         return False
     dd = cast(BinValueDict, d)
-    return dd.get("__OOMOL_TYPE__") == "oomol/bin" and isinstance(dd.get("path") , str) 
+    return dd.get("__OOMOL_TYPE__") == "oomol/bin" and isinstance(dd.get("value") , str) 
+
+def is_var_value(d: VarValueDict | Any):
+    if isinstance(d, dict) is False:
+        return False
+    dd = cast(VarValueDict, d)
+    return dd.get("__OOMOL_TYPE__") == "oomol/var" and isinstance(dd.get("value") , dict)
 
 def is_array_dict(dict: Dict):
     return dict.get("type") == "array"

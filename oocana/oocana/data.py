@@ -4,8 +4,12 @@ from typing import TypedDict, Literal
 EXECUTOR_NAME = "python"
 
 class BinValueDict(TypedDict):
-    path: str
+    value: str
     __OOMOL_TYPE__: Literal["oomol/bin"]
+
+class VarValueDict(TypedDict):
+    value: dict
+    __OOMOL_TYPE__: Literal["oomol/var"]
 
 class JobDict(TypedDict):
     session_id: str

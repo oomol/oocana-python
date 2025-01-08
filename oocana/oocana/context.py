@@ -140,7 +140,7 @@ class Context:
                 if os.path.exists(bin_file):
                     bin_value: BinValueDict = {
                         "__OOMOL_TYPE__": "oomol/bin",
-                        "path": bin_file,
+                        "value": bin_file,
                     }
                     v = bin_value
                 else:

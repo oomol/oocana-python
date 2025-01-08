@@ -4,7 +4,7 @@ from typing import TypedDict, Literal
 EXECUTOR_NAME = "python"
 
 class BinValueDict(TypedDict):
-    path: str
+    value: str
     __OOMOL_TYPE__: Literal["oomol/bin"]
 
 class JobDict(TypedDict):

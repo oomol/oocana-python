@@ -12,6 +12,12 @@ def is_bin_value(d: BinValueDict | Any):
     dd = cast(BinValueDict, d)
     return dd.get("__OOMOL_TYPE__") == "oomol/bin" and isinstance(dd.get("path") , str) 
 
+def is_var_value(d: BinValueDict | Any):
+    if isinstance(d, dict) is False:
+        return False
+    dd = cast(BinValueDict, d)
+    return dd.get("__OOMOL_TYPE__") == "oomol/var" and isinstance(dd.get("value") , dict)
+
 def is_array_dict(dict: Dict):
     return dict.get("type") == "array"
 

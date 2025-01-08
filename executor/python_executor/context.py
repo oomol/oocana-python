@@ -1,5 +1,5 @@
 import logging
-from oocana import Mainframe, Context, StoreKey, BlockInfo, InputHandleDef, is_bin_value
+from oocana import Mainframe, Context, StoreKey, BlockInfo, BinValueDict, VarValueDict, InputHandleDef, is_bin_value, is_var_value
 from typing import Dict
 from .secret import replace_secret
 import os.path
@@ -29,18 +29,20 @@ def createContext(
             input_def = inputs_def_handles.get(k)
             if input_def is None:
                 continue
-            if input_def.is_var_handle():
+            if is_var_value(v):
+                wrap_var: VarValueDict = v
                 try:
-                    ref = StoreKey(**v)
+                    ref = StoreKey(**wrap_var["value"])
                 except:  # noqa: E722
-                    logger.warning(f"not valid object ref: {v}")
+                    logger.warning(f"not valid object ref: {wrap_var}")
                     continue
                 if ref in store:
                     inputs[k] = store.get(ref)
                 else:
                     logger.error(f"object {ref} not found in store")
             elif is_bin_value(v):
-                path = v.get("path")
+                wrap_bin: BinValueDict = v
+                path = wrap_bin["value"]
                 if isinstance(path, str):
                     # check file path v is exist
                     if not os.path.exists(path):

@@ -1,10 +1,10 @@
-import simplejson as json
+from simplejson import loads
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
 import operator
 from urllib.parse import urlparse
 import uuid
-from .data import BlockDict, JobDict
+from .data import BlockDict, JobDict, dumps
 import logging
 from typing import Optional
 
@@ -63,19 +63,19 @@ class Mainframe:
     # 不等待 publish 完成，使用 qos 参数来会保证消息到达。
     def send(self, job_info: JobDict, msg) -> mqtt.MQTTMessageInfo:
         return self.client.publish(
-            f'session/{job_info["session_id"]}', json.dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}, ignore_nan=True), qos=1
+            f'session/{job_info["session_id"]}', dumps({"job_id": job_info["job_id"], "session_id": job_info["session_id"], **msg}), qos=1
         )
 
     def report(self, block_info: BlockDict, msg: dict) -> mqtt.MQTTMessageInfo:
-        return self.client.publish("report", json.dumps({**block_info, **msg}, ignore_nan=True), qos=1)
+        return self.client.publish("report", dumps({**block_info, **msg}), qos=1)
     
     def notify_executor_ready(self, session_id: str, executor_name: str, package: str | None) -> None:
-        self.client.publish(f"session/{session_id}", json.dumps({
+        self.client.publish(f"session/{session_id}", dumps({
             "type": "ExecutorReady",
             "session_id": session_id,
             "executor_name": executor_name,
             "package": package,
-        }, ignore_nan=True), qos=1)
+        }), qos=1)
 
     def notify_block_ready(self, session_id: str, job_id: str) -> dict:
 
@@ -85,16 +85,16 @@ class Mainframe:
         def on_message_once(_client, _userdata, message):
             nonlocal replay
             self.client.unsubscribe(topic)
-            replay = json.loads(message.payload)
+            replay = loads(message.payload)
 
         self.client.subscribe(topic, qos=1)
         self.client.message_callback_add(topic, on_message_once)
 
-        self.client.publish(f"session/{session_id}", json.dumps({
+        self.client.publish(f"session/{session_id}", dumps({
             "type": "BlockReady",
             "session_id": session_id,
             "job_id": job_id,
-        }, ignore_nan=True), qos=1)
+        }), qos=1)
 
         while True:
             if replay is not None:
@@ -102,12 +102,12 @@ class Mainframe:
                 return replay
             
     def publish(self, topic, payload):
-        self.client.publish(topic, json.dumps(payload, ignore_nan=True), qos=1)
+        self.client.publish(topic, dumps(payload), qos=1)
     
     def subscribe(self, topic: str, callback):
         def on_message(_client, _userdata, message):
             logger.info("receive topic: {} payload: {}".format(topic, message.payload))
-            payload = json.loads(message.payload)
+            payload = loads(message.payload)
             callback(payload)
 
         self.client.message_callback_add(topic, on_message)

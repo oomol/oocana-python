@@ -1,7 +1,18 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import TypedDict, Literal
+from simplejson import JSONEncoder
+import simplejson as json
 
 EXECUTOR_NAME = "python"
+
+def dumps(obj, **kwargs):
+    return json.dumps(obj, cls=DataclassJSONEncoder, ignore_nan=True, **kwargs)
+
+class DataclassJSONEncoder(JSONEncoder):
+    def default(self, o): # pyright: ignore[reportIncompatibleMethodOverride]
+        if hasattr(o, '__dataclass_fields__'):
+            return asdict(o)
+        return JSONEncoder.default(self, o)
 
 class BinValueDict(TypedDict):
     value: str

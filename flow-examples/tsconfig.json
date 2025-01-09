@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "es6",                        // 指定 ECMAScript 目标版本
+      "module": "ESNext",                   // 指定模块系统
+      "moduleResolution": "node",
+      "strict": true,                         // 启用所有严格类型检查选项
+      "esModuleInterop": true,                // 启用对 ES 模块默认导入的互操作性
+      "skipLibCheck": true,                   // 跳过声明文件的类型检查
+      "forceConsistentCasingInFileNames": true, // 强制文件名一致的大小写
+      "lib": ["ES2023"],                  // 编译过程中需要引入的库文件的列表
+    },
+    "include": ["src", "test"],                       // 包含的文件或目录
+    "exclude": ["node_modules", "dist"]       // 排除的文件或目录
+  }

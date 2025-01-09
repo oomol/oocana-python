@@ -45,7 +45,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
     print(f"connecting to broker {address} success")
     sys.stdout.flush()
 
-    logger.info("executor start") if package is None else logger.info(f"executor start with package {package}")
+    logger.info("executor start") if package is None else logger.info(f"executor start for package {package}")
 
     add_matplot_module()
     import_helper(logger)
@@ -102,12 +102,6 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
         if service_hash in service_store:
             service_store[service_hash] = "running"
 
-    # 现在 session 要保留 var 进行 rerun 缓存，所以这个回调目前不处理。如果 var 功能保留，这个回调就直接删除。
-    def drop(message):
-        pass
-        # if not_current_session(message):
-        #     return
-
     def report_message(message):
         type = message.get("type")
         if type == "SessionFinished":
@@ -122,7 +116,6 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
         
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
-    mainframe.subscribe(f"executor/{EXECUTOR_NAME}/drop", drop)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
     mainframe.subscribe('report', report_message)
     mainframe.subscribe(exit_report_topic(), service_exit)

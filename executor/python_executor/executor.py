@@ -33,9 +33,13 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
         logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s')
 
 
-async def run_executor(address: str, session_id: str, package: str | None, session_dir: str):
+async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, suffix: str | None = None):
 
-    mainframe = Mainframe(address)
+    if suffix is not None:
+        mainframe = Mainframe(address, f"python-executor-{suffix}")
+    else:
+        mainframe = Mainframe(address, f"python-executor-{session_id}")
+
     mainframe.connect()
 
     print(f"connecting to broker {address} success")
@@ -222,4 +226,4 @@ if __name__ == '__main__':
 
     config_logger(session_id, suffix, output)
 
-    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir))
+    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir, suffix=suffix))

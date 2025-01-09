@@ -1,5 +1,6 @@
 import unittest
 from oocana import data
+from json import dumps as json_dumps
 
 class TestData(unittest.TestCase):
 
@@ -69,3 +70,6 @@ class TestData(unittest.TestCase):
 
         key_serialize_block_info = data.dumps({"key": block_info})
         self.assertEqual(key_serialize_block_info, '{"key": {"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"], "block_path": "block_path_one"}}')
+
+        with self.assertRaises(TypeError):
+            json_dumps(block_info)

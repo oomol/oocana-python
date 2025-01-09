@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.29](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.28...@oomol/python-executor@0.14.29) (2025-01-09)
+
+
+### Features
+
+* pass through more relative info to mainframe ([eb09810](https://github.com/oomol/oocana-python/commit/eb0981031307a16363b3ce6c6fdcc9a955ceb800))
+
+
+### Code Refactoring
+
+* remove unused topic and add more relative client id ([af2c957](https://github.com/oomol/oocana-python/commit/af2c9579c7d4d31d15048f79bcb61f4b61e9f7f9))
+
 ## [0.14.28](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.27...@oomol/python-executor@0.14.28) (2025-01-08)
 
 

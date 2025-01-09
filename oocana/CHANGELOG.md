@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.21](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.20...@oomol/python-sdk@0.14.21) (2025-01-09)
+
+
+### Features
+
+* support encode dataclass directly ([#271](https://github.com/oomol/oocana-python/issues/271)) ([9d1c032](https://github.com/oomol/oocana-python/commit/9d1c0325dd9569107cad32ed9086ea455ed9110c))
+
 ## [0.14.20](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.19...@oomol/python-sdk@0.14.20) (2025-01-08)
 
 

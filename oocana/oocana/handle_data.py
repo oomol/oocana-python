@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Any, Optional
 from .schema import FieldSchema, ContentMediaType
 
+__all__ = ["HandleDef", "InputHandleDef"]
+
 @dataclass(frozen=True, kw_only=True)
 class HandleDef:
     """The base handle for output def, can be directly used for output def 

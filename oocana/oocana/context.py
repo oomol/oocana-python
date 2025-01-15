@@ -10,6 +10,9 @@ from .throtter import throttle
 from .preview import PreviewPayload, TablePreviewData, DataFrame, ShapeDataFrame, PartialDataFrame
 from .data import EXECUTOR_NAME
 import os.path
+
+__all__ = ["Context"]
+
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
         return self is value

@@ -1,6 +1,8 @@
 
 from typing import Any, TypedDict, List, Literal, TypeAlias, Union, Protocol, runtime_checkable
 
+__all__ = ["PreviewPayload", "TablePreviewPayload", "TextPreviewPayload", "JSONPreviewPayload", "ImagePreviewPayload", "MediaPreviewPayload", "PandasPreviewPayload", "DefaultPreviewPayload"]
+
 # this class is for pandas.DataFrame
 @runtime_checkable
 class DataFrame(Protocol):

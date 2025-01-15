@@ -10,6 +10,8 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+__all__ = ["Mainframe"]
+
 class Mainframe:
     address: str
     client: mqtt.Client

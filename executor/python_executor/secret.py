@@ -3,9 +3,12 @@ from oocana import InputHandleDef, FieldSchema, ObjectFieldSchema, ArrayFieldSch
 import logging
 import os
 import json
-
+import re
 logger = logging.getLogger("EXECUTOR_NAME")
 SECRET_FILE =  os.path.expanduser("~") + "/app-config/oomol-secrets/secrets.json"
+
+# "${{OO_SECRET:type,name,key}}"，捕获组为 (type,name,key)
+SECRET_REGEX = r"\"\$\{\{OO_SECRET:([\S]+),([\S]+),([\S]+)\}\}\""
 
 def replace_secret(
     value: Any,
@@ -23,6 +26,17 @@ def replace_secret(
     except json.JSONDecodeError:
         logger.error(f"secret file {SECRET_FILE} is not a valid json file")
         secretJson = None
+
+    string_value = json.dumps(value)
+    result = re.findall(SECRET_REGEX, string_value, re.MULTILINE)
+    if result:
+        if secretJson is None:
+            logger.error(f"secret file {SECRET_FILE} not found")
+        else:
+            for r in result:
+                secret = get_secret(f"{r[0]},{r[1]},{r[2]}", secretJson).replace('"', '\\"')
+                string_value = string_value.replace(f"${{{{OO_SECRET:{r[0]},{r[1]},{r[2]}}}}}", secret)
+        value = json.loads(string_value)
     
     for k, v in value.items():
         input_def = root_def.get(k)

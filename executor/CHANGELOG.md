@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.30](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.29...@oomol/python-executor@0.14.30) (2025-01-20)
+
+
+### Features
+
+* support ${{OO_SECRET: xxx}} secret format ([#274](https://github.com/oomol/oocana-python/issues/274)) ([9a0e842](https://github.com/oomol/oocana-python/commit/9a0e842a8753e02cf29b6aec2de88633bd6f645f))
+
 ## [0.14.29](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.28...@oomol/python-executor@0.14.29) (2025-01-09)
 
 

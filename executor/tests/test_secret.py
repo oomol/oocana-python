@@ -3,7 +3,7 @@ from python_executor.secret import replace_secret, SECRET_FILE
 from oocana import InputHandleDef
 import json
 
-SECRET_VALUE = "aaa_bbb"
+SECRET_VALUE = r'aaa_"bbb'
 SECRET_DAT = {
     "aaa": {
         "id": "019390cf-2a42-73dd-89ed-474ade0df7f5",
@@ -86,6 +86,33 @@ class TestSecret(unittest.TestCase):
             }, value=None)
         }, None)
         self.assertEqual(v.get("s")[0], SECRET_VALUE)
+
+    def test_secret_prefix(self):
+        v = replace_secret({
+            "s": f'${{{{OO_SECRET:{ORIGIN_VALUE}}}}}'
+        }, {
+            "s": InputHandleDef(handle="s")
+        }, None)
+        self.assertEqual(v.get("s"), SECRET_VALUE)
+
+    def test_secret_prefix_multiple(self):
+        v = replace_secret({
+            "s": f'${{{{OO_SECRET:{ORIGIN_VALUE}}}}}',
+            "a": f'${{{{OO_SECRET:{ORIGIN_VALUE}}}}}'
+        }, {
+            "s": InputHandleDef(handle="s")
+        }, None)
+        self.assertEqual(v.get("s"), f"{SECRET_VALUE}")
+        self.assertEqual(v.get("a"), f"{SECRET_VALUE}")
+
+    def test_secret_in_other_string(self):
+        no_replace_value = f'${{{{OO_SECRET:{ORIGIN_VALUE}}}}}_bbb'
+        v = replace_secret({
+            "s": no_replace_value
+        }, {
+            "s": InputHandleDef(handle="s")
+        }, None)
+        self.assertEqual(v.get("s"), no_replace_value)
 
 if __name__ == '__main__':
     unittest.main()

@@ -120,13 +120,13 @@ def get_secret(path: str, secretJson: dict | None) -> str:
         [secretType, secretName, secretKey] =  path.split(",")
     except ValueError:
         logger.error(f"invalid secret path: {path}")
-        return ""
+        return path
     
     s = secretJson.get(secretName)
 
     if s is None:
         logger.error(f"secret {secretName} not found in {SECRET_FILE}")
-        return ""
+        return path
 
     if s.get("secretType") != secretType:
         logger.warning(f"secret type mismatch: {s.get('secretType')} != {secretType}")
@@ -138,7 +138,7 @@ def get_secret(path: str, secretJson: dict | None) -> str:
                 return secret.get("value")
     else:
         logger.error(f"secret {secretName} has no value")
-        return ""
+        return path
 
     logger.error(f"secret {secretKey} not found in {secretName}")
-    return ""
+    return path

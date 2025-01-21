@@ -95,6 +95,20 @@ class TestSecret(unittest.TestCase):
         }, None)
         self.assertEqual(v.get("s"), SECRET_VALUE)
 
+    def test_secret_prefix_with_oomol_secret(self):
+        v = replace_secret({
+            "s": f'${{{{OO_SECRET:{ORIGIN_VALUE}}}}}'
+        }, {
+            "s": InputHandleDef(handle="s", json_schema={
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "contentMediaType": "oomol/secret"
+                }
+            }, value=None)
+        }, None)
+        self.assertEqual(v.get("s"), SECRET_VALUE)
+
     def test_secret_prefix_multiple(self):
         v = replace_secret({
             "s": f'${{{{OO_SECRET:{ORIGIN_VALUE}}}}}',

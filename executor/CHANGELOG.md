@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.31](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.30...@oomol/python-executor@0.14.31) (2025-01-21)
+
+
+### Bug Fixes
+
+* add secret fallback ([224b002](https://github.com/oomol/oocana-python/commit/224b002c2ba330358ca4a876b8e4493404119b1c))
+
 ## [0.14.30](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.29...@oomol/python-executor@0.14.30) (2025-01-20)
 
 

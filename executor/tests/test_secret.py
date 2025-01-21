@@ -41,6 +41,16 @@ class TestSecret(unittest.TestCase):
         import os
         os.remove(SECRET_FILE)
         return super().tearDownClass()
+    
+    def test_secret_fallback(self):
+        v = replace_secret({
+            "s": "aaaa"
+        }, {
+            "s": InputHandleDef(handle="s", json_schema={
+                "contentMediaType": "oomol/secret"
+            }, value=None)
+        }, None)
+        self.assertEqual(v.get("s"), "aaaa")
 
     def test_replace_secret(self):
         v = replace_secret({

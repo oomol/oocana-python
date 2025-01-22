@@ -16,6 +16,7 @@ from .topic import prepare_report_topic, service_config_topic, run_action_topic,
 
 logger = logging.getLogger(EXECUTOR_NAME)
 service_store: dict[str, Literal["launching", "running"]] = {}
+job_set = set()
 
 # 日志目录 ~/.oocana/sessions/{session_id}/[python-{suffix}.log | python.log]
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
@@ -74,6 +75,13 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
 
         if not_current_package(message):
             return
+        
+        # https://github.com/oomol/oocana-rust/issues/310 临时解决方案
+        job_id = message.get("job_id")
+        if job_id in job_set:
+            logger.warning(f"job {job_id} already running, ignore")
+            return
+        job_set.add(job_id)
 
         nonlocal fs
         f = loop.create_future()

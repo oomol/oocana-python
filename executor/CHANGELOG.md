@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.32](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.31...@oomol/python-executor@0.14.32) (2025-01-22)
+
+
+### Bug Fixes
+
+* workaround for some block run twice ([#277](https://github.com/oomol/oocana-python/issues/277)) ([2b02300](https://github.com/oomol/oocana-python/commit/2b0230040eaa0636c4e4f5c4026303852655795c))
+
 ## [0.14.31](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.30...@oomol/python-executor@0.14.31) (2025-01-21)
 
 

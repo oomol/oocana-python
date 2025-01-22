@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.23](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.22...@oomol/python-sdk@0.14.23) (2025-01-22)
+
+
+### Features
+
+* **ctx:** add host info to ctxg ([#279](https://github.com/oomol/oocana-python/issues/279)) ([351988b](https://github.com/oomol/oocana-python/commit/351988b4398233b4e41c30757b9834c08c245992))
+
 ## [0.14.22](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.21...@oomol/python-sdk@0.14.22) (2025-01-15)
 
 

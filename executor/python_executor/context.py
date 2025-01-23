@@ -3,9 +3,9 @@ from oocana import Mainframe, Context, StoreKey, BlockInfo, BinValueDict, VarVal
 from typing import Dict
 from .secret import replace_secret
 import os.path
+from .data import EXECUTOR_NAME
 
-logger = logging.getLogger("EXECUTOR_NAME")
-
+logger = logging.getLogger(EXECUTOR_NAME)
 
 def createContext(
     mainframe: Mainframe, session_id: str, job_id: str, store, output, session_dir: str

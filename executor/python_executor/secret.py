@@ -4,7 +4,9 @@ import logging
 import os
 import json
 import re
-logger = logging.getLogger("EXECUTOR_NAME")
+from .data import EXECUTOR_NAME
+
+logger = logging.getLogger(EXECUTOR_NAME)
 SECRET_FILE =  os.path.expanduser("~") + "/app-config/oomol-secrets/secrets.json"
 
 # "${{OO_SECRET:type,name,key}}"，捕获组为 (type,name,key)

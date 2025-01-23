@@ -3,7 +3,7 @@ from typing import TypedDict, Literal
 from simplejson import JSONEncoder
 import simplejson as json
 
-EXECUTOR_NAME = "python"
+EXECUTOR_NAME = "python-executor"
 
 __all__ = ["dumps", "BinValueDict", "VarValueDict", "JobDict", "BlockDict", "StoreKey", "BlockInfo", "EXECUTOR_NAME", "JobDict", "BinValueDict", "VarValueDict"]
 

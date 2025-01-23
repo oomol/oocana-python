@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.24](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.23...@oomol/python-sdk@0.14.24) (2025-01-23)
+
+
+### Bug Fixes
+
+* **oocana:** host platform incorrect ([#281](https://github.com/oomol/oocana-python/issues/281)) ([fe4b902](https://github.com/oomol/oocana-python/commit/fe4b902980149c9c49f220d3dbc8846295115a90))
+
 ## [0.14.23](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.22...@oomol/python-sdk@0.14.23) (2025-01-22)
 
 

@@ -25,8 +25,6 @@ class OOMOL_LLM_ENV(TypedDict):
 class HostInfo(TypedDict):
     gpu_vendor: str
     gpu_renderer: str
-    platform: str
-    arch: str
 
 class Context:
     __inputs: Dict[str, Any]
@@ -106,8 +104,6 @@ class Context:
         return {
             "gpu_vendor": os.getenv("OOMOL_HOST_GPU_VENDOR", "unknown"),
             "gpu_renderer": os.getenv("OOMOL_HOST_GPU_RENDERER", "unknown"),
-            "platform": os.getenv("OOMOL_HOST_PLATFORM", "unknown"),
-            "arch": os.getenv("OOMOL_HOST_ARCH", "unknown"),
         }
 
     def __store_ref(self, handle: str):

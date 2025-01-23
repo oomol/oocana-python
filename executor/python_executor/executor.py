@@ -44,7 +44,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
 
     h.setFormatter(fmt)
     logger.addHandler(h)
-    # 跟全局日志分开。全局日志会输出到 console
+    # 跟全局日志分开。避免有的库在全局 logger 里面使用了 print 等 API，导致 hook 出现递归调用
     logger.propagate = False
 
 

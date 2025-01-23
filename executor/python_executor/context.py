@@ -60,6 +60,7 @@ def createContext(
     blockInfo = BlockInfo(**node_props)
 
     ctx = Context(inputs, blockInfo, mainframe, store, output, session_dir)
+    # 跟 executor 日志分开，避免有的库在 logger 里面使用 print，导致 hook 出现递归调用。
     block_logger = logging.getLogger(f"block {job_id}")
     ctx_handler = ContextHandler(ctx)
     block_logger.addHandler(ctx_handler)

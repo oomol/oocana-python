@@ -23,13 +23,13 @@ def sys_exit(status: _ExitCode = None) -> None:
 def sys_global_exit(status: _ExitCode = None) -> None:
     raise ExitFunctionException(status)
 
-# FIXME: 在 logger 里面如果调用 print ，会出现递归死循环
 def global_print(*values: object, sep: str | None = " ", end: str | None = "\n", file: Any | None = None, flush: bool = False) -> None:
     
     context = None  # 初始化 context 变量
     try:
         context = vars.get()
     except LookupError:
+        # 这个 logger 不会上报到 root handle 中，所以即使 root logger 的 Handler 里面有 print 函数，也不会导致递归调用
         logger.warning("print called outside of block")
     except Exception as e:
         logger.error(f"print error: {e}")

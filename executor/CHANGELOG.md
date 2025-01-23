@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.33](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.32...@oomol/python-executor@0.14.33) (2025-01-23)
+
+
+### Features
+
+* spilt global logger and executor, add context logger for block ([#283](https://github.com/oomol/oocana-python/issues/283)) ([a845bb9](https://github.com/oomol/oocana-python/commit/a845bb9be3390cf03cfca87770f88ffcf37577b3))
+
 ## [0.14.32](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.31...@oomol/python-executor@0.14.32) (2025-01-22)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.25](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.24...@oomol/python-sdk@0.14.25) (2025-01-23)
+
+
+### Features
+
+* spilt global logger and executor, add context logger for block ([#283](https://github.com/oomol/oocana-python/issues/283)) ([a845bb9](https://github.com/oomol/oocana-python/commit/a845bb9be3390cf03cfca87770f88ffcf37577b3))
+
 ## [0.14.24](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.23...@oomol/python-sdk@0.14.24) (2025-01-23)
 
 

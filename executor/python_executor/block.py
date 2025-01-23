@@ -4,7 +4,7 @@ from typing import Optional, TypedDict
 import inspect
 import traceback
 import logging
-from .data import store
+from .data import store, vars, EXECUTOR_NAME
 from .context import createContext
 from .hook import ExitFunctionException
 import os
@@ -12,7 +12,6 @@ import sys
 import importlib
 import importlib.util
 import threading
-from .data import vars
 
 
 class ExecutorOptionsDict(TypedDict):
@@ -81,7 +80,7 @@ def output_return_object(obj, context: Context):
     else:
         context.done(f"return object needs to be a dictionary, but get type: {type(obj)}")
 
-logger = logging.getLogger("EXECUTOR_NAME")
+logger = logging.getLogger(EXECUTOR_NAME)
 
 async def run_block(message, mainframe: Mainframe, session_dir: str):
 

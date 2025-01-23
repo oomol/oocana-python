@@ -3,13 +3,14 @@ from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .handle_data import HandleDef
 from .mainframe import Mainframe
-from typing import Dict, Any, TypedDict
+from typing import Dict, Any, TypedDict, Optional
 from base64 import b64encode
 from io import BytesIO
 from .throtter import throttle
 from .preview import PreviewPayload, TablePreviewData, DataFrame, ShapeDataFrame, PartialDataFrame
 from .data import EXECUTOR_NAME
 import os.path
+import logging
 
 __all__ = ["Context"]
 
@@ -35,6 +36,7 @@ class Context:
     __is_done: bool = False
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
     __session_dir: str
+    _logger: Optional[logging.Logger] = None
 
     def __init__(
         self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, session_dir: str
@@ -52,6 +54,16 @@ class Context:
                 outputs_defs[k] = HandleDef(**v)
         self.__outputs_def = outputs_defs
         self.__session_dir = session_dir
+
+    @property
+    def logger(self) -> logging.Logger:
+        """a custom logger for the block, you can use it to log the message to the block log. this logger will report the log by context report_logger api.
+        """
+
+        # setup after init, so the logger always exists
+        if self._logger is None:
+            raise ValueError("logger is not setup, please setup the logger in the block init function.")
+        return self._logger
 
     @property
     def session_dir(self) -> str:

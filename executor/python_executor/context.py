@@ -3,14 +3,14 @@ from oocana import Mainframe, Context, StoreKey, BlockInfo, BinValueDict, VarVal
 from typing import Dict
 from .secret import replace_secret
 import os.path
+from .logger import ContextHandler
+from .data import EXECUTOR_NAME
 
-logger = logging.getLogger("EXECUTOR_NAME")
-
+logger = logging.getLogger(EXECUTOR_NAME)
 
 def createContext(
     mainframe: Mainframe, session_id: str, job_id: str, store, output, session_dir: str
 ) -> Context:
-    
 
     node_props = mainframe.notify_block_ready(session_id, job_id)
 
@@ -59,4 +59,10 @@ def createContext(
     
     blockInfo = BlockInfo(**node_props)
 
-    return Context(inputs, blockInfo, mainframe, store, output, session_dir)
+    ctx = Context(inputs, blockInfo, mainframe, store, output, session_dir)
+    # 跟 executor 日志分开，避免有的库在 logger 里面使用 print，导致 hook 出现递归调用。
+    block_logger = logging.getLogger(f"block {job_id}")
+    ctx_handler = ContextHandler(ctx)
+    block_logger.addHandler(ctx_handler)
+    ctx._logger = logger
+    return ctx

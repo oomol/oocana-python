@@ -18,20 +18,34 @@ logger = logging.getLogger(EXECUTOR_NAME)
 service_store: dict[str, Literal["launching", "running"]] = {}
 job_set = set()
 
-# 日志目录 ~/.oocana/sessions/{session_id}/[python-{suffix}.log | python.log]
+# 日志目录 ~/.oocana/sessions/{session_id}
+# executor 的日志都会记录在 [python-executor-{suffix}.log | python-executor.log]
+# 全局 logger 会记录在 python-{suffix}.log | python.log
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
 
+    format = '%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s'
+    fmt = logging.Formatter(format)
+    logger.setLevel(logging.DEBUG)
     if output == "file":
         executor_dir = os.path.join(oocana_dir(), "sessions", session_id)
-        logger_file = os.path.join(executor_dir, f"python-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
+        logger_file = os.path.join(executor_dir, f"python-executor-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
 
         if not os.path.exists(logger_file):
             os.makedirs(os.path.dirname(logger_file), exist_ok=True)
 
         print(f"setup logging in file {logger_file}")
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s', filename=logger_file)
+        h = logging.FileHandler(logger_file)
+
+        global_logger_file = os.path.join(executor_dir, f"python-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
+        logging.basicConfig(filename=global_logger_file, level=logging.DEBUG, format=format)
     else:
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s')
+        logging.basicConfig(level=logging.DEBUG, format=format)
+        h = logging.StreamHandler(sys.stdout)
+
+    h.setFormatter(fmt)
+    logger.addHandler(h)
+    # 跟全局日志分开。避免有的库在全局 logger 里面使用了 print 等 API，导致 hook 出现递归调用
+    logger.propagate = False
 
 
 async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, suffix: str | None = None):

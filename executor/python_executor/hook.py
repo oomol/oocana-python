@@ -3,10 +3,10 @@ from builtins import exit as global_exit
 from typing import TypeAlias, Any
 import sys
 import builtins
-from .data import vars
+from .data import vars, EXECUTOR_NAME
 import logging
 
-logger = logging.getLogger("EXECUTOR_NAME")
+logger = logging.getLogger(EXECUTOR_NAME)
 
 class ExitFunctionException(Exception):
     pass
@@ -29,6 +29,7 @@ def global_print(*values: object, sep: str | None = " ", end: str | None = "\n",
     try:
         context = vars.get()
     except LookupError:
+        # 这个 logger 不会上报到 root handle 中，所以即使 root logger 的 Handler 里面有 print 函数，也不会导致递归调用
         logger.warning("print called outside of block")
     except Exception as e:
         logger.error(f"print error: {e}")

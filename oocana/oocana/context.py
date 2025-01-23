@@ -36,7 +36,7 @@ class Context:
     __is_done: bool = False
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
     __session_dir: str
-    __logger: Optional[logging.Logger] = None
+    _logger: Optional[logging.Logger] = None
 
     def __init__(
         self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, session_dir: str
@@ -61,7 +61,9 @@ class Context:
         """
 
         # setup after init, so the logger always exists
-        return self.__logger # type: ignore
+        if self._logger is None:
+            raise ValueError("logger is not setup, please setup the logger in the block init function.")
+        return self._logger
 
     @property
     def session_dir(self) -> str:

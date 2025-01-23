@@ -64,5 +64,5 @@ def createContext(
     block_logger = logging.getLogger(f"block {job_id}")
     ctx_handler = ContextHandler(ctx)
     block_logger.addHandler(ctx_handler)
-    ctx.__logger = logger
+    ctx._logger = logger
     return ctx

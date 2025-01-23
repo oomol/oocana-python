@@ -56,10 +56,12 @@ class Context:
         self.__session_dir = session_dir
 
     @property
-    def logger(self):
+    def logger(self) -> logging.Logger:
         """a custom logger for the block, you can use it to log the message to the block log. this logger will report the log by context report_logger api.
         """
-        return self.__logger
+
+        # setup after init, so the logger always exists
+        return self.__logger # type: ignore
 
     @property
     def session_dir(self) -> str:

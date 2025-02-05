@@ -51,9 +51,9 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
 async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, suffix: str | None = None):
 
     if suffix is not None:
-        mainframe = Mainframe(address, f"python-executor-{suffix}")
+        mainframe = Mainframe(address, f"python-executor-{suffix}", logger)
     else:
-        mainframe = Mainframe(address, f"python-executor-{session_id}")
+        mainframe = Mainframe(address, f"python-executor-{session_id}", logger)
 
     mainframe.connect()
 

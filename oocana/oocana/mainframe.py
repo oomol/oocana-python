@@ -8,8 +8,6 @@ from .data import BlockDict, JobDict, dumps
 import logging
 from typing import Optional
 
-logger = logging.getLogger(__name__)
-
 __all__ = ["Mainframe"]
 
 class Mainframe:
@@ -17,10 +15,12 @@ class Mainframe:
     client: mqtt.Client
     client_id: str
     _subscriptions: set[str] = set()
+    _logger: logging.Logger
 
-    def __init__(self, address: str, client_id: Optional[str] = None) -> None:
+    def __init__(self, address: str, client_id: Optional[str] = None, logger = None) -> None:
         self.address = address
         self.client_id = client_id or f"python-executor-{uuid.uuid4().hex[:8]}"
+        self._logger = logger or logging.getLogger(__name__)
 
     def connect(self):
         connect_address = (
@@ -38,6 +38,7 @@ class Mainframe:
             callback_api_version=CallbackAPIVersion.VERSION2,
             client_id=self.client_id,
         )
+        self.client.logger = self._logger
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
         self.client.on_connect_fail = self.on_connect_fail # type: ignore
@@ -47,20 +48,20 @@ class Mainframe:
     # 我们的 broker 使用的是 v5，在 on_connect 里订阅，可以保证每次重连都重新订阅上。
     def on_connect(self, client, userdata, flags, reason_code, properties):
         if reason_code != 0:
-            logger.error("connect to broker failed, reason_code: %s", reason_code)
+            self._logger.error("connect to broker failed, reason_code: %s", reason_code)
             return
         else:
-            logger.info("connect to broker success")
+            self._logger.info("connect to broker success")
 
         for topic in self._subscriptions.copy(): # 进程冲突
-            logger.info("resubscribe to topic: {}".format(topic))
+            self._logger.info("resubscribe to topic: {}".format(topic))
             self.client.subscribe(topic, qos=1)
 
     def on_connect_fail(self) -> None:
-        logger.error("connect to broker failed")
+        self._logger.error("connect to broker failed")
 
     def on_disconnect(self, client, userdata, flags, reason_code, properties):
-        logger.warning("disconnect to broker, reason_code: %s", reason_code)
+        self._logger.warning("disconnect to broker, reason_code: %s", reason_code)
 
     # 不等待 publish 完成，使用 qos 参数来会保证消息到达。
     def send(self, job_info: JobDict, msg) -> mqtt.MQTTMessageInfo:
@@ -100,7 +101,7 @@ class Mainframe:
 
         while True:
             if replay is not None:
-                logger.info("notify ready success in {} {}".format(session_id, job_id))
+                self._logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
             
     def publish(self, topic, payload):
@@ -108,7 +109,7 @@ class Mainframe:
     
     def subscribe(self, topic: str, callback):
         def on_message(_client, _userdata, message):
-            logger.info("receive topic: {} payload: {}".format(topic, message.payload))
+            self._logger.info("receive topic: {} payload: {}".format(topic, message.payload))
             payload = loads(message.payload)
             callback(payload)
 
@@ -117,9 +118,9 @@ class Mainframe:
 
         if self.client.is_connected():
             self.client.subscribe(topic, qos=1)
-            logger.info("subscribe to topic: {}".format(topic))
+            self._logger.info("subscribe to topic: {}".format(topic))
         else:
-            logger.info("wait connected to subscribe to topic: {}".format(topic))
+            self._logger.info("wait connected to subscribe to topic: {}".format(topic))
 
 
     def unsubscribe(self, topic):

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.34](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.33...@oomol/python-executor@0.14.34) (2025-02-05)
+
+
+### Bug Fixes
+
+* move mqtt logger to executor logger ([#286](https://github.com/oomol/oocana-python/issues/286)) ([f2efda2](https://github.com/oomol/oocana-python/commit/f2efda269e49f351328461868034a4218b83f9f4))
+
 ## [0.14.33](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.32...@oomol/python-executor@0.14.33) (2025-01-23)
 
 

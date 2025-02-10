@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.35](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.34...@oomol/python-executor@0.14.35) (2025-02-10)
+
+
+### Bug Fixes
+
+* split executor log and global log ([2648890](https://github.com/oomol/oocana-python/commit/26488903d6bbc00610069cb46c373920b12b96cc))
+
 ## [0.14.34](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.33...@oomol/python-executor@0.14.34) (2025-02-05)
 
 

@@ -28,7 +28,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
     logger.setLevel(logging.DEBUG)
     if output == "file":
         executor_dir = os.path.join(oocana_dir(), "sessions", session_id)
-        logger_file = os.path.join(executor_dir, f"python-executor-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
+        logger_file = os.path.join(executor_dir, f"python-executor-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python-executor.log")
 
         if not os.path.exists(logger_file):
             os.makedirs(os.path.dirname(logger_file), exist_ok=True)

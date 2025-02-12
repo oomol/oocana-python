@@ -158,7 +158,7 @@ class Context:
                     )
                     return
                 
-                bin_file = f"{self.session_dir}/binary/{self.session_id}/{key}"
+                bin_file = f"{self.session_dir}/binary/{self.session_id}/{self.job_id}/{key}"
                 os.makedirs(os.path.dirname(bin_file), exist_ok=True)
                 try:
                     with open(bin_file, "wb") as f:

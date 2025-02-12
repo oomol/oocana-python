@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.27](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.26...@oomol/python-sdk@0.14.27) (2025-02-12)
+
+
+### Bug Fixes
+
+* binary path need add job id ([465e030](https://github.com/oomol/oocana-python/commit/465e030f812fa01671525ee31207b6ff03367433))
+
 ## [0.14.26](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.25...@oomol/python-sdk@0.14.26) (2025-02-05)
 
 

@@ -10,7 +10,7 @@ from oocana import Mainframe, ServiceExecutePayload
 from .utils import run_in_new_thread, run_async_code, oocana_dir
 from .block import run_block
 from oocana import EXECUTOR_NAME
-from .matplot_helper import import_helper, add_matplot_module
+from .matplot.oomol_matplot_helper import import_helper, add_matplot_module
 from typing import Literal
 from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams, ReportStatusPayload, exit_report_topic, status_report_topic
 
@@ -22,6 +22,7 @@ job_set = set()
 # executor 的日志都会记录在 [python-executor-{suffix}.log | python-executor.log]
 # 全局 logger 会记录在 python-{suffix}.log | python.log
 def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
+
 
     format = '%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s'
     fmt = logging.Formatter(format)

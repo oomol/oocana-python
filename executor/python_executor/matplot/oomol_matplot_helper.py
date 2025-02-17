@@ -1,4 +1,4 @@
-from .data import vars
+from python_executor.data import vars
 
 def add_matplot_module():
     import sys

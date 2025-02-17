@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.37](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.36...@oomol/python-executor@0.14.37) (2025-02-17)
+
+
+### Bug Fixes
+
+* avoid expose executor path to sys.path ([#293](https://github.com/oomol/oocana-python/issues/293)) ([3425b13](https://github.com/oomol/oocana-python/commit/3425b13c37c78b73e1859417ecf30b5de9937978))
+
 ## [0.14.36](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.35...@oomol/python-executor@0.14.36) (2025-02-17)
 
 

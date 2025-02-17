@@ -18,13 +18,8 @@ nodes:
         options:
           entry: scriptlets/+python#1.py
     title: "Python #1"
-    icon: ":logos:python:"
     node_id: +python#1
     inputs_from:
-      - handle: in
-        from_node:
-          - node_id: +python#2
-            output_handle: out
       - handle: a
         from_node:
           - node_id: +python#4
@@ -42,13 +37,12 @@ nodes:
         - handle: out
           description: Output
           json_schema:
-            type: string
+            contentMediaType: oomol/var
       executor:
         name: python
         options:
           entry: scriptlets/+python#4.py
     title: "Python #4"
-    icon: ":logos:python:"
     node_id: +python#4
     inputs_from:
       - handle: in

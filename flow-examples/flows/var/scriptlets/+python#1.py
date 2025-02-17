@@ -6,6 +6,6 @@ def main(inputs: dict[str, Any], context: Context):
   if isinstance(inputs["a"], dict):
     print("a is a dict var")
   else:
-    raise Exception("a is not a dict var")
+    raise Exception("a is not a dict var but a " + str(type(inputs["a"])))
 
   return { "out": None }

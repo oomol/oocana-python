@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.36](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.35...@oomol/python-executor@0.14.36) (2025-02-17)
+
+
+### Code Refactoring
+
+* update plotly theme by env ([#290](https://github.com/oomol/oocana-python/issues/290)) ([3a25982](https://github.com/oomol/oocana-python/commit/3a25982644e716612acf2a9292d675f35aef5668))
+
 ## [0.14.35](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.34...@oomol/python-executor@0.14.35) (2025-02-10)
 
 

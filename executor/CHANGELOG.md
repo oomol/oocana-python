@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.38](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.37...@oomol/python-executor@0.14.38) (2025-02-18)
+
+
+### Features
+
+* matplotlib switch style by theme env ([#295](https://github.com/oomol/oocana-python/issues/295)) ([a4301e5](https://github.com/oomol/oocana-python/commit/a4301e59859a3f64718d8b2b97915ec92f971357))
+
 ## [0.14.37](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.36...@oomol/python-executor@0.14.37) (2025-02-17)
 
 

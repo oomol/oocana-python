@@ -19,6 +19,7 @@ def import_helper(logger):
         import os
         import matplotlib.pyplot as plt # type: ignore
         plt.style.use("classic" if os.getenv("OOMOL_COLOR_SCHEME", "dark") == "light" else "dark_background")
+        plt.rcParams['font.sans-serif'] = ['Source Han Sans SC']
     except:
         pass
 

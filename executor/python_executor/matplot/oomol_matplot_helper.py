@@ -14,6 +14,15 @@ def import_helper(logger):
     except:
         logger.error("import matplotlib failed")
 
+    # matplotlib 主题替换
+    try:
+        import os
+        import matplotlib.pyplot as plt # type: ignore
+        plt.style.use("classic" if os.getenv("OOMOL_COLOR_SCHEME", "dark") == "light" else "dark_background")
+        plt.rcParams['font.sans-serif'] = ['Source Han Sans SC']
+    except:
+        pass
+
     # plotly 的 show() 替换
     try:
         import os

@@ -54,8 +54,9 @@ def import_helper(logger):
                         validate=False,
                     )
 
+                    color_scheme = os.getenv("OOMOL_COLOR_SCHEME", "dark")
                     # The generated html has default body margin 8px in chrome, remove it.
-                    html = re.sub(r'<html[^>]*?>', r'\g<0><style>html { color-scheme: dark } body { overflow: hidden; margin: 0 }</style>', html, flags=re.I)
+                    html = re.sub(r'<html[^>]*?>', r'\g<0><style>html { color-scheme: ' + color_scheme + ' } body { overflow: hidden; margin: 0 }</style>', html, flags=re.I)
                     context.preview({ "type": "html", "data": html })
                 else:
                     logger.warning('plotly: no sys.modules["oomol"]')

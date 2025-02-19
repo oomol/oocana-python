@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.39](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.38...@oomol/python-executor@0.14.39) (2025-02-19)
+
+
+### Code Refactoring
+
+* plotly background follow theme ([#297](https://github.com/oomol/oocana-python/issues/297)) ([5b8cf92](https://github.com/oomol/oocana-python/commit/5b8cf9258737a8b6cb955620ca605fae4c75577c))
+
 ## [0.14.38](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.37...@oomol/python-executor@0.14.38) (2025-02-18)
 
 

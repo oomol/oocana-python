@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.40](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.39...@oomol/python-executor@0.14.40) (2025-02-20)
+
+
+### Code Refactoring
+
+* vertically center plotly preview ([#299](https://github.com/oomol/oocana-python/issues/299)) ([c0a8c5a](https://github.com/oomol/oocana-python/commit/c0a8c5afc3c179359e3d04255eb5a12736a3e930))
+
 ## [0.14.39](https://github.com/oomol/oocana-python/compare/@oomol/python-executor@0.14.38...@oomol/python-executor@0.14.39) (2025-02-19)
 
 

@@ -13,3 +13,6 @@ dependencies = ["oocana"]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[project.scripts]
+python-executor = "python_executor.executor"

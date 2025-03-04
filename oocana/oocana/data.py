@@ -31,6 +31,7 @@ class JobDict(TypedDict):
 class BlockDict(TypedDict):
 
     try:
+        # NotRequired, Required was added in version 3.11
         from typing import NotRequired, Required, TypedDict  # type: ignore
     except ImportError:
         from typing_extensions import NotRequired, Required, TypedDict

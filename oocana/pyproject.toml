@@ -5,7 +5,7 @@ description = "python implement of oocana to give a context for oocana block"
 dependencies = [
     "paho-mqtt>=2",
     "simplejson>=3.19.2",
-    "typing-extensions>=4.12.2",
+    "typing-extensions>=4.12.2; python_version < '3.11'",
 ]
 requires-python = ">=3.9"
 license = {text = "MIT"}
@@ -15,3 +15,4 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [tool.pdm]
+distribution = true

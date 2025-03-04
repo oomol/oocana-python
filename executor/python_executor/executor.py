@@ -219,7 +219,7 @@ def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str):
         await run_block(message, mainframe, session_dir=session_dir)
     run_in_new_thread(run)
 
-if __name__ == '__main__':
+def main():
 
     import argparse
     parser = argparse.ArgumentParser(description="run executor with address, session-id, tmp-dir")
@@ -229,7 +229,6 @@ if __name__ == '__main__':
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     parser.add_argument("--suffix", help="suffix for log file", default=None)
-    home_directory = os.path.expanduser("~")
 
     args = parser.parse_args()
 
@@ -243,3 +242,6 @@ if __name__ == '__main__':
     config_logger(session_id, suffix, output)
 
     run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir, suffix=suffix))
+
+if __name__ == '__main__':
+    main()

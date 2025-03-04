@@ -7,6 +7,9 @@
         "mqtt",
         "oocana",
         "paho",
+        "pypi",
+        "pyright",
+        "pytest",
         "SIGALRM",
         "userdata"
     ],

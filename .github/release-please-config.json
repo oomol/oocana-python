@@ -4,12 +4,12 @@
     "executor": {
       "include-v-in-tag": false,
       "tag-separator": "@",
-      "component": "@oomol/python-executor"
+      "component": "oocana-python-executor"
     },
     "oocana": {
       "include-v-in-tag": false,
       "tag-separator": "@",
-      "component": "@oomol/python-sdk"
+      "component": "oocana"
     }
   },
   "changelog-sections": [

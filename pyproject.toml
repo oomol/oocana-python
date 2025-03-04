@@ -14,16 +14,12 @@ readme = "README.md"
 dependencies = [
 ]
 
-[tool.pdm]
-distribution = true
-
 [tool.pdm.scripts]
-publish_oocana = { shell = "./scripts/publish_oocana.sh" }
-publish_executor = { shell = "./scripts/publish_executor.sh" }
+publish_oocana = { shell = "cd oocana && pdm publish" }
+publish_executor = { shell = "cd executor && pdm publish" }
 check = { shell = "pdm run pyright ./oocana ./executor" }
 build_all = { shell = "(cd oocana && pdm build) && (cd executor && pdm build)" }
 test = { shell = "pdm run pytest ./oocana ./executor" }
-executor = { shell = "executor/bin/python-executor.sh" }
 
 [tool.pdm.dev-dependencies]
 dev = [

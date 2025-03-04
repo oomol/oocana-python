@@ -1,5 +1,87 @@
 # Changelog
 
+## [0.15.0](https://github.com/oomol/oocana-python/compare/oocana-v0.14.27...oocana@0.15.0) (2025-03-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* use key as first value
+* test service, add flow auto test ([#170](https://github.com/oomol/oocana-python/issues/170))
+* session level executor ([#140](https://github.com/oomol/oocana-python/issues/140))
+
+### Features
+
+* add bin feature by base64 ([#233](https://github.com/oomol/oocana-python/issues/233)) ([ec43e10](https://github.com/oomol/oocana-python/commit/ec43e10ec897b18e48361abc2c1f3bd53be23232))
+* add llm env ([#258](https://github.com/oomol/oocana-python/issues/258)) ([bcf7acc](https://github.com/oomol/oocana-python/commit/bcf7acc5634a038f6b65f9cc48dac49c441b3ffb))
+* add send to preview ([#113](https://github.com/oomol/oocana-python/issues/113)) ([eedc697](https://github.com/oomol/oocana-python/commit/eedc697f59074b6e8624541461a57066803f8c2a))
+* add session dir ([#224](https://github.com/oomol/oocana-python/issues/224)) ([9f988dd](https://github.com/oomol/oocana-python/commit/9f988dda4565d78ba45f63dfb1fa9eb0ee5f7c9a))
+* add warning message ([#213](https://github.com/oomol/oocana-python/issues/213)) ([2654162](https://github.com/oomol/oocana-python/commit/26541628658ba6b81b83d52fb6b114035e85cadb))
+* **context:** add data frame preview ([#117](https://github.com/oomol/oocana-python/issues/117)) ([1376d26](https://github.com/oomol/oocana-python/commit/1376d263ce5173d3f239929c136d19f9d8a24b74))
+* **ctx:** add host info to ctxg ([#279](https://github.com/oomol/oocana-python/issues/279)) ([351988b](https://github.com/oomol/oocana-python/commit/351988b4398233b4e41c30757b9834c08c245992))
+* executor ready add package field ([ca2e0f5](https://github.com/oomol/oocana-python/commit/ca2e0f5e4e581a50c03dde791e43d6645f4004ae))
+* expose public API by adding __all__ attributes in multiple modules ([#272](https://github.com/oomol/oocana-python/issues/272)) ([0a437f5](https://github.com/oomol/oocana-python/commit/0a437f543bcb3224d218dc791d7ffdda492ce567))
+* follow new json schema ([#82](https://github.com/oomol/oocana-python/issues/82)) ([0d99ba2](https://github.com/oomol/oocana-python/commit/0d99ba29b7003a6cc36c79c087da25aa8e2cb562))
+* ignore pass not in output defs ([ddfa8be](https://github.com/oomol/oocana-python/commit/ddfa8beaf7d60287dd16947276fb46f3e02aab49))
+* implement snippet in executor ([#104](https://github.com/oomol/oocana-python/issues/104)) ([496b122](https://github.com/oomol/oocana-python/commit/496b1222d996d6d0fd354bb46c1b9e8391b3fe02))
+* implement throttle with leading ([#182](https://github.com/oomol/oocana-python/issues/182)) ([2078eb9](https://github.com/oomol/oocana-python/commit/2078eb9a6b852a52df958befb191eb1d44966d8d))
+* **preview:** add iframe ([#118](https://github.com/oomol/oocana-python/issues/118)) ([17d29e1](https://github.com/oomol/oocana-python/commit/17d29e1f0d1633b9a459aa2c2179318a740370df))
+* **preview:** add row count ([#134](https://github.com/oomol/oocana-python/issues/134)) ([594a9c8](https://github.com/oomol/oocana-python/commit/594a9c86c9b8cba7770070feff0b3f8eae0c139a))
+* **preview:** allow previewing data frame directly ([#123](https://github.com/oomol/oocana-python/issues/123)) ([5d1cac7](https://github.com/oomol/oocana-python/commit/5d1cac776d805755eaefaedb68484dade68aedfc))
+* **preview:** support partial table preview ([#121](https://github.com/oomol/oocana-python/issues/121)) ([24d5155](https://github.com/oomol/oocana-python/commit/24d515507d4f55b6cfc41f843ca245641d4a07a5))
+* **preview:** support preview matplotlib figure as image ([#137](https://github.com/oomol/oocana-python/issues/137)) ([548dfd0](https://github.com/oomol/oocana-python/commit/548dfd045b240f43ee4af95c8d34e08bb0c92466))
+* publish package to pypi ([#301](https://github.com/oomol/oocana-python/issues/301)) ([f1bce12](https://github.com/oomol/oocana-python/commit/f1bce12cbc623be303c5cb329e58be1a9803bbc3))
+* remove unused api ([#188](https://github.com/oomol/oocana-python/issues/188)) ([c2f633e](https://github.com/oomol/oocana-python/commit/c2f633e7c951ac5b122c39ceb4d7259196b8de65))
+* rename error api ([#214](https://github.com/oomol/oocana-python/issues/214)) ([5b0f9be](https://github.com/oomol/oocana-python/commit/5b0f9beaaef3ee97ca48143a588a551ab561d4bc))
+* **sdk:** filter out whitespace logs ([#200](https://github.com/oomol/oocana-python/issues/200)) ([5e788d1](https://github.com/oomol/oocana-python/commit/5e788d1dffac1a963d210148cdbfdce61105fe64))
+* session level executor ([#140](https://github.com/oomol/oocana-python/issues/140)) ([ca77bec](https://github.com/oomol/oocana-python/commit/ca77becb427d22d516a8fca6f8a1c413953d201c))
+* spilt global logger and executor, add context logger for block ([#283](https://github.com/oomol/oocana-python/issues/283)) ([a845bb9](https://github.com/oomol/oocana-python/commit/a845bb9be3390cf03cfca87770f88ffcf37577b3))
+* support encode dataclass directly ([#271](https://github.com/oomol/oocana-python/issues/271)) ([9d1c032](https://github.com/oomol/oocana-python/commit/9d1c0325dd9569107cad32ed9086ea455ed9110c))
+* support float and add some docs ([#149](https://github.com/oomol/oocana-python/issues/149)) ([16935cc](https://github.com/oomol/oocana-python/commit/16935ccc604de149310dea906e73bb1afe3f00ae))
+* support global service ([#235](https://github.com/oomol/oocana-python/issues/235)) ([def49c0](https://github.com/oomol/oocana-python/commit/def49c0cd0ac96a1bbade1f0f2f3134863bf1741))
+* support sub secret replace ([#229](https://github.com/oomol/oocana-python/issues/229)) ([1582881](https://github.com/oomol/oocana-python/commit/158288144e21fa6fd3c21f5c89ab04b02f98339a))
+* test service, add flow auto test ([#170](https://github.com/oomol/oocana-python/issues/170)) ([2550582](https://github.com/oomol/oocana-python/commit/25505823a4916d3ddaf24616461ac813f12a416a))
+* **type:** add more preview payload types ([#236](https://github.com/oomol/oocana-python/issues/236)) ([ee259a3](https://github.com/oomol/oocana-python/commit/ee259a39574dae5a3ed6ba5175e4340cd9dab0e1))
+* **type:** make block path not required ([#264](https://github.com/oomol/oocana-python/issues/264)) ([b2b2da5](https://github.com/oomol/oocana-python/commit/b2b2da5264dc68306314e8d2894c95634e0ddd3a))
+* update context llm env name ([d7f06ce](https://github.com/oomol/oocana-python/commit/d7f06ce24a656fbc50ad029cd52cf529a2015bd5))
+* use key as first value ([66f5622](https://github.com/oomol/oocana-python/commit/66f5622ae0debe30636eb23baddb4e725b4b6316))
+* use service instead of applet ([#94](https://github.com/oomol/oocana-python/issues/94)) ([66bb1d0](https://github.com/oomol/oocana-python/commit/66bb1d01b64295a98ac4b9a56aa76f3cba91c908))
+* use simplejson instead of json ([#125](https://github.com/oomol/oocana-python/issues/125)) ([c2bf1a9](https://github.com/oomol/oocana-python/commit/c2bf1a96dba0cc9965852c60079a8d8072fb1312))
+* use special field to mark binary value ([#266](https://github.com/oomol/oocana-python/issues/266)) ([9705ee2](https://github.com/oomol/oocana-python/commit/9705ee224fb9379184686a2f3750a0c9867a2638))
+* var store exclude basic type ([#136](https://github.com/oomol/oocana-python/issues/136)) ([56f0029](https://github.com/oomol/oocana-python/commit/56f0029e387c6fae1f025e1df3b3d632a18c6fc0))
+* write binary to file instead of base64 ([#240](https://github.com/oomol/oocana-python/issues/240)) ([715a8cc](https://github.com/oomol/oocana-python/commit/715a8cca8c0efb84710fd94a0f8e2498d5f367ff))
+
+
+### Bug Fixes
+
+* add python 3.10 compatible ([#225](https://github.com/oomol/oocana-python/issues/225)) ([515f5cd](https://github.com/oomol/oocana-python/commit/515f5cd733d605842d049fb057589138b6b80b42))
+* binary path need add job id ([465e030](https://github.com/oomol/oocana-python/commit/465e030f812fa01671525ee31207b6ff03367433))
+* camelCase ([#89](https://github.com/oomol/oocana-python/issues/89)) ([38f2815](https://github.com/oomol/oocana-python/commit/38f2815e7a4f3fb7dc7ec510c9d9901dc2eab293))
+* improve python3.10 compatible ([867d7b2](https://github.com/oomol/oocana-python/commit/867d7b23cbc0e6df5e79409d0427f8c5d77762b9))
+* input_def need use call supper ([bb587d5](https://github.com/oomol/oocana-python/commit/bb587d5904a8e308f42f588bc58d14e2c140d94c))
+* missing drop message path ([2c14cc2](https://github.com/oomol/oocana-python/commit/2c14cc27ad8d78a318414a01dd700689f466114e))
+* missing some commit  ([#144](https://github.com/oomol/oocana-python/issues/144)) ([0b62b0b](https://github.com/oomol/oocana-python/commit/0b62b0b59d59d5ebcd5e85f4bf48f22cc86cd079))
+* move mqtt logger to executor logger ([#286](https://github.com/oomol/oocana-python/issues/286)) ([f2efda2](https://github.com/oomol/oocana-python/commit/f2efda269e49f351328461868034a4218b83f9f4))
+* oocana publish script ([#86](https://github.com/oomol/oocana-python/issues/86)) ([1a97fec](https://github.com/oomol/oocana-python/commit/1a97fec4decc8102dc1a8c5ea887043612857ace))
+* **oocana:** host platform incorrect ([#281](https://github.com/oomol/oocana-python/issues/281)) ([fe4b902](https://github.com/oomol/oocana-python/commit/fe4b902980149c9c49f220d3dbc8846295115a90))
+* **preview:** use df parse json ([#126](https://github.com/oomol/oocana-python/issues/126)) ([95950af](https://github.com/oomol/oocana-python/commit/95950afb2af340089a324ba55a83871fba3edca9))
+* script publish ([#84](https://github.com/oomol/oocana-python/issues/84)) ([97de260](https://github.com/oomol/oocana-python/commit/97de260e8c70b93380ec922578a683f9b439dc72))
+* **table:** fix context preview table type ([#208](https://github.com/oomol/oocana-python/issues/208)) ([3c9efe5](https://github.com/oomol/oocana-python/commit/3c9efe59ee6316969ef7226904d77eddde873bda))
+* trigger oocana version ([df93330](https://github.com/oomol/oocana-python/commit/df933305e1380e7407105e37dc51d645b447b168))
+* use report topic for warning message ([#248](https://github.com/oomol/oocana-python/issues/248)) ([19371b2](https://github.com/oomol/oocana-python/commit/19371b2caff03fbc9837b0aa10a74d118df35f12))
+* use table preview data in code ([a11dddf](https://github.com/oomol/oocana-python/commit/a11dddfee14cc5744919da5670b5ec73a23c566b))
+* wrong EXECUTOR NAME ([#131](https://github.com/oomol/oocana-python/issues/131)) ([fc93311](https://github.com/oomol/oocana-python/commit/fc93311d7697047728981caa25c25abfceb2e191))
+
+
+### Code Refactoring
+
+* add dataFrame protocol to better support ([#254](https://github.com/oomol/oocana-python/issues/254)) ([9687502](https://github.com/oomol/oocana-python/commit/9687502850c02de224dee426785e4880fa103771))
+* improve ci and publish files ([#153](https://github.com/oomol/oocana-python/issues/153)) ([41e207f](https://github.com/oomol/oocana-python/commit/41e207f4272d49fdbea7c0600b9fdf97ce04b705))
+* improve service ([#223](https://github.com/oomol/oocana-python/issues/223)) ([13422da](https://github.com/oomol/oocana-python/commit/13422da51dec6a211f684ec71d5f396acb0540a8))
+* move to monorepo struct with pdm ([#75](https://github.com/oomol/oocana-python/issues/75)) ([c6da6fb](https://github.com/oomol/oocana-python/commit/c6da6fbc8806632170170213d5022d2e8dffc2b9))
+* move typedDict to dataclasses and recovery test example ([#106](https://github.com/oomol/oocana-python/issues/106)) ([7e348d9](https://github.com/oomol/oocana-python/commit/7e348d9e417402605ae01466695bb7746378ef6d))
+* **sdk:** remove log whitespace check ([#205](https://github.com/oomol/oocana-python/issues/205)) ([596a446](https://github.com/oomol/oocana-python/commit/596a446dd1685572452119c8e72d9714a8347aa6))
+* use wrapper value to combine var value, and use fixed field for all wrapper value ([#268](https://github.com/oomol/oocana-python/issues/268)) ([1cdca46](https://github.com/oomol/oocana-python/commit/1cdca46011d1b09e9cf3c0476efcfdde163e2983))
+
 ## [0.14.27](https://github.com/oomol/oocana-python/compare/@oomol/python-sdk@0.14.26...@oomol/python-sdk@0.14.27) (2025-02-12)
 
 

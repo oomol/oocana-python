@@ -15,11 +15,11 @@ jobs:
     outputs:
       command: ${{ steps.result.outputs.command }}
     steps:
-      - if: startsWith(github.ref, 'refs/tags/@oomol/python-executor')
+      - if: startsWith(github.ref, 'refs/tags/oocana-python-executor')
         run: |-
           echo "command=publish_executor" >> $GITHUB_OUTPUT
         id: step1
-      - if: startsWith(github.ref, 'refs/tags/@oomol/python-sdk')
+      - if: startsWith(github.ref, 'refs/tags/oocana')
         run: |-
           echo "command=publish_oocana" >> $GITHUB_OUTPUT
         id: step2

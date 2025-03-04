@@ -15,4 +15,7 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [project.scripts]
-python-executor = "python_executor.executor"
+python-executor = "python_executor.executor:main"
+
+[tool.pdm]
+distribution = true

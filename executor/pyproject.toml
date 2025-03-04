@@ -1,5 +1,5 @@
 [project]
-name = "python-executor"
+name = "oocana-python-executor"
 version = "0.14.40"
 authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},

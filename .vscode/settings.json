@@ -4,6 +4,7 @@
         "dataframe",
         "iframe",
         "matplot",
+        "mosquitto",
         "mqtt",
         "oocana",
         "paho",

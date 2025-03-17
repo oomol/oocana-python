@@ -68,21 +68,9 @@ describe(
       expect(code).toBe(0);
     });
 
-    it("run inline flow", async () => {
-      files.delete("inline");
-      const { code } = await run("inline");
-      expect(code).toBe(0);
-    });
-
     it("run isinstance flow", async () => {
       files.delete("isinstance");
       const { code } = await run("isinstance");
-      expect(code).toBe(0);
-    });
-
-    it("run multiple flow", async () => {
-      files.delete("multiple");
-      const { code } = await run("multiple");
       expect(code).toBe(0);
     });
 

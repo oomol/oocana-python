@@ -20,6 +20,9 @@ class OnlyEqualSelf:
 
 class OOMOL_LLM_ENV(TypedDict):
     base_url: str
+    """{basUrl}/v1 openai compatible endpoint
+    """
+    base_url_v1: str
     api_key: str
     models: list[str]
 
@@ -105,6 +108,7 @@ class Context:
         """
         return {
             "base_url": os.getenv("OOMOL_LLM_BASE_URL", ""),
+            "base_url_v1": os.getenv("OOMOL_LLM_BASE_URL_V1", ""),
             "api_key": os.getenv("OOMOL_LLM_API_KEY", ""),
             "models": os.getenv("OOMOL_LLM_MODELS", "").split(","),
         }

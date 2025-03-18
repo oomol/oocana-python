@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.1](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.0...oocana-python-executor@0.15.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* add package compatible ([c985d4a](https://github.com/oomol/oocana-python/commit/c985d4a76ae206c28d51e68c72ea7363d0243c7f))
+
 ## [0.15.0](https://github.com/oomol/oocana-python/compare/oocana-python-executor-v0.14.40...oocana-python-executor@0.15.0) (2025-03-04)
 
 

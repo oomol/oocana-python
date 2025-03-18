@@ -5,6 +5,7 @@ import os
 import queue
 import sys
 import logging
+import re
 from . import hook
 from oocana import Mainframe, ServiceExecutePayload
 from .utils import run_in_new_thread, run_async_code, oocana_dir
@@ -68,7 +69,8 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
 
     # add package to sys.path
     if package is not None:
-        sys.path.append(package)
+        # TODO: compatibility for package with prefix. e.g. package-/app/workspace. remove it after new version of oocana
+        sys.path.append(re.sub(r"^.*?/", "/", package))
     elif os.path.exists("/app/workspace"):
         sys.path.append("/app/workspace")
 

@@ -1,0 +1,2 @@
+def boo():
+    print("boo")

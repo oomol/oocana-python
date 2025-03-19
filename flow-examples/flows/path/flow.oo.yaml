@@ -1,0 +1,6 @@
+nodes:
+  - task: m::python-a
+    node_id: python#1
+    inputs_from:
+      - handle: input
+        value: a

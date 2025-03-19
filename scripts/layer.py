@@ -25,18 +25,18 @@ def create_executor():
             stderr_line = process.stderr.readline()
             
             if stdout_line:
-            print(f"stdout: {stdout_line.strip()}")
+                print(f"stdout: {stdout_line.strip()}")
             if stderr_line:
-            print(f"stderr: {stderr_line.strip()}")
+                print(f"stderr: {stderr_line.strip()}")
             
             # Check if process is still running
             if process.poll() is not None:
-            # Get any remaining output
-            for stdout_line in process.stdout:
-                print(f"stdout: {stdout_line.strip()}")
-            for stderr_line in process.stderr:
-                print(f"stderr: {stderr_line.strip()}")
-            break
+                # Get any remaining output
+                for stdout_line in process.stdout:
+                    print(f"stdout: {stdout_line.strip()}")
+                for stderr_line in process.stderr:
+                    print(f"stderr: {stderr_line.strip()}")
+                break
         
         result = process
         if result.returncode != 0:

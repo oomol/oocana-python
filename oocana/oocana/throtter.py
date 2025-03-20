@@ -4,8 +4,8 @@ import threading
 def throttle(period):
     last_invoke_time = 0
     timer = None
-    last_args = None
-    last_kwargs = None
+    last_args = []
+    last_kwargs = dict()
 
     def decorator(fn):
         def wrapper(*args, **kwargs):

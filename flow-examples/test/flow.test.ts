@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { JobEventConfig, Oocana, isPackageLayerEnable } from "@oomol/oocana";
+import { Oocana, isPackageLayerEnable } from "@oomol/oocana";
+import type { OocanaEventConfig } from "@oomol/oocana-types";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readdir } from "node:fs/promises";
 import type { AnyEventData } from "remitter";
+import { homedir } from "node:os";
 
 const __dirname = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 console.log("__dirname", __dirname);
@@ -79,12 +81,20 @@ describe(
       const { code } = await run("secret");
       expect(code).toBe(0);
     });
+
+    it("run path flow", async () => {
+      files.delete("path");
+      if (await isPackageLayerEnable()) {
+        const { code } = await run("path");
+        expect(code).toBe(0);
+      }
+    });
   }
 );
 
 async function run(
   flow: string
-): Promise<{ code: number; events: AnyEventData<JobEventConfig>[] }> {
+): Promise<{ code: number; events: AnyEventData<OocanaEventConfig>[] }> {
   console.log(`run flow ${flow}`);
   const label = `run flow ${flow}`;
   console.time(label);
@@ -92,7 +102,7 @@ async function run(
   const cli = new Oocana();
   await cli.connect();
 
-  const events: AnyEventData<JobEventConfig>[] = [];
+  const events: AnyEventData<OocanaEventConfig>[] = [];
   cli.events.onAny(event => {
     events.push(event);
   });
@@ -103,6 +113,7 @@ async function run(
       path.join(__dirname, "blocks"),
       path.join(__dirname, "packages"),
     ].join(","),
+    extraBindPaths: [`${homedir()}/.oocana:/root/.oocana`],
     sessionId: flow,
     oomolEnvs: {
       VAR: "1",

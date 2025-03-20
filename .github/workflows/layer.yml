@@ -1,0 +1,84 @@
+name: layer
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  skip:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.filter.outputs.should_skip }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 0
+      - uses: leavesster/pull-request-path-filter@v0.2.2
+        id: "filter"
+        with:
+          paths: |
+            - "**"
+            - "!**.md"
+            - "!.github/workflows/**"
+            - ".github/workflows/pr.yml"
+            - ".vscode"
+            - ".gitignore"
+
+  check:
+    runs-on: ubuntu-latest
+    needs: skip
+    if: ${{ needs.skip.outputs.should_skip != 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pdm-project/setup-pdm@v4
+        with:
+          cache: true
+          python-version: "3.10"
+      - name: install dependencies
+        run: pdm install
+      - name: build
+        run: pdm build
+      - name: static check
+        run: pdm check
+      - name: install mqtt broker
+        run: |
+          sudo apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
+          sudo apt-get update
+          sudo apt-get install -y mosquitto
+      - uses: ./.github/actions/ovmlayer
+        with:
+          rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.3.0/amd64-rootfs.tar
+          token: ${{ secrets.ACCESS_REPO }}
+      - name: modify overlayfs # https://github.com/oomol/ovmlayer/issues/25
+        run: |
+          sudo bash -c 'echo N > /sys/module/overlay/parameters/redirect_always_follow'
+          sudo bash -c 'echo N > /sys/module/overlay/parameters/redirect_dir'
+          sudo bash -c 'echo N > /sys/module/overlay/parameters/xino_auto'
+          sudo bash -c 'echo N > /sys/module/overlay/parameters/metacopy'
+          sudo bash -c 'echo N > /sys/module/overlay/parameters/check_copy_up'
+          sudo bash -c 'echo N > /sys/module/overlay/parameters/index'
+      - name: add executor to rootfs layers
+        run: |
+          python ./scripts/layer.py
+      - name: unittest
+        run: |
+          mosquitto -p 47688 -d
+          pdm test
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: https://npm.pkg.github.com/
+          scope: '@oomol'
+      - name: test flow examples
+        timeout-minutes: 5
+        run: |
+          mosquitto -p 47688 -d
+          source .venv/bin/activate
+          cd flow-examples
+          npm install
+          npm run test
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

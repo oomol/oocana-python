@@ -24,7 +24,7 @@ test = { shell = "pdm run pytest ./oocana ./executor" }
 [tool.pdm.dev-dependencies]
 dev = [
     "-e oocana @ file:///${PROJECT_ROOT}/oocana",
-    "-e python-executor @ file:///${PROJECT_ROOT}/executor",
+    "-e oocana-python-executor @ file:///${PROJECT_ROOT}/executor",
     "pyright>=1.1.370",
     "pytest>=8.3.2",
 ]

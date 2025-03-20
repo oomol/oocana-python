@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readdir } from "node:fs/promises";
 import type { AnyEventData } from "remitter";
+import { homedir } from "node:os";
 
 const __dirname = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 console.log("__dirname", __dirname);
@@ -112,6 +113,7 @@ async function run(
       path.join(__dirname, "blocks"),
       path.join(__dirname, "packages"),
     ].join(","),
+    extraBindPaths: [`${homedir()}/.oocana:/root/.oocana`],
     sessionId: flow,
     oomolEnvs: {
       VAR: "1",

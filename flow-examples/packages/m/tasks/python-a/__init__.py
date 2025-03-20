@@ -7,11 +7,13 @@ class Outputs(typing.TypedDict):
 #endregion
 
 from oocana import Context
-from my.a import boo
+from a import boo
+import sys
 
 def main(params: Inputs, context: Context) -> Outputs:
 
-  # your code
+  print(sys.path)
+  context.logger.info(sys.path)
   boo()
 
   return { "output": "output_value" }

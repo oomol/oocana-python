@@ -2,11 +2,15 @@
 set -xeuo pipefail
 
 DIR=$(cd $(dirname "$0"); pwd -P)
-echo $DIR
 cd $DIR/..
+
+echo "current directory: $(pwd)"
 
 mp=merge-$(date -u '+%s')
 EXECUTOR=python_executor
+
+# pdm is required to build the wheel
+pdm build_all
 
 sudo ovmlayer delete $EXECUTOR
 sudo ovmlayer create $EXECUTOR

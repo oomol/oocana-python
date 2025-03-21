@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.2](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.1...oocana-python-executor@0.15.2) (2025-03-21)
+
+
+### Features
+
+* accept identifier executor ([2237085](https://github.com/oomol/oocana-python/commit/2237085dc8244317443b663b5037e47acd8bbf45))
+
 ## [0.15.1](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.0...oocana-python-executor@0.15.1) (2025-03-18)
 
 

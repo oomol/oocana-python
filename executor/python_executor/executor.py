@@ -19,9 +19,9 @@ service_store: dict[str, Literal["launching", "running"]] = {}
 job_set = set()
 
 # 日志目录 ~/.oocana/sessions/{session_id}
-# executor 的日志都会记录在 [python-executor-{suffix}.log | python-executor.log]
-# 全局 logger 会记录在 python-{suffix}.log | python.log
-def config_logger(session_id: str, suffix: str | None, output: Literal["console", "file"]):
+# executor 的日志都会记录在 [python-executor-{identifier}.log | python-executor.log]
+# 全局 logger 会记录在 python-{identifier}.log | python.log
+def config_logger(session_id: str, identifier: str | None, output: Literal["console", "file"]):
 
 
     format = '%(asctime)s - %(levelname)s - {%(pathname)s:%(lineno)d} - %(message)s'
@@ -29,7 +29,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
     logger.setLevel(logging.DEBUG)
     if output == "file":
         executor_dir = os.path.join(oocana_dir(), "sessions", session_id)
-        logger_file = os.path.join(executor_dir, f"python-executor-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python-executor.log")
+        logger_file = os.path.join(executor_dir, f"python-executor-{identifier}.log") if identifier is not None else os.path.join(executor_dir, "python-executor.log")
 
         if not os.path.exists(logger_file):
             os.makedirs(os.path.dirname(logger_file), exist_ok=True)
@@ -37,7 +37,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
         print(f"setup logging in file {logger_file}")
         h = logging.FileHandler(logger_file)
 
-        global_logger_file = os.path.join(executor_dir, f"python-{suffix}.log") if suffix is not None else os.path.join(executor_dir, "python.log")
+        global_logger_file = os.path.join(executor_dir, f"python-{identifier}.log") if identifier is not None else os.path.join(executor_dir, "python.log")
         logging.basicConfig(filename=global_logger_file, level=logging.DEBUG, format=format)
     else:
         logging.basicConfig(level=logging.DEBUG, format=format)
@@ -49,10 +49,10 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
     logger.propagate = False
 
 
-async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, suffix: str | None = None, identifier: str | None = None):
+async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, identifier: str | None = None):
 
-    if suffix is not None:
-        mainframe = Mainframe(address, f"python-executor-{suffix}", logger)
+    if identifier is not None:
+        mainframe = Mainframe(address, f"python-executor-id-{identifier}", logger)
     else:
         mainframe = Mainframe(address, f"python-executor-{session_id}", logger)
 
@@ -229,7 +229,6 @@ def main():
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     parser.add_argument("--identifier", help="identifier for executor, oocana will think same identifier as one executor", default=None)
-    parser.add_argument("--suffix", help="suffix for log file", default=None)
 
     try:
         args = parser.parse_args()
@@ -243,13 +242,12 @@ def main():
     session_id: str = str(args.session_id)
     output: Literal["console", "file"] = args.output
     package: str | None = args.package
-    suffix: str | None = args.suffix
     session_dir: str = args.session_dir
     identifier: str | None = args.identifier
 
-    config_logger(session_id, suffix, output)
+    config_logger(session_id, identifier, output)
 
-    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir, suffix=suffix, identifier=identifier))
+    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir, identifier=identifier))
 
 if __name__ == '__main__':
     main()

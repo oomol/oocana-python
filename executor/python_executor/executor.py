@@ -50,7 +50,7 @@ def config_logger(session_id: str, suffix: str | None, output: Literal["console"
     logger.propagate = False
 
 
-async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, suffix: str | None = None):
+async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, suffix: str | None = None, identifier: str | None = None):
 
     if suffix is not None:
         mainframe = Mainframe(address, f"python-executor-{suffix}", logger)
@@ -78,8 +78,8 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
     def not_current_session(message):
         return message.get("session_id") != session_id
     
-    def not_current_package(message):
-        return message.get("package") != package
+    def not_current_job(message):
+        return message.get("identifier") != identifier
 
     # 目前的 mqtt 库，在 subscribe 回调里 publish 消息会导致死锁无法工作，参考 https://github.com/eclipse/paho.mqtt.python/issues/527 或者 https://stackoverflow.com/a/36964192/4770006
     # 通过这种方式来绕过，所有需要 callback 后 publish message 的情况，都需要使用 future 类似方式来绕过。
@@ -90,7 +90,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
         if not_current_session(message):
             return
 
-        if not_current_package(message):
+        if not_current_job(message):
             return
         
         # https://github.com/oomol/oocana-rust/issues/310 临时解决方案
@@ -109,7 +109,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
         if not_current_session(message):
             return
         
-        if not_current_package(message):
+        if not_current_job(message):
             return
 
         nonlocal fs
@@ -146,7 +146,7 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
     mainframe.subscribe(exit_report_topic(), service_exit)
     mainframe.subscribe(status_report_topic(), service_status)
 
-    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, package)
+    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, package, identifier)
 
     async def spawn_service(message: ServiceExecutePayload, service_hash: str):
         logger.info(f"create new service {message.get('dir')}")
@@ -230,6 +230,7 @@ def main():
     parser.add_argument("--session-dir", help="a tmp dir for whole session", required=True)
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
+    parser.add_argument("--identifier", help="identifier for executor, oocana will think same identifier as one executor", default=None)
     parser.add_argument("--suffix", help="suffix for log file", default=None)
 
     args = parser.parse_args()
@@ -240,10 +241,11 @@ def main():
     package: str | None = args.package
     suffix: str | None = args.suffix
     session_dir: str = args.session_dir
+    identifier: str | None = args.identifier
 
     config_logger(session_id, suffix, output)
 
-    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir, suffix=suffix))
+    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir, suffix=suffix, identifier=identifier))
 
 if __name__ == '__main__':
     main()

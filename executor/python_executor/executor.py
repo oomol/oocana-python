@@ -231,7 +231,13 @@ def main():
     parser.add_argument("--identifier", help="identifier for executor, oocana will think same identifier as one executor", default=None)
     parser.add_argument("--suffix", help="suffix for log file", default=None)
 
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except Exception as e:
+        print(f"parse args error: {e}")
+        # because we hook sys.exit in hook.py and raise a exception, the exit will be reset to 1.
+        # parser origin exit code is 2. so we use 2 here.
+        sys.exit(2)
 
     address: str = args.address
     session_id: str = str(args.session_id)

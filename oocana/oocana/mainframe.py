@@ -38,6 +38,7 @@ class Mainframe:
     def _setup_client(self):
         self.client = mqtt.Client(
             callback_api_version=CallbackAPIVersion.VERSION2,
+            client_id=self.client_id,
         )
         self.client.logger = self._logger
         self.client.on_connect = self.on_connect

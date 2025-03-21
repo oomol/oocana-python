@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.3](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.2...oocana-python-executor@0.15.3) (2025-03-21)
+
+
+### Code Refactoring
+
+* remove compatible ([7817afe](https://github.com/oomol/oocana-python/commit/7817afe812677747ba4d6058d17b5ecdbd6d051f))
+
 ## [0.15.2](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.1...oocana-python-executor@0.15.2) (2025-03-21)
 
 

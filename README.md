@@ -7,6 +7,13 @@ This project contains two Python packages: oocana and executor. oocana is a modu
 
 ## How to Use
 
+## Installation
+
+```shell
+pip install oocana
+pip install oocana-python-executor
+```
+
 * oocana
 
 ```python

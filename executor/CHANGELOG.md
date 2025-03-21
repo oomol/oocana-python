@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.15.4](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.3...oocana-python-executor@0.15.4) (2025-03-21)
+
+
+### Features
+
+* use identifier instead of suffix ([#313](https://github.com/oomol/oocana-python/issues/313)) ([75c64a2](https://github.com/oomol/oocana-python/commit/75c64a26f5b06682b0bd257b3e303415f3679819))
+
+
+### Bug Fixes
+
+* keep parser's exit code as 2 ([#314](https://github.com/oomol/oocana-python/issues/314)) ([1869531](https://github.com/oomol/oocana-python/commit/186953181148ca33b8c4614a956f9ab8e9c30441))
+
 ## [0.15.3](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.2...oocana-python-executor@0.15.3) (2025-03-21)
 
 

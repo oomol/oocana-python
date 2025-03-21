@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.4](https://github.com/oomol/oocana-python/compare/oocana@0.15.3...oocana@0.15.4) (2025-03-21)
+
+
+### Features
+
+* use identifier instead of suffix ([#313](https://github.com/oomol/oocana-python/issues/313)) ([75c64a2](https://github.com/oomol/oocana-python/commit/75c64a26f5b06682b0bd257b3e303415f3679819))
+
 ## [0.15.3](https://github.com/oomol/oocana-python/compare/oocana@0.15.2...oocana@0.15.3) (2025-03-21)
 
 

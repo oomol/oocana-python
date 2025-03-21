@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.3](https://github.com/oomol/oocana-python/compare/oocana@0.15.2...oocana@0.15.3) (2025-03-21)
+
+
+### Bug Fixes
+
+* set client id None to avoid conflict ([c71daad](https://github.com/oomol/oocana-python/commit/c71daad6045ef51c48cf8a26d046f43cc729f6c8))
+
 ## [0.15.2](https://github.com/oomol/oocana-python/compare/oocana@0.15.1...oocana@0.15.2) (2025-03-21)
 
 

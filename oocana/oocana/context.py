@@ -121,6 +121,10 @@ class Context:
             "gpu_vendor": os.getenv("OOMOL_HOST_GPU_VENDOR", "unknown"),
             "gpu_renderer": os.getenv("OOMOL_HOST_GPU_RENDERER", "unknown"),
         }
+    
+    @property
+    def is_done(self) -> bool:
+        return self.__is_done
 
     def __store_ref(self, handle: str):
         return StoreKey(

@@ -70,13 +70,13 @@ def load_module(file_path: str, source_dir=None):
 
 def output_return_object(obj, context: Context):
     if obj is None:
-        context.done()
+        context.done() if not context.is_done else None
     elif obj is context.keepAlive:
         pass
     elif isinstance(obj, dict):
         for k, v in obj.items():
             context.output(k, v)
-        context.done()
+        context.done() if not context.is_done else None
     else:
         context.done(f"return object needs to be a dictionary, but get type: {type(obj)}")
 

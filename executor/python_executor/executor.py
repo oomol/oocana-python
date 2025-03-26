@@ -230,6 +230,8 @@ def main():
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     parser.add_argument("--identifier", help="identifier for executor, oocana will think same identifier as one executor", default=None)
+    parser.add_argument("--debug-port", help="debug port for python", default=None)
+    parser.add_argument("--wait-for-client", help="wait for client to connect", default=False, action="store_true")
 
     try:
         args = parser.parse_args()
@@ -248,6 +250,20 @@ def main():
     identifier: str | None = args.identifier
 
     config_logger(session_id, identifier, output)
+
+    if args.debug_port is not None and args.debug_port.isdigit():
+        try:
+            import debugpy
+            debugpy.listen(int(args.debug_port))
+            logger.info(f"debugpy listen on port {args.debug_port}")
+            if args.wait_for_client:
+                logger.info("wait for client to connect")
+                debugpy.wait_for_client()
+                logger.info("client connected")
+        except ImportError:
+            logger.warning("Warning: debugpy not installed, debugging functionality will not be available")
+        except Exception as e:
+            logger.warning(f"Warning: debugpy listen failed: {e}")
 
     run_async_code(run_executor(address=address, tmp_dir=tmp_dir, session_id=session_id, package=package, session_dir=session_dir, identifier=identifier))
 

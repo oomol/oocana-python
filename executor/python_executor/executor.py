@@ -241,13 +241,6 @@ def main():
         # parser origin exit code is 2. so we use 2 here.
         sys.exit(2)
 
-    if args.debug_port is not None and args.debug_port.isdigit():
-        import debugpy
-        debugpy.listen(int(args.debug_port))
-        if args.wait_for_client:
-            debugpy.wait_for_client()
-        print(f"debugpy listen on port {args.debug_port}")
-
     address: str = args.address
     session_id: str = str(args.session_id)
     output: Literal["console", "file"] = args.output
@@ -257,6 +250,20 @@ def main():
     identifier: str | None = args.identifier
 
     config_logger(session_id, identifier, output)
+
+    if args.debug_port is not None and args.debug_port.isdigit():
+        try:
+            import debugpy
+            debugpy.listen(int(args.debug_port))
+            logger.info(f"debugpy listen on port {args.debug_port}")
+            if args.wait_for_client:
+                logger.info("wait for client to connect")
+                debugpy.wait_for_client()
+                logger.info("client connected")
+        except ImportError:
+            logger.warning("Warning: debugpy not installed, debugging functionality will not be available")
+        except Exception as e:
+            logger.warning(f"Warning: debugpy listen failed: {e}")
 
     run_async_code(run_executor(address=address, tmp_dir=tmp_dir, session_id=session_id, package=package, session_dir=session_dir, identifier=identifier))
 

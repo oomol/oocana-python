@@ -230,6 +230,8 @@ def main():
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     parser.add_argument("--identifier", help="identifier for executor, oocana will think same identifier as one executor", default=None)
+    parser.add_argument("--debug-port", help="debug port for python", default=None)
+    parser.add_argument("--wait-for-client", help="wait for client to connect", default=False, action="store_true")
 
     try:
         args = parser.parse_args()
@@ -238,6 +240,13 @@ def main():
         # because we hook sys.exit in hook.py and raise a exception, the exit will be reset to 1.
         # parser origin exit code is 2. so we use 2 here.
         sys.exit(2)
+
+    if args.debug_port is not None and args.debug_port.isdigit():
+        import debugpy
+        debugpy.listen(int(args.debug_port))
+        if args.wait_for_client:
+            debugpy.wait_for_client()
+        print(f"debugpy listen on port {args.debug_port}")
 
     address: str = args.address
     session_id: str = str(args.session_id)

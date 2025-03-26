@@ -179,7 +179,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
         self._runningBlocks.add(job_id)
         self._jobs.add(job_id)
 
-        context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"], self._session_dir)
+        context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"], self._session_dir, tmp_dir=self._session_dir) # TODO: tmp_dir need consider global service.
 
         if isinstance(self.block_handler, dict):
             handler = self.block_handler.get(block_name)

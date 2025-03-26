@@ -49,7 +49,7 @@ def config_logger(session_id: str, identifier: str | None, output: Literal["cons
     logger.propagate = False
 
 
-async def run_executor(address: str, session_id: str, package: str | None, session_dir: str, identifier: str | None = None):
+async def run_executor(address: str, session_id: str, tmp_dir: str, package: str | None, session_dir: str, identifier: str | None = None):
 
     if identifier is not None:
         mainframe = Mainframe(address, f"python-executor-id-{identifier}", logger)
@@ -211,12 +211,12 @@ async def run_executor(address: str, session_id: str, package: str | None, sessi
             else:
                 if not_current_session(message):
                     continue
-                run_block_in_new_thread(message, mainframe, session_dir=session_dir)
+                run_block_in_new_thread(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir)
 
-def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str):
+def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str, tmp_dir: str):
 
     async def run():
-        await run_block(message, mainframe, session_dir=session_dir)
+        await run_block(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir)
     run_in_new_thread(run)
 
 def main():
@@ -224,8 +224,9 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description="run executor with address, session-id, tmp-dir")
     parser.add_argument("--session-id", help="executor subscribe session id", required=True)
-    parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--session-dir", help="a tmp dir for whole session", required=True)
+    parser.add_argument("--tmp-dir", help="a tmp dir for whole session. It will be cleaned after session success, this behavior is guaranteed by oocana.", required=True)
+    parser.add_argument("--address", help="mqtt address", default="mqtt://127.0.0.1:47688")
     parser.add_argument("--output", help="output log to console or file", default="file", choices=["console", "file"])
     parser.add_argument("--package", help="package path, if set, executor will only run same package block", default=None)
     parser.add_argument("--identifier", help="identifier for executor, oocana will think same identifier as one executor", default=None)
@@ -243,11 +244,12 @@ def main():
     output: Literal["console", "file"] = args.output
     package: str | None = args.package
     session_dir: str = args.session_dir
+    tmp_dir: str = args.tmp_dir
     identifier: str | None = args.identifier
 
     config_logger(session_id, identifier, output)
 
-    run_async_code(run_executor(address=address, session_id=session_id, package=package, session_dir=session_dir, identifier=identifier))
+    run_async_code(run_executor(address=address, tmp_dir=tmp_dir, session_id=session_id, package=package, session_dir=session_dir, identifier=identifier))
 
 if __name__ == '__main__':
     main()

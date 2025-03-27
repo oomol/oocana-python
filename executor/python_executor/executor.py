@@ -239,7 +239,7 @@ def main():
         hook.original_print(f"parse args error: {e}")
         # because we hook sys.exit in hook.py and raise a exception, the exit will be reset to 1.
         # parser origin exit code is 2. so we use 2 here.
-        sys.exit(2)
+        hook.original_exit(2)
 
     address: str = namespace.address
     session_id: str = str(namespace.session_id)

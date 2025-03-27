@@ -10,8 +10,8 @@ def show(*args, **kwargs):
     import sys
     from io import BytesIO
     from base64 import b64encode
-    if block_var is not None:
-        context = block_var.get()
+    context = block_var.get(None)
+    if context is not None:
         images = []
         for figmanager in Gcf.get_all_fig_managers():
                 buffer = BytesIO()

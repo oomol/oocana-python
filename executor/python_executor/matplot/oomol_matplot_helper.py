@@ -1,4 +1,4 @@
-from python_executor.data import vars
+from python_executor.data import block_var
 
 def add_matplot_module():
     import sys
@@ -13,6 +13,7 @@ def import_helper(logger):
         matplotlib.use('module://matplotlib_oomol') # matplotlib_oomol.py 文件所在目录加入 PYTHONPATH
     except:
         logger.error("import matplotlib failed")
+        return
 
     # matplotlib 主题替换
     try:
@@ -34,8 +35,8 @@ def import_helper(logger):
 
         class OomolRenderer(ExternalRenderer):
             def render(self, fig_dict):
-                if vars:
-                    context = vars.get()
+                context = block_var.get(None)
+                if context is not None:
 
                     import re
                     from plotly.io import to_html # type: ignore

@@ -234,29 +234,32 @@ def main():
     parser.add_argument("--wait-for-client", help="wait for client to connect", default=False, action="store_true")
 
     try:
-        args = parser.parse_args()
+        namespace, unknown_args = parser.parse_known_args()
     except Exception as e:
-        print(f"parse args error: {e}")
+        hook.original_print(f"parse args error: {e}")
         # because we hook sys.exit in hook.py and raise a exception, the exit will be reset to 1.
         # parser origin exit code is 2. so we use 2 here.
         sys.exit(2)
 
-    address: str = args.address
-    session_id: str = str(args.session_id)
-    output: Literal["console", "file"] = args.output
-    package: str | None = args.package
-    session_dir: str = args.session_dir
-    tmp_dir: str = args.tmp_dir
-    identifier: str | None = args.identifier
+    address: str = namespace.address
+    session_id: str = str(namespace.session_id)
+    output: Literal["console", "file"] = namespace.output
+    package: str | None = namespace.package
+    session_dir: str = namespace.session_dir
+    tmp_dir: str = namespace.tmp_dir
+    identifier: str | None = namespace.identifier
 
     config_logger(session_id, identifier, output)
 
-    if args.debug_port is not None and args.debug_port.isdigit():
+    if len(unknown_args) > 0:
+        logger.warning(f"receive unknown args: {unknown_args}")
+
+    if namespace.debug_port is not None and namespace.debug_port.isdigit():
         try:
             import debugpy
-            debugpy.listen(int(args.debug_port))
-            logger.info(f"debugpy listen on port {args.debug_port}")
-            if args.wait_for_client:
+            debugpy.listen(int(namespace.debug_port))
+            logger.info(f"debugpy listen on port {namespace.debug_port}")
+            if namespace.wait_for_client:
                 logger.info("wait for client to connect")
                 debugpy.wait_for_client()
                 logger.info("client connected")

@@ -35,6 +35,23 @@ class TestExecutorCLI(unittest.TestCase):
         process.send_signal(signal.SIGINT)
 
         process.wait()
+
+    def test_cli_addition_args(self):
+        cli_command = [sys.executable, "-u", "-m", "python_executor.executor", "--session-id", "test-session", "--session-dir", "/tmp", "--tmp-dir", "/tmp", "--echo", "Hello World!"]
+
+        print("Starting CLI tool... in", executor_parent_dir)
+
+        process = subprocess.Popen(cli_command, cwd=executor_parent_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        time.sleep(3)
+
+        code = process.poll()
+
+        self.assertIsNone(code, f"CLI tool failed to start or exit with code {code}")
+
+        process.send_signal(signal.SIGINT)
+
+        process.wait()
     
     def test_cli_fail(self):
         cli_command = [sys.executable, "-u", "-m", "python_executor.executor"]

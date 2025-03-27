@@ -241,9 +241,6 @@ def main():
         # parser origin exit code is 2. so we use 2 here.
         sys.exit(2)
 
-    if len(args) > 0:
-        hook.original_print(f"unknown args: {args}")
-
     address: str = namespace.address
     session_id: str = str(namespace.session_id)
     output: Literal["console", "file"] = namespace.output
@@ -253,6 +250,9 @@ def main():
     identifier: str | None = namespace.identifier
 
     config_logger(session_id, identifier, output)
+
+    if len(args) > 0:
+        logger.warning(f"receive unknown args: {args}")
 
     if namespace.debug_port is not None and namespace.debug_port.isdigit():
         try:

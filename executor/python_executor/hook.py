@@ -3,7 +3,7 @@ from builtins import exit as global_exit
 from typing import TypeAlias, Any
 import sys
 import builtins
-from .data import vars, EXECUTOR_NAME
+from .data import block_var, EXECUTOR_NAME
 import logging
 
 logger = logging.getLogger(EXECUTOR_NAME)
@@ -27,7 +27,7 @@ def global_print(*values: object, sep: str | None = " ", end: str | None = "\n",
     
     context = None  # 初始化 context 变量
     try:
-        context = vars.get()
+        context = block_var.get()
     except LookupError:
         # 这个 logger 不会上报到 root handle 中，所以即使 root logger 的 Handler 里面有 print 函数，也不会导致递归调用
         logger.warning("print called outside of block")

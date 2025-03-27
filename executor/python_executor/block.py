@@ -4,7 +4,7 @@ from typing import Optional, TypedDict
 import inspect
 import traceback
 import logging
-from .data import store, vars, EXECUTOR_NAME
+from .data import store, block_var, EXECUTOR_NAME
 from .context import createContext
 from .hook import ExitFunctionException
 import os
@@ -103,7 +103,7 @@ async def run_block(message, mainframe: Mainframe, session_dir: str, tmp_dir: st
         })
         return
 
-    vars.set(context)
+    block_var.set(context)
 
     load_dir = payload.dir
 

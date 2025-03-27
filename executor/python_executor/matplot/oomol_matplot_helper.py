@@ -1,4 +1,4 @@
-from python_executor.data import vars
+from python_executor.data import block_var
 
 def add_matplot_module():
     import sys
@@ -34,8 +34,8 @@ def import_helper(logger):
 
         class OomolRenderer(ExternalRenderer):
             def render(self, fig_dict):
-                if vars:
-                    context = vars.get()
+                if block_var:
+                    context = block_var.get()
 
                     import re
                     from plotly.io import to_html # type: ignore

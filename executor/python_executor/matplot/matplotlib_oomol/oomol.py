@@ -2,7 +2,7 @@
 
 from matplotlib.backend_bases import Gcf # type: ignore
 from matplotlib.backends.backend_agg import FigureCanvasAgg # type: ignore
-from python_executor.data import vars
+from python_executor.data import block_var
 
 FigureCanvas = FigureCanvasAgg
 
@@ -10,8 +10,8 @@ def show(*args, **kwargs):
     import sys
     from io import BytesIO
     from base64 import b64encode
-    if vars is not None:
-        context = vars.get()
+    if block_var is not None:
+        context = block_var.get()
         images = []
         for figmanager in Gcf.get_all_fig_managers():
                 buffer = BytesIO()

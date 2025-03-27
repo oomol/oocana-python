@@ -234,7 +234,7 @@ def main():
     parser.add_argument("--wait-for-client", help="wait for client to connect", default=False, action="store_true")
 
     try:
-        namespace, args = parser.parse_known_args()
+        namespace, unknown_args = parser.parse_known_args()
     except Exception as e:
         hook.original_print(f"parse args error: {e}")
         # because we hook sys.exit in hook.py and raise a exception, the exit will be reset to 1.
@@ -251,8 +251,8 @@ def main():
 
     config_logger(session_id, identifier, output)
 
-    if len(args) > 0:
-        logger.warning(f"receive unknown args: {args}")
+    if len(unknown_args) > 0:
+        logger.warning(f"receive unknown args: {unknown_args}")
 
     if namespace.debug_port is not None and namespace.debug_port.isdigit():
         try:

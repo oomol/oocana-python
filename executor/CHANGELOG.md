@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.16.1](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.0...oocana-python-executor@0.16.1) (2025-03-28)
+
+
+### Features
+
+* improve forward compatible ([#320](https://github.com/oomol/oocana-python/issues/320)) ([2c4de41](https://github.com/oomol/oocana-python/commit/2c4de41dd7add58785b43b5e49777c51f124448c))
+
+
+### Bug Fixes
+
+* return really exit code  ([#322](https://github.com/oomol/oocana-python/issues/322)) ([171c02f](https://github.com/oomol/oocana-python/commit/171c02fabac894b1b5b541ecc08f40382e8a5f24))
+
+
+### Code Refactoring
+
+* improve hook ([#323](https://github.com/oomol/oocana-python/issues/323)) ([9f6873f](https://github.com/oomol/oocana-python/commit/9f6873f963400d859ea3a00b6413337ef3646a1e))
+
 ## [0.16.0](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.15.4...oocana-python-executor@0.16.0) (2025-03-26)
 
 

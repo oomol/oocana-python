@@ -58,6 +58,7 @@ class Context:
                 outputs_defs[k] = HandleDef(**v)
         self.__outputs_def = outputs_defs
         self.__session_dir = session_dir
+        self.__tmp_dir = tmp_dir
 
     @property
     def logger(self) -> logging.Logger:

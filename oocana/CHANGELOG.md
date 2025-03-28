@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.1](https://github.com/oomol/oocana-python/compare/oocana@0.16.0...oocana@0.16.1) (2025-03-28)
+
+
+### Bug Fixes
+
+* missing tmp dir ([#324](https://github.com/oomol/oocana-python/issues/324)) ([1eaf5d2](https://github.com/oomol/oocana-python/commit/1eaf5d297aaa2c44199ae125c57a5bbf4c9d3816))
+
 ## [0.16.0](https://github.com/oomol/oocana-python/compare/oocana@0.15.4...oocana@0.16.0) (2025-03-26)
 
 

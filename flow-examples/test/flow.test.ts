@@ -89,6 +89,12 @@ describe(
         expect(code).toBe(0);
       }
     });
+
+    it("run tmp-dir flow", async () => {
+      files.delete("tmp-dir");
+      const { code } = await run("tmp-dir");
+      expect(code).toBe(0);
+    });
   }
 );
 

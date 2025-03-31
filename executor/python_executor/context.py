@@ -9,7 +9,7 @@ from .data import EXECUTOR_NAME
 logger = logging.getLogger(EXECUTOR_NAME)
 
 def createContext(
-    mainframe: Mainframe, session_id: str, job_id: str, store, output, session_dir: str, tmp_dir: str
+    mainframe: Mainframe, session_id: str, job_id: str, store, output, session_dir: str, tmp_dir: str, package_name: str
 ) -> Context:
 
     node_props = mainframe.notify_block_ready(session_id, job_id)
@@ -59,7 +59,7 @@ def createContext(
     
     blockInfo = BlockInfo(**node_props)
 
-    ctx = Context(inputs, blockInfo, mainframe, store, output, session_dir, tmp_dir)
+    ctx = Context(inputs, blockInfo, mainframe, store, output, session_dir, tmp_dir, package_name=package_name)
     # 跟 executor 日志分开，避免有的库在 logger 里面使用 print，导致 hook 出现递归调用。
     block_logger = logging.getLogger(f"block {job_id}")
     ctx_handler = ContextHandler(ctx)

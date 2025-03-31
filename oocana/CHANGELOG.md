@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.2](https://github.com/oomol/oocana-python/compare/oocana@0.16.1...oocana@0.16.2) (2025-03-31)
+
+
+### Features
+
+* add tmp_pkg_dir api ([#325](https://github.com/oomol/oocana-python/issues/325)) ([081d86c](https://github.com/oomol/oocana-python/commit/081d86c8a7f7968262d8ef1d6706e57cda2d2e07))
+
 ## [0.16.1](https://github.com/oomol/oocana-python/compare/oocana@0.16.0...oocana@0.16.1) (2025-03-28)
 
 

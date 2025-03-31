@@ -72,6 +72,8 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
     elif os.path.exists("/app/workspace"):
         sys.path.append("/app/workspace")
 
+    package_name = os.path.basename(package) if package is not None else "workspace"
+
 
     def not_current_session(message):
         return message.get("session_id") != session_id
@@ -211,12 +213,12 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
             else:
                 if not_current_session(message):
                     continue
-                run_block_in_new_thread(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir)
+                run_block_in_new_thread(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name)
 
-def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str, tmp_dir: str):
+def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str, tmp_dir: str, package_name: str):
 
     async def run():
-        await run_block(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir)
+        await run_block(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name)
     run_in_new_thread(run)
 
 def main():

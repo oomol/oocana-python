@@ -1,4 +1,7 @@
 from python_executor.data import block_var
+from logging import Logger
+
+__all__ = ["add_matplot_module", "import_helper"]
 
 def add_matplot_module():
     import sys
@@ -6,13 +9,14 @@ def add_matplot_module():
     dir = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, dir)
 
-def import_helper(logger):
+
+def setup_matplot(logger: Logger):
     # matplotlib 的 use() 替换
     try:
         import matplotlib # type: ignore
         matplotlib.use('module://matplotlib_oomol') # matplotlib_oomol.py 文件所在目录加入 PYTHONPATH
-    except:
-        logger.error("import matplotlib failed")
+    except Exception as e:
+        logger.warning("import matplotlib failed", e)
         return
 
     # matplotlib 主题替换
@@ -21,9 +25,11 @@ def import_helper(logger):
         import matplotlib.pyplot as plt # type: ignore
         plt.style.use("classic" if os.getenv("OOMOL_COLOR_SCHEME", "dark") == "light" else "dark_background")
         plt.rcParams['font.sans-serif'] = ['Source Han Sans SC']
-    except:
-        pass
+    except Exception as e:
+        logger.warning("matplotlib theme setup failed", e)
 
+
+def setup_plotly(logger: Logger):
     # plotly 的 show() 替换
     try:
         import os
@@ -65,5 +71,10 @@ def import_helper(logger):
 
         renderers['oomol'] = OomolRenderer()
         renderers.default = 'oomol'
-    except:
-        logger.warning("import plotly failed")
+    except Exception as e:
+        logger.warning("import plotly failed", e)
+
+
+def import_helper(logger: Logger):
+    setup_matplot(logger)
+    setup_plotly(logger)

@@ -4,13 +4,11 @@ from paho.mqtt.enums import CallbackAPIVersion
 import operator
 from urllib.parse import urlparse
 import uuid
-from .data import BlockDict, JobDict, dumps
+from .data import BlockDict, JobDict, dumps, EXECUTOR_NAME
 import logging
 from typing import Optional
 
 __all__ = ["Mainframe"]
-
-
 
 class Mainframe:
     address: str
@@ -74,13 +72,14 @@ class Mainframe:
     def report(self, block_info: BlockDict, msg: dict) -> mqtt.MQTTMessageInfo:
         return self.client.publish("report", dumps({**block_info, **msg}), qos=1)
     
-    def notify_executor_ready(self, session_id: str, executor_name: str, package: str | None, identifier: str | None) -> None:
+    def notify_executor_ready(self, session_id: str, package: str | None, identifier: str | None, debug_port: int | None) -> None:
         self.client.publish(f"session/{session_id}", dumps({
             "type": "ExecutorReady",
             "session_id": session_id,
-            "executor_name": executor_name,
+            "executor_name": EXECUTOR_NAME,
             "package": package,
             "identifier": identifier,
+            "debug_port": debug_port,
         }), qos=1)
 
     def notify_block_ready(self, session_id: str, job_id: str) -> dict:

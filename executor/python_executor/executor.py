@@ -49,7 +49,7 @@ def config_logger(session_id: str, identifier: str | None, output: Literal["cons
     logger.propagate = False
 
 
-async def run_executor(address: str, session_id: str, tmp_dir: str, package: str | None, session_dir: str, identifier: str | None = None):
+async def run_executor(address: str, session_id: str, tmp_dir: str, package: str | None, session_dir: str, identifier: str | None = None, debug_port: int | None = None):
 
     if identifier is not None:
         mainframe = Mainframe(address, f"python-executor-id-{identifier}", logger)
@@ -146,7 +146,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
     mainframe.subscribe(exit_report_topic(), service_exit)
     mainframe.subscribe(status_report_topic(), service_status)
 
-    mainframe.notify_executor_ready(session_id, EXECUTOR_NAME, package, identifier)
+    mainframe.notify_executor_ready(session_id, package, identifier, debug_port)
 
     async def spawn_service(message: ServiceExecutePayload, service_hash: str):
         logger.info(f"create new service {message.get('dir')}")
@@ -256,6 +256,7 @@ def main():
     if len(unknown_args) > 0:
         logger.warning(f"receive unknown args: {unknown_args}")
 
+    debug_port = None
     if namespace.debug_port is not None and namespace.debug_port.isdigit():
         try:
             import debugpy
@@ -265,12 +266,17 @@ def main():
                 logger.info("wait for client to connect")
                 debugpy.wait_for_client()
                 logger.info("client connected")
+            debug_port = int(namespace.debug_port)
         except ImportError:
             logger.warning("Warning: debugpy not installed, debugging functionality will not be available")
+            debug_port = None
         except Exception as e:
             logger.warning(f"Warning: debugpy listen failed: {e}")
+            debug_port = None
+    else:
+        debug_port = None
 
-    run_async_code(run_executor(address=address, tmp_dir=tmp_dir, session_id=session_id, package=package, session_dir=session_dir, identifier=identifier))
+    run_async_code(run_executor(address=address, tmp_dir=tmp_dir, session_id=session_id, package=package, session_dir=session_dir, identifier=identifier, debug_port=debug_port))
 
 if __name__ == '__main__':
     main()

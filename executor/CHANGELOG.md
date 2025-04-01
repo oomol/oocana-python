@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.3](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.2...oocana-python-executor@0.16.3) (2025-04-01)
+
+
+### Features
+
+* use executor ready give debug info ([#327](https://github.com/oomol/oocana-python/issues/327)) ([2fc15df](https://github.com/oomol/oocana-python/commit/2fc15dfd139f9d13021b69c3ad056663f2e1b968))
+
+
+### Bug Fixes
+
+* plotly and matplotlib is different module with no effect ([#329](https://github.com/oomol/oocana-python/issues/329)) ([5a49824](https://github.com/oomol/oocana-python/commit/5a498242db912d456298eadce2b1f1d2e22bce10))
+
 ## [0.16.2](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.1...oocana-python-executor@0.16.2) (2025-03-31)
 
 

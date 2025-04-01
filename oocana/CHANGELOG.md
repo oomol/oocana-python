@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.3](https://github.com/oomol/oocana-python/compare/oocana@0.16.2...oocana@0.16.3) (2025-04-01)
+
+
+### Features
+
+* use executor ready give debug info ([#327](https://github.com/oomol/oocana-python/issues/327)) ([2fc15df](https://github.com/oomol/oocana-python/commit/2fc15dfd139f9d13021b69c3ad056663f2e1b968))
+
 ## [0.16.2](https://github.com/oomol/oocana-python/compare/oocana@0.16.1...oocana@0.16.2) (2025-03-31)
 
 

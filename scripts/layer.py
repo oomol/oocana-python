@@ -61,7 +61,10 @@ def main():
             print("Layer already contains python_executor")
             return
         
-        create_executor()
+        r = create_executor()
+        if r is False:
+            print("Error creating python executor")
+            return
         rootfs.append("python_executor")
         data["base_rootfs"] = rootfs
         print(f"Updated layer data: {json.dumps(data)}")
@@ -70,7 +73,10 @@ def main():
             json.dump(data, f)
     else:
         print("Layer not found")
-        create_executor()
+        r = create_executor()
+        if r is False:
+            print("Error creating python executor")
+            return
         
         layer_path.parent.mkdir(parents=True, exist_ok=True)
         

@@ -90,6 +90,24 @@ describe(
       }
     });
 
+    it("run matplotlib flow", async () => {
+      files.delete("matplotlib");
+      if (await isPackageLayerEnable()) {
+        const { code, events } = await run("matplotlib");
+        expect(code).toBe(0);
+        events.find(e => e.event === "BlockPreview");
+      }
+    });
+
+    it("run plot flow", async () => {
+      files.delete("plot");
+      if (await isPackageLayerEnable()) {
+        const { code, events } = await run("plot");
+        expect(code).toBe(0);
+        events.find(e => e.event === "BlockPreview");
+      }
+    });
+
     it("run tmp-dir flow", async () => {
       files.delete("tmp-dir");
       const { code } = await run("tmp-dir");

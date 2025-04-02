@@ -1,0 +1,8 @@
+executor:
+  name: python
+  options:
+    entry: __init__.py
+inputs_def:
+  []
+outputs_def:
+  []

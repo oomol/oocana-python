@@ -1,0 +1,5 @@
+nodes:
+  - task: plotly::plotly
+    node_id: plotly#1
+    inputs_from:
+      []

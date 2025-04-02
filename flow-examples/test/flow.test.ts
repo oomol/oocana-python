@@ -95,7 +95,7 @@ describe(
       if (await isPackageLayerEnable()) {
         const { code, events } = await run("matplotlib");
         expect(code).toBe(0);
-        events.find(e => e.event === "BlockPreview");
+        expect(events.find(e => e.event === "BlockPreview")).toBeDefined();
       }
     });
 
@@ -104,7 +104,7 @@ describe(
       if (await isPackageLayerEnable()) {
         const { code, events } = await run("plot");
         expect(code).toBe(0);
-        events.find(e => e.event === "BlockPreview");
+        expect(events.find(e => e.event === "BlockPreview")).toBeDefined();
       }
     });
 

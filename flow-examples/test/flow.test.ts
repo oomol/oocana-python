@@ -99,10 +99,10 @@ describe(
       }
     });
 
-    it("run plot flow", async () => {
-      files.delete("plot");
+    it("run plotly flow", async () => {
+      files.delete("plotly");
       if (await isPackageLayerEnable()) {
-        const { code, events } = await run("plot");
+        const { code, events } = await run("plotly");
         expect(code).toBe(0);
         expect(events.find(e => e.event === "BlockPreview")).toBeDefined();
       }

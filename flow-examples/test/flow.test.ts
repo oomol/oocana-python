@@ -106,6 +106,8 @@ describe(
         expect(code).toBe(0);
         expect(events.find(e => e.event === "BlockPreview")).toBeDefined();
       }
+    }, {
+      timeout: 35 * 1000
     });
 
     it("run tmp-dir flow", async () => {

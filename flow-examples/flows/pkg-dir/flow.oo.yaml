@@ -1,0 +1,24 @@
+nodes:
+  - task:
+      ui:
+        default_width: 450
+      inputs_def:
+        - handle: input
+          description: Input
+          json_schema:
+            type: string
+      outputs_def:
+        - handle: output
+          description: Output
+          json_schema:
+            type: string
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#1.py
+    title: "Python #1"
+    icon: ":logos:python:"
+    node_id: +python#1
+    inputs_from:
+      - handle: input
+        value: "11"

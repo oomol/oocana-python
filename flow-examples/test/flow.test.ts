@@ -115,6 +115,12 @@ describe(
       const { code } = await run("tmp-dir");
       expect(code).toBe(0);
     });
+
+    it("run pkg-dir flow", async () => {
+      files.delete("pkg-dir");
+      const { code } = await run("pkg-dir");
+      expect(code).toBe(0);
+    });
   }
 );
 

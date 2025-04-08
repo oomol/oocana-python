@@ -73,6 +73,9 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
         sys.path.append("/app/workspace")
 
     package_name = os.path.basename(package) if package is not None else "workspace"
+    pkg_dir: str = os.environ.get("OOCANA_PKG_DIR") # type: ignore
+    if pkg_dir is None:
+        logger.warning("OOCANA_PKG_DIR not set, maybe cause some error")
 
 
     def not_current_session(message):
@@ -213,12 +216,12 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
             else:
                 if not_current_session(message):
                     continue
-                run_block_in_new_thread(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name)
+                run_block_in_new_thread(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name, pkg_dir=pkg_dir)
 
-def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str, tmp_dir: str, package_name: str):
+def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str):
 
     async def run():
-        await run_block(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name)
+        await run_block(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name, pkg_dir=pkg_dir)
     run_in_new_thread(run)
 
 def main():

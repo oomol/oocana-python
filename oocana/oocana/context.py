@@ -42,9 +42,10 @@ class Context:
     __tmp_dir: str
     __package_name: str | None = None
     _logger: Optional[logging.Logger] = None
+    __pkg_dir: str
 
     def __init__(
-        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, session_dir: str, tmp_dir: str, package_name: str
+        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str
     ) -> None:
 
         self.__block_info = blockInfo
@@ -61,6 +62,7 @@ class Context:
         self.__session_dir = session_dir
         self.__tmp_dir = tmp_dir
         self.__package_name = package_name
+        self.__pkg_dir = pkg_dir
 
     @property
     def logger(self) -> logging.Logger:
@@ -89,6 +91,12 @@ class Context:
         """a temporary directory for the current package, all blocks in the this package will share the same directory. this directory will be cleaned if this session finish successfully, otherwise it will be kept for debugging or other purpose.
         """
         return os.path.join(self.__tmp_dir, self.__package_name) if self.__package_name else self.__tmp_dir
+
+    @property
+    def pkg_dir(self) -> str:
+        """a directory for the current package, all blocks in the this package will share the same directory. this directory will be cleaned if this session finish successfully, otherwise it will be kept for debugging or other purpose.
+        """
+        return self.__pkg_dir
 
     @property
     def keepAlive(self):

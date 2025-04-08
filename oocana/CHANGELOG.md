@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.4](https://github.com/oomol/oocana-python/compare/oocana@0.16.3...oocana@0.16.4) (2025-04-08)
+
+
+### Features
+
+* pkg dir ([#331](https://github.com/oomol/oocana-python/issues/331)) ([c45caf2](https://github.com/oomol/oocana-python/commit/c45caf2de16b01c79939a811c0b0d19b34fe5eb1))
+
 ## [0.16.3](https://github.com/oomol/oocana-python/compare/oocana@0.16.2...oocana@0.16.3) (2025-04-01)
 
 

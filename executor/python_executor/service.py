@@ -41,6 +41,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
     _session_dir: str
     _topic_params: ServiceTopicParams
     _report_timer: Timer | None = None
+    __pkg_dir: str
 
     _runningBlocks = set()
     _jobs = set()
@@ -56,6 +57,9 @@ class ServiceRuntime(ServiceContextAbstractClass):
             "service_hash": service_hash,
             "session_id": session_id
         }
+        self.__pkg_dir = os.environ.get("OOCANA_PKG_DIR") # type: ignore
+        if self.__pkg_dir is None:
+            logging.warning("OOCANA_PKG_DIR not set, maybe cause some error")
 
         self._stop_at = config.get("service_executor").get("stop_at") if config.get("service_executor") is not None and config.get("service_executor").get("stop_at") is not None else "session_end"
         self._keep_alive = config.get("service_executor").get("keep_alive") if config.get("service_executor") is not None else None
@@ -179,7 +183,7 @@ class ServiceRuntime(ServiceContextAbstractClass):
         self._runningBlocks.add(job_id)
         self._jobs.add(job_id)
 
-        context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"], self._session_dir, tmp_dir=self._session_dir, package_name=service_hash) # TODO: tmp_dir need consider global service.
+        context = createContext(self._mainframe, payload["session_id"], payload["job_id"], self._store, payload["outputs"], self._session_dir, tmp_dir=self._session_dir, package_name=service_hash, pkg_dir=self.__pkg_dir) # TODO: tmp_dir need consider global service.
 
         if isinstance(self.block_handler, dict):
             handler = self.block_handler.get(block_name)

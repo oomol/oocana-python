@@ -13,6 +13,7 @@ from oocana import EXECUTOR_NAME
 from .matplot.oomol_matplot_helper import import_helper, add_matplot_module
 from typing import Literal
 from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams, ReportStatusPayload, exit_report_topic, status_report_topic
+import uuid
 
 logger = logging.getLogger(EXECUTOR_NAME)
 service_store: dict[str, Literal["launching", "running"]] = {}
@@ -51,10 +52,13 @@ def config_logger(session_id: str, identifier: str | None, output: Literal["cons
 
 async def run_executor(address: str, session_id: str, tmp_dir: str, package: str | None, session_dir: str, identifier: str | None = None, debug_port: int | None = None):
 
+    # The identifier represents the same executor environment, but the executor can have multiple instances. 
+    # To avoid conflicts in the mainframe (which can prevent other instances from connecting to the broker), 
+    # we append a random string to the identifier.
     if identifier is not None:
-        mainframe = Mainframe(address, f"python-executor-id-{identifier}", logger)
+        mainframe = Mainframe(address, f"python-executor-id-{identifier}-{session_id}-{uuid.uuid4().hex[:8]}", logger)
     else:
-        mainframe = Mainframe(address, f"python-executor-{session_id}", logger)
+        mainframe = Mainframe(address, f"python-executor-{session_id}-{uuid.uuid4().hex[:8]}", logger)
 
     mainframe.connect()
 

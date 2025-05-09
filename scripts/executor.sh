@@ -22,7 +22,7 @@ cp -r $(pwd)/executor/dist /tmp/executor
 
 sudo ovmlayer cp --mode host2layer /tmp/oocana $EXECUTOR:/python-executor
 sudo ovmlayer cp --mode host2layer /tmp/executor $EXECUTOR:/python-executor
-sudo ovmlayer cp --mode host2layer $(pwd)/scripts/install-python.sh $EXECUTOR:/install-python.sh
+sudo ovmlayer cp --mode host2layer $(pwd)/scripts/install-python.sh $EXECUTOR:/
 
 sudo ovmlayer merge -l $EXECUTOR -m $mp
 sudo ovmlayer run --all-devices --merged-point=$mp bash -c -i '/install-python.sh'

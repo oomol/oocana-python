@@ -8,7 +8,7 @@
     "@oomol/oocana": "latest"
   },
   "devDependencies": {
-    "@oomol/oocana-types": "^0.20.20",
+    "@oomol/oocana-types": "latest",
     "remitter": "^0.4.2",
     "tsc": "^2.0.4",
     "vitest": "^2.1.8"

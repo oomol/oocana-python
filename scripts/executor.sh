@@ -17,8 +17,8 @@ sudo ovmlayer create $EXECUTOR
 
 echo "current directory: $(pwd)"
 
-cp $(pwd)/oocana/dist /tmp/oocana
-cp $(pwd)/executor/dist /tmp/executor
+cp -r $(pwd)/oocana/dist /tmp/oocana
+cp -r $(pwd)/executor/dist /tmp/executor
 
 sudo ovmlayer cp --mode host2layer /tmp/oocana $EXECUTOR:/python-executor
 sudo ovmlayer cp --mode host2layer /tmp/executor $EXECUTOR:/python-executor

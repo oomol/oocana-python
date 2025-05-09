@@ -141,7 +141,7 @@ async function run(
 
   const task = await cli.runFlow({
     flowPath: path.join(__dirname, "flows", flow, "flow.oo.yaml"),
-    blockSearchPaths: [
+    searchPaths: [
       path.join(__dirname, "blocks"),
       path.join(__dirname, "packages"),
     ].join(","),

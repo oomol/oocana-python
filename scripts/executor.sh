@@ -17,12 +17,15 @@ sudo ovmlayer create $EXECUTOR
 
 echo "current directory: $(pwd)"
 
-sudo ovmlayer cp-layer $(pwd)/oocana/dist $EXECUTOR:/python-executor/oocana
-sudo ovmlayer cp-layer $(pwd)/executor/dist $EXECUTOR:/python-executor/executor
-sudo ovmlayer cp-layer $(pwd)/scripts/install-python.sh $EXECUTOR:/install-python.sh
+cp -r $(pwd)/oocana/dist /tmp/oocana
+cp -r $(pwd)/executor/dist /tmp/executor
 
-sudo ovmlayer merge $EXECUTOR : $mp
-sudo ovmlayer run --merged-point=$mp -- bash -c -i '/install-python.sh'
-sudo ovmlayer run --merged-point=$mp -- zsh -c -i 'pip install /python-executor/oocana/*.whl'
-sudo ovmlayer run --merged-point=$mp -- zsh -c -i 'pip install /python-executor/executor/*.whl'
+sudo ovmlayer cp --mode host2layer /tmp/oocana $EXECUTOR:/python-executor
+sudo ovmlayer cp --mode host2layer /tmp/executor $EXECUTOR:/python-executor
+sudo ovmlayer cp --mode host2layer $(pwd)/scripts/install-python.sh $EXECUTOR:/
+
+sudo ovmlayer merge -l $EXECUTOR -m $mp
+sudo ovmlayer run --all-devices --merged-point=$mp bash -c -i '/install-python.sh'
+sudo ovmlayer run --all-devices --merged-point=$mp zsh -c -i 'pip install /python-executor/oocana/*.whl'
+sudo ovmlayer run --all-devices --merged-point=$mp zsh -c -i 'pip install /python-executor/executor/*.whl'
 sudo ovmlayer unmerge $mp

@@ -8,13 +8,15 @@
         "mosquitto",
         "mqtt",
         "oocana",
+        "ovmlayer",
         "paho",
         "plotly",
         "pypi",
         "pyright",
         "pytest",
         "SIGALRM",
-        "userdata"
+        "userdata",
+        "venv"
     ],
     "python.analysis.typeCheckingMode": "basic",
     "yaml.schemas": {

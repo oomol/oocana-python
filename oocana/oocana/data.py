@@ -29,17 +29,10 @@ class JobDict(TypedDict):
     job_id: str
 
 class BlockDict(TypedDict):
-
-    try:
-        # NotRequired, Required was added in version 3.11
-        from typing import NotRequired, Required, TypedDict  # type: ignore
-    except ImportError:
-        from typing_extensions import NotRequired, Required, TypedDict
-
     session_id: str
     job_id: str
     stacks: list
-    block_path: NotRequired[str]
+    block_path: str | None # better to use NotRequired here, but it is not supported in python 3.10 and type_extensions requires high version, For compatibility, use None instead of NotRequired.
 
 # dataclass 默认字段必须一一匹配
 # 如果多一个或者少一个字段，就会报错。
@@ -84,7 +77,7 @@ class BlockInfo:
                 "session_id": self.session_id,
                 "job_id": self.job_id,
                 "stacks": self.stacks,
-            }
+            } # type: ignore[return-value]
 
         return {
             "session_id": self.session_id,

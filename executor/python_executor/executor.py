@@ -52,7 +52,9 @@ def config_logger(session_id: str, identifier: str | None, output: Literal["cons
 
 async def run_executor(address: str, session_id: str, tmp_dir: str, package: str | None, session_dir: str, identifier: str | None = None, debug_port: int | None = None):
 
-    # identifier means the same executor environment but executor can have multiple instances. we need add some random string to avoid mainframe conflict (conflict will make the other one cannot connect to broker)
+    # The identifier represents the same executor environment, but the executor can have multiple instances. 
+    # To avoid conflicts in the mainframe (which can prevent other instances from connecting to the broker), 
+    # we append a random string to the identifier.
     if identifier is not None:
         mainframe = Mainframe(address, f"python-executor-id-{identifier}-{session_id}-{uuid.uuid4().hex[:8]}", logger)
     else:

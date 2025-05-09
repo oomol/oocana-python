@@ -73,3 +73,19 @@ class TestData(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             json_dumps(block_info)
+
+    def test_dataclass_dumps_with_none(self):
+        block_info_dict = {
+            "session_id": "session_id_one",
+            "job_id": "job_id_one",
+            "stacks": ["stack1", "stack2"],
+            "block_path": None,
+            "extra": "extra"
+        }
+
+        block_info = data.BlockInfo(**block_info_dict)
+        serialize_block_info = data.dumps(block_info.block_dict())
+        self.assertEqual(serialize_block_info, '{"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"]}')
+
+        with self.assertRaises(TypeError):
+            json_dumps(block_info)

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.5](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.4...oocana-python-executor@0.16.5) (2025-05-09)
+
+
+### Bug Fixes
+
+* add random string to support multiple python executor instance with same info ([#336](https://github.com/oomol/oocana-python/issues/336)) ([d94ed58](https://github.com/oomol/oocana-python/commit/d94ed588bda9ba5ce9be5f537542ec655d2fa0fa))
+
 ## [0.16.4](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.3...oocana-python-executor@0.16.4) (2025-04-08)
 
 

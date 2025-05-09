@@ -31,6 +31,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     needs: skip
+    env:
+      OVMLAYER_LOG: /tmp/ovmlayer.log
     if: ${{ needs.skip.outputs.should_skip != 'true' }}
     steps:
       - uses: actions/checkout@v4

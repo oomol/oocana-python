@@ -68,6 +68,5 @@ jobs:
           name: oocana-logs
           path: |
             ~/.oocana/sessions/
-            /tmp/ovmlayer.log
           retention-days: 1
         if: failure()

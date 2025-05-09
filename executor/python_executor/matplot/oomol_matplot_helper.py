@@ -16,7 +16,7 @@ def setup_matplot(logger: Logger):
         import matplotlib # type: ignore
         matplotlib.use('module://matplotlib_oomol') # matplotlib_oomol.py 文件所在目录加入 PYTHONPATH
     except Exception as e:
-        logger.warning("import matplotlib failed", e)
+        logger.warning("import matplotlib failed")
         return
 
     # matplotlib 主题替换
@@ -26,7 +26,7 @@ def setup_matplot(logger: Logger):
         plt.style.use("classic" if os.getenv("OOMOL_COLOR_SCHEME", "dark") == "light" else "dark_background")
         plt.rcParams['font.sans-serif'] = ['Source Han Sans SC']
     except Exception as e:
-        logger.warning("matplotlib theme setup failed", e)
+        logger.warning("matplotlib theme setup failed")
 
 
 def setup_plotly(logger: Logger):
@@ -72,7 +72,7 @@ def setup_plotly(logger: Logger):
         renderers['oomol'] = OomolRenderer()
         renderers.default = 'oomol'
     except Exception as e:
-        logger.warning("import plotly failed", e)
+        logger.warning("import plotly failed")
 
 
 def import_helper(logger: Logger):

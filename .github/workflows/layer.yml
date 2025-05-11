@@ -79,12 +79,17 @@ jobs:
           cd flow-examples
           npm install
           npm run test
-      - name: upload logs
+      - name: upload oocana logs
         uses: actions/upload-artifact@v4
         with:
           name: oocana-logs
-          path: |
-            ~/.oocana/sessions/
-            /tmp/ovmlayer.log
+          path: ~/.oocana/sessions/
+          retention-days: 1
+        if: failure()
+      - name: upload layer logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovmlayer-logs
+          path: /tmp/ovmlayer.log
           retention-days: 1
         if: failure()

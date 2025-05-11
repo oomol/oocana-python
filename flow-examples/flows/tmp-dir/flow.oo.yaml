@@ -17,8 +17,12 @@ nodes:
         options:
           entry: scriptlets/+python#1.py
     title: "Python #1"
-    icon: ":logos:python:"
     node_id: +python#1
+    inputs_from:
+      - handle: input
+        value: "11"
+  - task: api::tmp
+    node_id: +python#2
     inputs_from:
       - handle: input
         value: "11"

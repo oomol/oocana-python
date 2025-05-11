@@ -145,7 +145,7 @@ async function run(
       path.join(__dirname, "blocks"),
       path.join(__dirname, "packages"),
     ].join(","),
-    bindPaths: [`src=${homedir()}/.oocana,dst=/root/.oocana`],
+    bindPaths: [`src=${homedir()}/.oocana,dst=/root/.oocana`, `src=${tmpdir()},dst=${tmpdir()}`],
     sessionId: flow,
     tempRoot: tmpdir(),
     debug: true,

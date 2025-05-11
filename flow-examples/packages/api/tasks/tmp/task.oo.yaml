@@ -1,0 +1,18 @@
+inputs_def:
+  - handle: input
+    description: Input
+    json_schema:
+      type: string
+outputs_def:
+  - handle: output
+    description: Output
+    json_schema:
+      type: string
+ui:
+  default_width: 450
+executor:
+  name: python
+  options:
+    spawn: false
+    entry: __init__.py
+icon: ":logos:python:"

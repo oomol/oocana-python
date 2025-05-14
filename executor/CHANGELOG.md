@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.6](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.5...oocana-python-executor@0.16.6) (2025-05-14)
+
+
+### Bug Fixes
+
+* support control character in secret ([#341](https://github.com/oomol/oocana-python/issues/341)) ([7b2af11](https://github.com/oomol/oocana-python/commit/7b2af1170e081609274f0fe4cb3337e5c18e2e53))
+
 ## [0.16.5](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.4...oocana-python-executor@0.16.5) (2025-05-09)
 
 

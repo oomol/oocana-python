@@ -3,7 +3,7 @@ from python_executor.secret import replace_secret, SECRET_FILE
 from oocana import InputHandleDef
 import json
 
-SECRET_VALUE = r'aaa_"bbb'
+SECRET_VALUE = 'aa\na_"bbb'
 SECRET_DAT = {
     "aaa": {
         "id": "019390cf-2a42-73dd-89ed-474ade0df7f5",

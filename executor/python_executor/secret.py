@@ -45,6 +45,8 @@ def replace_secret(
                 return value
         elif isinstance(value, dict):
             return {k: recursive_secret_replace(v) for k, v in value.items()}
+        elif isinstance(value, list):
+            return [recursive_secret_replace(v) for v in value]
         else:
             return value
         

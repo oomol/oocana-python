@@ -3,14 +3,14 @@ from oocana import InputHandleDef, FieldSchema, ObjectFieldSchema, ArrayFieldSch
 import logging
 import os
 import json
-import re
 from .data import EXECUTOR_NAME
+import re
 
 logger = logging.getLogger(EXECUTOR_NAME)
 SECRET_FILE =  os.path.expanduser("~") + "/app-config/oomol-secrets/secrets.json"
 
-# "${{OO_SECRET:type,name,key}}"，捕获组为 (type,name,key)
-SECRET_REGEX = r"\"\$\{\{OO_SECRET:([\S]+),([\S]+),([\S]+)\}\}\""
+# ${{OO_SECRET:type,name,key}}，捕获组为 (type,name,key)
+SECRET_REGEX = r"^\$\{\{OO_SECRET:([^,]+,[^,]+,[^,]+)\}\}$"
 
 def replace_secret(
     value: Any,
@@ -19,6 +19,8 @@ def replace_secret(
 ) -> Any:
     if not isinstance(value, dict):
         return value
+    
+    assert isinstance(value, dict)
     
     try:
         secretJson = json.load(open(SECRET_FILE))
@@ -29,16 +31,26 @@ def replace_secret(
         logger.error(f"secret file {SECRET_FILE} is not a valid json file")
         secretJson = None
 
-    string_value = json.dumps(value)
-    result = re.findall(SECRET_REGEX, string_value, re.MULTILINE)
-    if result:
-        if secretJson is None:
-            logger.error(f"secret file {SECRET_FILE} not found")
+    def recursive_secret_replace(value: Any) -> Any:
+        if isinstance(value, str):
+            r = re.match(SECRET_REGEX, value)
+            if r:
+                secret_path = r.group(1)
+                if secret_path:
+                    return get_secret(secret_path, secretJson)
+                else:
+                    logger.error(f"invalid secret path: {value}")
+                    return value
+            else:
+                return value
+        elif isinstance(value, dict):
+            return {k: recursive_secret_replace(v) for k, v in value.items()}
         else:
-            for r in result:
-                secret = get_secret(f"{r[0]},{r[1]},{r[2]}", secretJson).replace('"', '\\"')
-                string_value = string_value.replace(f"${{{{OO_SECRET:{r[0]},{r[1]},{r[2]}}}}}", secret)
-        value = json.loads(string_value)
+            return value
+        
+    # improve performance: use global regex to match secret path first
+    if secretJson is not None:
+        value = recursive_secret_replace(value)
     
     for k, v in value.items():
         input_def = root_def.get(k)

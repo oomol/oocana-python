@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.6](https://github.com/oomol/oocana-python/compare/oocana@0.16.5...oocana@0.16.6) (2025-05-15)
+
+
+### Features
+
+* **oocana:** context add host_endpoint property ([#343](https://github.com/oomol/oocana-python/issues/343)) ([84d86ba](https://github.com/oomol/oocana-python/commit/84d86babed7b4057f745d122e9906b4436136032))
+
 ## [0.16.5](https://github.com/oomol/oocana-python/compare/oocana@0.16.4...oocana@0.16.5) (2025-05-09)
 
 

@@ -148,7 +148,11 @@ class Context:
 
     @property
     def host_endpoint(self) -> str | None:
-        """a host endpoint, allowing containers to access services running on the host system. in cloud environment, it will be None.
+        """A host endpoint that allows containers to access services running on the host system.
+        
+        Returns:
+            str: The host endpoint if available.
+            None: If the application is running in a cloud environment where no host endpoint is defined.
         """
         return os.getenv("OO_HOST_ENDPOINT", None)
 

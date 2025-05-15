@@ -136,7 +136,7 @@ class Context:
             "api_key": os.getenv("OOMOL_LLM_API_KEY", ""),
             "models": os.getenv("OOMOL_LLM_MODELS", "").split(","),
         }
-    
+
     @property
     def host_info(self) -> HostInfo:
         """this is a dict contains the host information
@@ -145,7 +145,17 @@ class Context:
             "gpu_vendor": os.getenv("OOMOL_HOST_GPU_VENDOR", "unknown"),
             "gpu_renderer": os.getenv("OOMOL_HOST_GPU_RENDERER", "unknown"),
         }
-    
+
+    @property
+    def host_endpoint(self) -> str | None:
+        """A host endpoint that allows containers to access services running on the host system.
+        
+        Returns:
+            str: The host endpoint if available.
+            None: If the application is running in a cloud environment where no host endpoint is defined.
+        """
+        return os.getenv("OO_HOST_ENDPOINT", None)
+
     @property
     def is_done(self) -> bool:
         return self.__is_done

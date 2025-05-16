@@ -19,6 +19,9 @@ class DataFrame(Protocol):
     def to_dict(self, *args: Any, **kwargs: Any) -> Any:
         ...
 
+    def to_json(self, *args: Any, **kwargs: Any) -> Any:
+        ...
+
 @runtime_checkable
 class JsonAble(Protocol):
 
@@ -33,11 +36,11 @@ class ShapeDataFrame(DataFrame, Protocol):
         ...
 
 @runtime_checkable
-class PartialDataFrame(Protocol):
-    def head(self, *args: Any, **kwargs: Any) -> JsonAble:
+class PartialDataFrame(DataFrame):
+    def head(self, count: int) -> DataFrame:
         ...
     
-    def tail(self, *args: Any, **kwargs: Any) -> JsonAble:
+    def tail(self, count: int) -> DataFrame:
         ...
 
 class TablePreviewData(TypedDict):

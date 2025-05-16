@@ -287,11 +287,22 @@ class Context:
                         columns = ["", *columns]
 
                 elif isinstance(df, PartialDataFrame):
+                    need_add_index = not_default_index(df)
                     head_data = df.head(5).to_dict(orient='split')
                     columns = head_data.get("columns", [])
+
                     rows_head = head_data.get("data", [])
+                    if need_add_index:
+                        columns = ["", *columns]
+                        head_index = head_data.get("index", [])
+                        rows_head = [[head_index[i], *rows_head[i]] for i in range(len(rows_head))]
+                    
                     tail_data = df.tail(5).to_dict(orient='split')
                     rows_tail = tail_data.get("data", [])
+                    if need_add_index:
+                        tail_index = tail_data.get("index", [])
+                        rows_tail = [[tail_index[i], *rows_tail[i]] for i in range(len(rows_tail))]
+
                     rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail
                 else:

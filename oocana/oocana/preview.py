@@ -33,7 +33,7 @@ class ShapeDataFrame(DataFrame, Protocol):
         ...
 
 @runtime_checkable
-class PartialDataFrame(DataFrame):
+class PartialDataFrame(DataFrame, Protocol):
     def head(self, count: int) -> DataFrame:
         ...
     

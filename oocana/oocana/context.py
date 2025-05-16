@@ -265,6 +265,11 @@ class Context:
         )
     
     def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
+        def not_default_index(df: DataFrame) -> bool:
+            index = df.index.tolist()
+            default_index = list(range(len(df)))
+            return index != default_index
+
         if isinstance(payload, DataFrame):
             payload = { "type": "table", "data": payload }
 
@@ -276,6 +281,11 @@ class Context:
                     data = df.to_dict(orient='split')
                     columns = data.get("columns", [])
                     rows = data.get("data", [])
+                    if not_default_index(df):
+                        index = df.index.tolist()
+                        rows = [[index[i], *rows[i]] for i in range(len(rows))]
+                        columns = ["", *columns]
+
                 elif isinstance(df, PartialDataFrame):
                     data_columns = loads(df.head(5).to_json(orient='split'))
                     columns = data_columns.get("columns", [])

@@ -3,6 +3,11 @@ from typing import Any, TypedDict, List, Literal, TypeAlias, Union, Protocol, ru
 
 __all__ = ["PreviewPayload", "TablePreviewPayload", "TextPreviewPayload", "JSONPreviewPayload", "ImagePreviewPayload", "MediaPreviewPayload", "PandasPreviewPayload", "DefaultPreviewPayload"]
 
+@runtime_checkable
+class DataFrameIndex(Protocol):
+    def tolist(self) -> Any:
+        ...
+
 # this class is for pandas.DataFrame
 @runtime_checkable
 class DataFrame(Protocol):
@@ -13,7 +18,8 @@ class DataFrame(Protocol):
     def __dataframe__(self, *args: Any, **kwargs: Any) -> Any:
         ...
 
-    def index(self, *args: Any, **kwargs: Any) -> Any:
+    @property
+    def index(self) -> DataFrameIndex:
         ...
 
     def to_dict(self, orient: Literal["split"]) -> Any:

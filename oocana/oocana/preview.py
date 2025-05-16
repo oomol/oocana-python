@@ -7,25 +7,16 @@ __all__ = ["PreviewPayload", "TablePreviewPayload", "TextPreviewPayload", "JSONP
 @runtime_checkable
 class DataFrame(Protocol):
 
+    def __len__(self) -> int:
+        ...
+
     def __dataframe__(self, *args: Any, **kwargs: Any) -> Any:
         ...
 
     def index(self, *args: Any, **kwargs: Any) -> Any:
         ...
-    
-    def __len__(self) -> int:
-        ...
 
-    def to_dict(self, *args: Any, **kwargs: Any) -> Any:
-        ...
-
-    def to_json(self, *args: Any, **kwargs: Any) -> Any:
-        ...
-
-@runtime_checkable
-class JsonAble(Protocol):
-
-    def to_json(self, *args: Any, **kwargs: Any) -> Any:
+    def to_dict(self, orient: Literal["split"]) -> Any:
         ...
 
 @runtime_checkable

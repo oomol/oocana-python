@@ -287,10 +287,10 @@ class Context:
                         columns = ["", *columns]
 
                 elif isinstance(df, PartialDataFrame):
-                    head_data = loads(df.head(5).to_json(orient='split'))
+                    head_data = df.head(5).to_dict(orient='split')
                     columns = head_data.get("columns", [])
                     rows_head = head_data.get("data", [])
-                    tail_data = loads(df.tail(5).to_json(orient='split'))
+                    tail_data = df.tail(5).to_dict(orient='split')
                     rows_tail = tail_data.get("data", [])
                     rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail

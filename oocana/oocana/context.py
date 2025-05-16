@@ -265,6 +265,11 @@ class Context:
         )
     
     def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
+        def not_default_index(df: DataFrame) -> bool:
+            index = df.index.tolist()
+            default_index = list(range(len(df)))
+            return index != default_index
+
         if isinstance(payload, DataFrame):
             payload = { "type": "table", "data": payload }
 
@@ -276,12 +281,28 @@ class Context:
                     data = df.to_dict(orient='split')
                     columns = data.get("columns", [])
                     rows = data.get("data", [])
+                    if not_default_index(df):
+                        index = df.index.tolist()
+                        rows = [[index[i], *rows[i]] for i in range(len(rows))]
+                        columns = ["", *columns]
+
                 elif isinstance(df, PartialDataFrame):
-                    data_columns = loads(df.head(5).to_json(orient='split'))
-                    columns = data_columns.get("columns", [])
-                    rows_head = data_columns.get("data", [])
-                    data_tail = loads(df.tail(5).to_json(orient='split'))
-                    rows_tail = data_tail.get("data", [])
+                    need_add_index = not_default_index(df)
+                    head_data = df.head(5).to_dict(orient='split')
+                    columns = head_data.get("columns", [])
+
+                    rows_head = head_data.get("data", [])
+                    if need_add_index:
+                        columns = ["", *columns]
+                        head_index = head_data.get("index", [])
+                        rows_head = [[head_index[i], *rows_head[i]] for i in range(len(rows_head))]
+                    
+                    tail_data = df.tail(5).to_dict(orient='split')
+                    rows_tail = tail_data.get("data", [])
+                    if need_add_index:
+                        tail_index = tail_data.get("index", [])
+                        rows_tail = [[tail_index[i], *rows_tail[i]] for i in range(len(rows_tail))]
+
                     rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail
                 else:

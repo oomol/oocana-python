@@ -3,20 +3,26 @@ from typing import Any, TypedDict, List, Literal, TypeAlias, Union, Protocol, ru
 
 __all__ = ["PreviewPayload", "TablePreviewPayload", "TextPreviewPayload", "JSONPreviewPayload", "ImagePreviewPayload", "MediaPreviewPayload", "PandasPreviewPayload", "DefaultPreviewPayload"]
 
+@runtime_checkable
+class DataFrameIndex(Protocol):
+    def tolist(self) -> Any:
+        ...
+
 # this class is for pandas.DataFrame
 @runtime_checkable
 class DataFrame(Protocol):
 
+    def __len__(self) -> int:
+        ...
+
     def __dataframe__(self, *args: Any, **kwargs: Any) -> Any:
         ...
 
-    def to_dict(self, *args: Any, **kwargs: Any) -> Any:
+    @property
+    def index(self) -> DataFrameIndex:
         ...
 
-@runtime_checkable
-class JsonAble(Protocol):
-
-    def to_json(self, *args: Any, **kwargs: Any) -> Any:
+    def to_dict(self, orient: Literal["split"]) -> Any:
         ...
 
 @runtime_checkable
@@ -27,11 +33,11 @@ class ShapeDataFrame(DataFrame, Protocol):
         ...
 
 @runtime_checkable
-class PartialDataFrame(Protocol):
-    def head(self, *args: Any, **kwargs: Any) -> JsonAble:
+class PartialDataFrame(DataFrame, Protocol):
+    def head(self, count: int) -> DataFrame:
         ...
     
-    def tail(self, *args: Any, **kwargs: Any) -> JsonAble:
+    def tail(self, count: int) -> DataFrame:
         ...
 
 class TablePreviewData(TypedDict):

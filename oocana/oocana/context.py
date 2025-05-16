@@ -287,11 +287,11 @@ class Context:
                         columns = ["", *columns]
 
                 elif isinstance(df, PartialDataFrame):
-                    data_columns = loads(df.head(5).to_json(orient='split'))
-                    columns = data_columns.get("columns", [])
-                    rows_head = data_columns.get("data", [])
-                    data_tail = loads(df.tail(5).to_json(orient='split'))
-                    rows_tail = data_tail.get("data", [])
+                    head_data = loads(df.head(5).to_json(orient='split'))
+                    columns = head_data.get("columns", [])
+                    rows_head = head_data.get("data", [])
+                    tail_data = loads(df.tail(5).to_json(orient='split'))
+                    rows_tail = tail_data.get("data", [])
                     rows_dots = [["..."] * len(columns)]
                     rows = rows_head + rows_dots + rows_tail
                 else:

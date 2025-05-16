@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.7](https://github.com/oomol/oocana-python/compare/oocana@0.16.6...oocana@0.16.7) (2025-05-16)
+
+
+### Features
+
+* support named index dataframe ([#345](https://github.com/oomol/oocana-python/issues/345)) ([d0471af](https://github.com/oomol/oocana-python/commit/d0471af527ab06b048143f27b3b3ac00c85e6af8))
+
 ## [0.16.6](https://github.com/oomol/oocana-python/compare/oocana@0.16.5...oocana@0.16.6) (2025-05-15)
 
 

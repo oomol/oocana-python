@@ -22,6 +22,9 @@ class DataFrame(Protocol):
     def index(self) -> DataFrameIndex:
         ...
 
+    def to_json(self, orient: Literal["split"]) -> str:
+        ...
+
     def to_dict(self, orient: Literal["split"]) -> Any:
         ...
 

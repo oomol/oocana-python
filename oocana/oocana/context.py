@@ -278,7 +278,7 @@ class Context:
             if isinstance(df, ShapeDataFrame):
                 row_count = df.shape[0]
                 if row_count <= 10:
-                    data = df.to_dict(orient='split')
+                    data = loads(df.to_json(orient='split'))
                     columns = data.get("columns", [])
                     rows = data.get("data", [])
                     if not_default_index(df):
@@ -288,7 +288,7 @@ class Context:
 
                 elif isinstance(df, PartialDataFrame):
                     need_add_index = not_default_index(df)
-                    head_data = df.head(5).to_dict(orient='split')
+                    head_data = loads(df.head(5).to_json(orient='split'))
                     columns = head_data.get("columns", [])
 
                     rows_head = head_data.get("data", [])
@@ -297,7 +297,7 @@ class Context:
                         head_index = head_data.get("index", [])
                         rows_head = [[head_index[i], *rows_head[i]] for i in range(len(rows_head))]
                     
-                    tail_data = df.tail(5).to_dict(orient='split')
+                    tail_data = loads(df.tail(5).to_json(orient='split'))
                     rows_tail = tail_data.get("data", [])
                     if need_add_index:
                         tail_index = tail_data.get("index", [])

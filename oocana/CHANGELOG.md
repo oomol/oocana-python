@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.8](https://github.com/oomol/oocana-python/compare/oocana@0.16.7...oocana@0.16.8) (2025-05-17)
+
+
+### Bug Fixes
+
+* dataframe serialize ([#347](https://github.com/oomol/oocana-python/issues/347)) ([5b249ba](https://github.com/oomol/oocana-python/commit/5b249bae92d8817916094b4152e8797952bc5353))
+
 ## [0.16.7](https://github.com/oomol/oocana-python/compare/oocana@0.16.6...oocana@0.16.7) (2025-05-16)
 
 

@@ -287,7 +287,8 @@ class Context:
                         columns = ["", *columns]
 
                 elif isinstance(df, PartialDataFrame):
-                    need_add_index = not_default_index(df)
+                    need_add_index = False # TODO: some index is not begin with 0, current just always hide index
+                    # to_json will serialize some default json dumps not supported type like datetime, so we just use to_json for now.
                     head_data = loads(df.head(5).to_json(orient='split'))
                     columns = head_data.get("columns", [])
 

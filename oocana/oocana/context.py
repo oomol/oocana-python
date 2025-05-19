@@ -170,6 +170,64 @@ class Context:
     
     def __is_basic_type(self, value: Any) -> bool:
         return isinstance(value, (int, float, str, bool))
+    
+    def __wrap_output_value(self, handle: str, value: Any):
+        """
+        wrap the output value:
+        if the value is a var handle, store it in the store and return the reference.
+        if the value is a bin handle, store it in the store and return the reference.
+        if the handle is not defined in the block outputs schema, raise an ValueError.
+        otherwise, return the value.
+        :param handle: the handle of the output
+        :param value: the value of the output
+        :return: the wrapped value
+        """
+        # __outputs_def should never be None
+        if self.__outputs_def is None:
+            return value
+        
+        output_def = self.__outputs_def.get(handle)
+        if output_def is None:
+            raise ValueError(
+                f"Output handle key: [{handle}] is not defined in Block outputs schema."
+            )
+        
+        if output_def.is_var_handle() and not self.__is_basic_type(value):
+            ref = self.__store_ref(handle)
+            self.__store[ref] = value
+            var: VarValueDict = {
+                "__OOMOL_TYPE__": "oomol/var",
+                "value": asdict(ref)
+            }
+            return var
+        
+        if output_def.is_bin_handle():
+            if not isinstance(value, bytes):
+                self.send_warning(
+                    f"Output handle key: [{handle}] is defined as binary, but the value is not bytes."
+                )
+                return value
+            
+            bin_file = f"{self.session_dir}/binary/{self.session_id}/{self.job_id}/{handle}"
+            os.makedirs(os.path.dirname(bin_file), exist_ok=True)
+            try:
+                with open(bin_file, "wb") as f:
+                    f.write(value)
+            except IOError as e:
+                raise IOError(
+                    f"Output handle key: [{handle}] is defined as binary, but an error occurred while writing the file: {e}"
+                )
+
+            if os.path.exists(bin_file):
+                bin_value: BinValueDict = {
+                    "__OOMOL_TYPE__": "oomol/bin",
+                    "value": bin_file,
+                }
+                return bin_value
+            else:
+                raise IOError(
+                    f"Output handle key: [{handle}] is defined as binary, but the file is not written."
+                )
 
     def output(self, key: str, value: Any, done: bool = False):
         """
@@ -179,55 +237,19 @@ class Context:
         value: Any, the value of the output
         """
 
-        v = value
-
-        if self.__outputs_def is not None:
-            output_def = self.__outputs_def.get(key)
-            if (
-                output_def is not None and output_def.is_var_handle() and not self.__is_basic_type(value) # 基础类型即使是变量也不放进 store，直接作为 json 内容传递
-            ):
-                ref = self.__store_ref(key)
-                self.__store[ref] = value
-                d: VarValueDict = {
-                    "__OOMOL_TYPE__": "oomol/var",
-                    "value": asdict(ref)
-                }
-                v = d
-            elif output_def is not None and output_def.is_bin_handle():
-                if not isinstance(value, bytes):
-                    self.send_warning(
-                        f"Output handle key: [{key}] is defined as binary, but the value is not bytes."
-                    )
-                    return
-                
-                bin_file = f"{self.session_dir}/binary/{self.session_id}/{self.job_id}/{key}"
-                os.makedirs(os.path.dirname(bin_file), exist_ok=True)
-                try:
-                    with open(bin_file, "wb") as f:
-                        f.write(value)
-                except IOError as e:
-                    self.send_warning(
-                        f"Output handle key: [{key}] is defined as binary, but an error occurred while writing the file: {e}"
-                    )
-                    return
-
-                if os.path.exists(bin_file):
-                    bin_value: BinValueDict = {
-                        "__OOMOL_TYPE__": "oomol/bin",
-                        "value": bin_file,
-                    }
-                    v = bin_value
-                else:
-                    self.send_warning(
-                        f"Output handle key: [{key}] is defined as binary, but the file is not written."
-                    )
-                    return
-
-        # 如果传入 key 在输出定义中不存在，直接忽略，不发送数据。但是 done 仍然生效。
-        if self.__outputs_def is not None and self.__outputs_def.get(key) is None:
+        try:
+            wrap_value = self.__wrap_output_value(key, value)
+        except ValueError as e:
             self.send_warning(
-                f"Output handle key: [{key}] is not defined in Block outputs schema."
+                f"{e}"
             )
+            return
+        except IOError as e:
+            self.send_warning(
+                f"{e}"
+            )
+
+            # even value is not valid, we still need to send the output to the next block
             if done:
                 self.done()
             return
@@ -235,7 +257,7 @@ class Context:
         node_result = {
             "type": "BlockOutput",
             "handle": key,
-            "output": v,
+            "output": wrap_value,
             "done": done,
         }
         self.__mainframe.send(self.job_info, node_result)

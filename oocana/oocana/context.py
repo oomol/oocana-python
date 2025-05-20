@@ -229,7 +229,7 @@ class Context:
                     f"Output handle key: [{handle}] is defined as binary, but the file is not written."
                 )
 
-    def output(self, key: str, value: Any, done: bool = False):
+    def output(self, key: str, value: Any):
         """
         output the value to the next block
 
@@ -248,22 +248,14 @@ class Context:
             self.send_warning(
                 f"{e}"
             )
-
-            # even value is not valid, we still need to send the output to the next block
-            if done:
-                self.done()
             return
 
         node_result = {
             "type": "BlockOutput",
             "handle": key,
             "output": wrap_value,
-            "done": done,
         }
         self.__mainframe.send(self.job_info, node_result)
-
-        if done:
-            self.done()
     
     def outputs(self, map: Dict[str, Any]):
         """

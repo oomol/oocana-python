@@ -70,15 +70,13 @@ def load_module(file_path: str, source_dir=None):
 
 def output_return_object(obj, context: Context):
     if obj is None:
-        context.finish() if not context.is_done else None
+        context.finish()
     elif obj is context.keepAlive:
         pass
     elif isinstance(obj, dict):
-        for k, v in obj.items():
-            context.output(k, v)
-        context.finish() if not context.is_done else None
+        context.finish(result=obj)
     else:
-        context.finish(f"return object needs to be a dictionary, but get type: {type(obj)}")
+        context.finish(error=f"return object needs to be a dictionary, but get type: {type(obj)}")
 
 logger = logging.getLogger(EXECUTOR_NAME)
 
@@ -134,16 +132,16 @@ async def run_block(message, mainframe: Mainframe, session_dir: str, tmp_dir: st
         index_module = load_module(file_path, load_dir) # type: ignore
     except Exception:
         traceback_str = traceback.format_exc()
-        context.finish(traceback_str)
+        context.finish(error=traceback_str)
         return
     function_name: str = options.get("function") if payload.executor is not None and options.get("function") is not None else 'main' # type: ignore
     fn = index_module.__dict__.get(function_name)
 
     if fn is None:
-        context.finish(f"function {function_name} not found in {file_path}")
+        context.finish(error=f"function {function_name} not found in {file_path}")
         return
     if not callable(fn):
-        context.finish(f"{function_name} is not a function in {file_path}")
+        context.finish(error=f"{function_name} is not a function in {file_path}")
         return
 
     try:
@@ -171,19 +169,19 @@ async def run_block(message, mainframe: Mainframe, session_dir: str, tmp_dir: st
                     result = fn(context.inputs, context)
         except ExitFunctionException as e:
             if e.args[0] is not None:
-                context.finish("block call exit with message: " + str(e.args[0]))
+                context.finish(error="block call exit with message: " + str(e.args[0]))
             else:
                 context.finish()
         except Exception:
             traceback_str = traceback.format_exc()
 
         if traceback_str is not None:
-            context.finish(traceback_str)
+            context.finish(error=traceback_str)
         else:
             output_return_object(result, context)
     except Exception:
         traceback_str = traceback.format_exc()
-        context.finish(traceback_str)
+        context.finish(error=traceback_str)
     finally:
         logger.info(f"block {message.get('job_id')} done")
 

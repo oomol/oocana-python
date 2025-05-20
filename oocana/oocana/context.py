@@ -36,7 +36,6 @@ class Context:
     __block_info: BlockInfo
     __outputs_def: Dict[str, HandleDef]
     __store: Any
-    __is_done: bool = False
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
     __session_dir: str
     __tmp_dir: str
@@ -155,10 +154,6 @@ class Context:
             None: If the application is running in a cloud environment where no host endpoint is defined.
         """
         return os.getenv("OO_HOST_ENDPOINT", None)
-
-    @property
-    def is_done(self) -> bool:
-        return self.__is_done
 
     def __store_ref(self, handle: str):
         return StoreKey(
@@ -285,17 +280,20 @@ class Context:
 
         
 
-    def finish(self, error: str | None = None):
-        if self.__is_done:
-            self.send_warning("done has been called multiple times, will be ignored.")
-            return
-        self.__is_done = True
-        if error is None:
-            self.__mainframe.send(self.job_info, {"type": "BlockFinished"})
+    def finish(self, *, result: Dict[str, Any] | None = None, error: str | None = None):
+        """
+        finish the block, and send the result to oocana.
+        if error is not None, the block will be finished with error.
+        then if result is not None, the block will be finished with result.
+        lastly, if both error and result are None, the block will be finished without any result.
+        """
+
+        if error is not None:
+            self.__mainframe.send(self.job_info, {"type": "BlockFinished", "error": error})
+        elif result is not None:
+            self.__mainframe.send(self.job_info, {"type": "BlockFinished", "result": result})
         else:
-            self.__mainframe.send(
-                self.job_info, {"type": "BlockFinished", "error": error}
-            )
+            self.__mainframe.send(self.job_info, {"type": "BlockFinished"})
 
     def send_message(self, payload):
         self.__mainframe.report(

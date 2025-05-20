@@ -285,7 +285,7 @@ class Context:
 
         
 
-    def done(self, error: str | None = None):
+    def finish(self, error: str | None = None):
         if self.__is_done:
             self.send_warning("done has been called multiple times, will be ignored.")
             return

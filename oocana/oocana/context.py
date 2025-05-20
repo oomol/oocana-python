@@ -264,6 +264,34 @@ class Context:
 
         if done:
             self.done()
+    
+    def outputs(self, map: Dict[str, Any]):
+        """
+        output the value to the next block
+
+        map: Dict[str, Any], the key of the output, should be defined in the block schema output defs, the field name is handle
+        done: bool, if True, the block will be finished.
+        """
+
+        wrap_map = {}
+        for key, value in map.items():
+            try:
+                wrap_value = self.__wrap_output_value(key, value)
+                wrap_map[key] = wrap_value
+            except ValueError as e:
+                self.send_warning(
+                    f"{e}"
+                )
+            except IOError as e:
+                self.send_warning(
+                    f"{e}"
+                )
+        self.__mainframe.send(self.job_info, {
+            "type": "BlockOutputs",
+            "outputs": wrap_map,
+        })
+
+        
 
     def done(self, error: str | None = None):
         if self.__is_done:

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.9](https://github.com/oomol/oocana-python/compare/oocana@0.16.8...oocana@0.16.9) (2025-05-21)
+
+
+### Features
+
+* add extra llm types to oocana ([#350](https://github.com/oomol/oocana-python/issues/350)) ([74bd6d8](https://github.com/oomol/oocana-python/commit/74bd6d8bb74ce7fefb87cad64cd6aa19a9139080))
+
 ## [0.16.8](https://github.com/oomol/oocana-python/compare/oocana@0.16.7...oocana@0.16.8) (2025-05-17)
 
 

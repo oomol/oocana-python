@@ -49,7 +49,7 @@ jobs:
           sudo apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
           sudo apt-get update
           sudo apt-get install -y mosquitto
-      - uses: ./.github/actions/ovmlayer
+      - uses: oomol/oocana-rust/.github/actions/ovmlayer@main
         with:
           rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.3.0/amd64-rootfs.tar
           token: ${{ secrets.ACCESS_REPO }}

@@ -1,0 +1,53 @@
+name: "setup oocana-python"
+description: "setup oocana-python on ubuntu-latest with optional layer"
+inputs:
+  token:
+    description: "GitHub token"
+    required: true
+    default: ${{ github.token }}
+  create-layer:
+    description: "create layer"
+    required: false
+    default: "false"
+  ref:
+    description: "GitHub ref"
+    required: false
+    default: ""
+  path:
+    description: "GitHub path"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: oomol/oocana-python
+        path: ${{ inputs.path }}
+        ref: ${{ inputs.ref }}
+        token: ${{ inputs.token }}
+    - uses: pdm-project/setup-pdm@v4
+      with:
+        cache: true
+        python-version: "3.10"
+        python-version-file: ${{ inputs.path }}/pyproject.toml
+        cache-dependency-path: ${{ inputs.path }}/pdm.lock
+    - name: install dependencies
+      run: pdm install
+      shell: bash
+      working-directory: ${{ inputs.path }}
+    - name: build
+      run: pdm build
+      shell: bash
+      working-directory: ${{ inputs.path }}
+    - name: static check
+      run: pdm check
+      shell: bash
+      working-directory: ${{ inputs.path }}
+    - name: create-layer
+      if: ${{ inputs.create-layer != 'false' }}
+      run: |
+        python ./scripts/layer.py
+      shell: bash
+      working-directory: ${{ inputs.path }}

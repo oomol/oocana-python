@@ -1,0 +1,42 @@
+name: "setup oocana-python action"
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/oocana-python.yml"
+      - "scripts/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  action-test:
+    runs-on: ubuntu-latest
+    env:
+      OVMLAYER_LOG: /tmp/ovmlayer.log
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oomol/oocana-rust/.github/actions/ovmlayer@main
+        with:
+          rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.3.0/amd64-rootfs.tar
+          token: ${{ secrets.ACCESS_REPO }}
+      - name: setup oocana-python action without layer
+        uses: ./.github/actions/oocana-python
+        with:
+          ref: ${{ github.sha }}
+          path: "oocana-python"
+      - name: setup oocana-python action with layer
+        uses: ./.github/actions/oocana-python
+        with:
+          ref: ${{ github.sha }}
+          create-layer: "true"
+          path: "oocana-python"
+      - name: upload log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovmlayer-log
+          path: /tmp/ovmlayer.log

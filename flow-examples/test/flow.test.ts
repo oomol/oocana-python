@@ -47,7 +47,7 @@ describe(
 
       const output = events.find(e => e.event === "BlockOutput")?.data;
       expect(output).toBeDefined();
-      expect(output?.output).eq("output");
+      expect(output?.output, JSON.stringify(output)).eq("output");
 
       const outputs = events.find(e => e.event === "BlockOutputs")?.outputs;
       expect(outputs).toBeDefined();

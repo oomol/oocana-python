@@ -274,8 +274,8 @@ class Context:
                     f"{e}"
                 )
         self.__mainframe.send(self.job_info, {
-            "type": "BlockOutputMap",
-            "map": wrap_map,
+            "type": "BlockOutputs",
+            "outputs": wrap_map,
         })
 
         

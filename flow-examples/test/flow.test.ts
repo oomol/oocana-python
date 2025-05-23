@@ -40,6 +40,24 @@ describe(
       expect(code).toBe(0);
     });
 
+    it("run output flow", async () => {
+      files.delete("output");
+      const { code, events } = await run("output");
+      expect(code).toBe(0);
+
+      const output = events.find(e => e.event === "BlockOutput")?.data;
+      expect(output).toBeDefined();
+      expect(output?.output).eq("output");
+
+      const outputs = events.find(e => e.event === "BlockOutputs")?.outputs;
+      expect(outputs).toBeDefined();
+      expect(outputs["a"]).eq("outputs");
+
+      const result = events.find(e => e.event === "BlockFinished");
+      expect(result).toBeDefined();
+      expect(result?.a).eq("finished");
+    });
+
     it("run bin flow", async () => {
       files.delete("bin");
       const { code, events } = await run("bin");

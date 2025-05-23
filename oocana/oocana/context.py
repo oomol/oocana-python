@@ -294,7 +294,17 @@ class Context:
             wrap_result = {}
             if isinstance(result, dict):
                 for key, value in result.items():
-                    wrap_result[key] = self.__wrap_output_value(key, value)
+                    try:
+                        wrap_result[key] = self.__wrap_output_value(key, value)
+                    except ValueError as e:
+                        self.send_warning(
+                            f"Output handle key: [{key}] is not defined in Block outputs schema. {e}"
+                        )
+                    except IOError as e:
+                        self.send_warning(
+                            f"Output handle key: [{key}] is not defined in Block outputs schema. {e}"
+                        )
+
                 self.__mainframe.send(self.job_info, {"type": "BlockFinished", "result": wrap_result})
             else:
                 raise ValueError(

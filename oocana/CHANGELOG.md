@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.10](https://github.com/oomol/oocana-python/compare/oocana@0.16.9...oocana@0.16.10) (2025-05-23)
+
+
+### Features
+
+* add output and new finished field ([#354](https://github.com/oomol/oocana-python/issues/354)) ([d185d3e](https://github.com/oomol/oocana-python/commit/d185d3e8bfb92c80a4775beff3219bd2352852bf))
+
 ## [0.16.9](https://github.com/oomol/oocana-python/compare/oocana@0.16.8...oocana@0.16.9) (2025-05-21)
 
 

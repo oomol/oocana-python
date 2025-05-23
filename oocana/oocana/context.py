@@ -294,8 +294,7 @@ class Context:
             wrap_result = {}
             if isinstance(result, dict):
                 for key, value in result.items():
-                    if isinstance(value, bytes):
-                        wrap_result[key] = self.__wrap_output_value(key, value)
+                    wrap_result[key] = self.__wrap_output_value(key, value)
                 self.__mainframe.send(self.job_info, {"type": "BlockFinished", "result": wrap_result})
             else:
                 raise ValueError(

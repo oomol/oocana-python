@@ -252,18 +252,18 @@ class Context:
         }
         self.__mainframe.send(self.job_info, node_result)
     
-    def outputs(self, map: Dict[str, Any]):
+    def outputs(self, outputs: Dict[str, Any]):
         """
         output the value to the next block
 
         map: Dict[str, Any], the key of the output, should be defined in the block schema output defs, the field name is handle
         """
 
-        wrap_map = {}
-        for key, value in map.items():
+        values = {}
+        for key, value in outputs.items():
             try:
                 wrap_value = self.__wrap_output_value(key, value)
-                wrap_map[key] = wrap_value
+                values[key] = wrap_value
             except ValueError as e:
                 self.send_warning(
                     f"{e}"
@@ -274,7 +274,7 @@ class Context:
                 )
         self.__mainframe.send(self.job_info, {
             "type": "BlockOutputs",
-            "outputs": wrap_map,
+            "outputs": values,
         })
 
         

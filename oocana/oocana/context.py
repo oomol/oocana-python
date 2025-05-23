@@ -223,6 +223,7 @@ class Context:
                 raise IOError(
                     f"Output handle key: [{handle}] is defined as binary, but the file is not written."
                 )
+        return value
 
     def output(self, key: str, value: Any):
         """

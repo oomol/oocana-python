@@ -45,17 +45,18 @@ describe(
       const { code, events } = await run("output");
       expect(code).toBe(0);
 
-      const output = events.find(e => e.event === "BlockOutput")?.data;
-      expect(output).toBeDefined();
-      expect(output?.output, JSON.stringify(output)).eq("output");
+      const outputEvent = events.find(e => e.event === "BlockOutput")?.data;
+      expect(outputEvent).toBeDefined();
+      expect(outputEvent?.output, JSON.stringify(outputEvent)).eq("output");
 
-      const outputs = events.find(e => e.event === "BlockOutputs")?.data;
-      expect(outputs).toBeDefined();
-      expect(outputs["a"]).eq("outputs");
+      const outputsEvent = events.find(e => e.event === "BlockOutputs")?.data;
+      expect(outputsEvent).toBeDefined();
+      expect(outputsEvent?.outputs["a"]).eq("outputs");
 
-      const result = events.find(e => e.event === "BlockFinished");
-      expect(result).toBeDefined();
-      expect(result?.a).eq("finished");
+      const finishEvent = events.find(e => e.event === "BlockFinished")?.data;
+      expect(finishEvent).toBeDefined();
+      expect(finishEvent!.result, JSON.stringify(finishEvent)).toBeDefined();
+      expect(finishEvent!.result!["a"], JSON.stringify(finishEvent)).eq("finished");
     });
 
     it("run bin flow", async () => {

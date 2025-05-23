@@ -49,7 +49,7 @@ describe(
       expect(output).toBeDefined();
       expect(output?.output, JSON.stringify(output)).eq("output");
 
-      const outputs = events.find(e => e.event === "BlockOutputs")?.outputs;
+      const outputs = events.find(e => e.event === "BlockOutputs")?.data;
       expect(outputs).toBeDefined();
       expect(outputs["a"]).eq("outputs");
 

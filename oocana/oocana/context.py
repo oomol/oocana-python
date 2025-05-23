@@ -257,7 +257,6 @@ class Context:
         output the value to the next block
 
         map: Dict[str, Any], the key of the output, should be defined in the block schema output defs, the field name is handle
-        done: bool, if True, the block will be finished.
         """
 
         wrap_map = {}

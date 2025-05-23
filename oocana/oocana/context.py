@@ -291,7 +291,16 @@ class Context:
         if error is not None:
             self.__mainframe.send(self.job_info, {"type": "BlockFinished", "error": error})
         elif result is not None:
-            self.__mainframe.send(self.job_info, {"type": "BlockFinished", "result": result})
+            wrap_result = {}
+            if isinstance(result, dict):
+                for key, value in result.items():
+                    if isinstance(value, bytes):
+                        wrap_result[key] = self.__wrap_output_value(key, value)
+                self.__mainframe.send(self.job_info, {"type": "BlockFinished", "result": wrap_result})
+            else:
+                raise ValueError(
+                    f"result should be a dict, but got {type(result)}"
+                )
         else:
             self.__mainframe.send(self.job_info, {"type": "BlockFinished"})
 

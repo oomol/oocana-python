@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oomol/oocana-rust/.github/actions/ovmlayer@main
         with:
-          rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.3.0/amd64-rootfs.tar
+          rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.4.0/amd64-rootfs.tar
           token: ${{ secrets.ACCESS_REPO }}
       - name: setup oocana-python action without layer
         uses: ./.github/actions/oocana-python

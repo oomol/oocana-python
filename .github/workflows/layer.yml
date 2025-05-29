@@ -51,7 +51,7 @@ jobs:
           sudo apt-get install -y mosquitto
       - uses: oomol/oocana-rust/.github/actions/ovmlayer@main
         with:
-          rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.3.0/amd64-rootfs.tar
+          rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.4.0/amd64-rootfs.tar
           token: ${{ secrets.ACCESS_REPO }}
       - name: modify overlayfs # https://github.com/oomol/ovmlayer/issues/25
         run: |

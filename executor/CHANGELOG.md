@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.8](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.7...oocana-python-executor@0.16.8) (2025-06-05)
+
+
+### Bug Fixes
+
+* coroutine should not be terminated once the function has completed ([#357](https://github.com/oomol/oocana-python/issues/357)) ([a357fdb](https://github.com/oomol/oocana-python/commit/a357fdbe5e592ba60ee1e1203adb4dea20f07d68))
+
 ## [0.16.7](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.6...oocana-python-executor@0.16.7) (2025-05-23)
 
 

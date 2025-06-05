@@ -2,8 +2,7 @@ import threading
 import asyncio
 from typing import Callable, Awaitable, Any
 
-def run_async_code(async_func):
-
+def run_async_code(async_func: Awaitable[Any]):
     async def wrapper():
         await async_func
         pending = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]

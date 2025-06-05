@@ -2,14 +2,14 @@ import threading
 import asyncio
 from typing import Callable, Awaitable, Any
 
-def run_async_code(async_func):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+def run_async_code(async_func: Awaitable[Any]):
+    async def wrapper():
+        await async_func
+        pending = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+        if pending:
+            await asyncio.gather(*pending)
 
-    try:
-        loop.run_until_complete(async_func)
-    finally:
-        loop.close()
+    asyncio.run(wrapper())
 
 def run_async_code_and_loop(async_func):
     loop = asyncio.new_event_loop()

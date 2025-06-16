@@ -203,7 +203,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
         mainframe.publish(run_action_topic(params), message)
 
     while True:
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.1)  # Avoid busy waiting
         if not fs.empty():
             f = fs.get()
             message = await f

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.9](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.8...oocana-python-executor@0.16.9) (2025-06-16)
+
+
+### Features
+
+* reduce wait time ([#359](https://github.com/oomol/oocana-python/issues/359)) ([b9f2993](https://github.com/oomol/oocana-python/commit/b9f29938d74375806362a5e48226838af16cba7e))
+
 ## [0.16.8](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.7...oocana-python-executor@0.16.8) (2025-06-05)
 
 

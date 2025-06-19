@@ -106,6 +106,13 @@ class Context:
         return self.__inputs
 
     @property
+    def outputs_def(self):
+        outputs = {}
+        for k, v in self.__outputs_def.items():
+            outputs[k] = asdict(v)
+        return outputs
+
+    @property
     def session_id(self):
         return self.__block_info.session_id
 

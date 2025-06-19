@@ -11,11 +11,17 @@ class HandleDef:
     handle: str
     """The name of the handle. it should be unique in handle list."""
 
+    """The description of the handle. It is used to display in the UI."""
+    description: Optional[str] = None
+
     json_schema: Optional[FieldSchema] = None
     """The schema of the handle. It is used to validate the handle's content."""
 
-    name: Optional[str] = None
+    kind: Optional[str] = None
     """A alias of the handle's type name. It is used to display in the UI and connect to the other handle match"""
+
+    nullable: bool = False
+    """If the handle value can be None. If True, the handle can be None, otherwise it must have a value."""
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

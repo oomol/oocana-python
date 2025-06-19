@@ -11,8 +11,33 @@ from .preview import PreviewPayload, TablePreviewData, DataFrame, ShapeDataFrame
 from .data import EXECUTOR_NAME
 import os.path
 import logging
+import copy
 
-__all__ = ["Context"]
+__all__ = ["Context", "HandleDefDict"]
+
+class HandleDefDict(TypedDict):
+    """a dict that represents the handle definition, used in the block schema output and input defs.
+    """
+
+    handle: str
+    """the handle of the output, should be defined in the block schema output defs, the field name is handle
+    """
+
+    description: str | None
+    """the description of the output, should be defined in the block schema output defs, the field name is description
+    """
+
+    json_schema: Dict[str, Any] | None
+    """the schema of the output, should be defined in the block schema output defs, the field name is json_schema
+    """
+
+    kind: str | None
+    """the kind of the output, should be defined in the block schema output defs, the field name is kind
+    """
+
+    nullable: bool
+    """if the output can be None, should be defined in the block schema output defs, the field name is nullable
+    """
 
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
@@ -35,6 +60,7 @@ class Context:
 
     __block_info: BlockInfo
     __outputs_def: Dict[str, HandleDef]
+    __inputs_def: Dict[str, Any]
     __store: Any
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
     __session_dir: str
@@ -44,7 +70,7 @@ class Context:
     __pkg_dir: str
 
     def __init__(
-        self, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, outputs, session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str
+        self, *, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, inputs_def, outputs_def, session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str
     ) -> None:
 
         self.__block_info = blockInfo
@@ -54,10 +80,11 @@ class Context:
         self.__inputs = inputs
 
         outputs_defs = {}
-        if outputs is not None:
-            for k, v in outputs.items():
+        if outputs_def is not None:
+            for k, v in outputs_def.items():
                 outputs_defs[k] = HandleDef(**v)
         self.__outputs_def = outputs_defs
+        self.__inputs_def = inputs_def
         self.__session_dir = session_dir
         self.__tmp_dir = tmp_dir
         self.__package_name = package_name
@@ -104,6 +131,17 @@ class Context:
     @property
     def inputs(self):
         return self.__inputs
+    
+    @property
+    def inputs_def(self) -> Dict[str, HandleDefDict]:
+        return copy.deepcopy(self.__inputs_def) if self.__inputs_def is not None else {}
+
+    @property
+    def outputs_def(self) -> Dict[str, HandleDefDict]:
+        outputs = {}
+        for k, v in self.__outputs_def.items():
+            outputs[k] = asdict(v)
+        return outputs
 
     @property
     def session_id(self):

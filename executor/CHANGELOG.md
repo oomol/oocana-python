@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.10](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.9...oocana-python-executor@0.16.10) (2025-06-19)
+
+
+### Features
+
+* expose input output def ([#361](https://github.com/oomol/oocana-python/issues/361)) ([ad93b64](https://github.com/oomol/oocana-python/commit/ad93b64d533fdb0d9b1f7eb7f28b88faa71da451))
+
 ## [0.16.9](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.8...oocana-python-executor@0.16.9) (2025-06-16)
 
 

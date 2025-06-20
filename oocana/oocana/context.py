@@ -6,7 +6,7 @@ from .mainframe import Mainframe
 from typing import Dict, Any, TypedDict, Optional
 from base64 import b64encode
 from io import BytesIO
-from .throtter import throttle
+from .throttler import throttle
 from .preview import PreviewPayload, TablePreviewData, DataFrame, ShapeDataFrame, PartialDataFrame
 from .data import EXECUTOR_NAME
 import os.path

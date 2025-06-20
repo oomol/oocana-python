@@ -1,5 +1,5 @@
 import unittest
-from ..oocana.throtter import throttle
+from ..oocana.throttler import throttle
 import time
 class TestThrottle(unittest.TestCase):
     

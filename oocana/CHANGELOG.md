@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.12](https://github.com/oomol/oocana-python/compare/oocana@0.16.11...oocana@0.16.12) (2025-06-20)
+
+
+### Code Refactoring
+
+* move nullable to input handle ([#363](https://github.com/oomol/oocana-python/issues/363)) ([5a40a73](https://github.com/oomol/oocana-python/commit/5a40a73272e712f4df961d1c117d363126f9403f))
+
 ## [0.16.11](https://github.com/oomol/oocana-python/compare/oocana@0.16.10...oocana@0.16.11) (2025-06-19)
 
 

@@ -167,12 +167,21 @@ class Context:
     def oomol_llm_env(self) -> OOMOL_LLM_ENV:
         """this is a dict contains the oomol llm environment variables
         """
-        return {
+
+        oomol_llm_env: OOMOL_LLM_ENV = {
             "base_url": os.getenv("OOMOL_LLM_BASE_URL", ""),
             "base_url_v1": os.getenv("OOMOL_LLM_BASE_URL_V1", ""),
             "api_key": os.getenv("OOMOL_LLM_API_KEY", ""),
             "models": os.getenv("OOMOL_LLM_MODELS", "").split(","),
         }
+
+        for key, value in oomol_llm_env.items():
+            if value == "" or value == []:
+                self.send_warning(
+                    f"OOMOL_LLM_ENV variable {key} is ({value}), this may cause some features not working properly."
+                )
+
+        return oomol_llm_env
 
     @property
     def host_info(self) -> HostInfo:

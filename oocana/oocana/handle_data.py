@@ -20,9 +20,6 @@ class HandleDef:
     kind: Optional[str] = None
     """A alias of the handle's type name. It is used to display in the UI and connect to the other handle match"""
 
-    nullable: bool = False
-    """If the handle value can be None. If True, the handle can be None, otherwise it must have a value."""
-
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
@@ -56,6 +53,9 @@ class InputHandleDef(HandleDef):
     value: Optional[Any] = None
     """default value for input handle, can be None.
     """
+
+    nullable: bool = False
+    """If the handle value can be None. If True, the handle can be None, otherwise it must have a value."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

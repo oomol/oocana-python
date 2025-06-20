@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.13](https://github.com/oomol/oocana-python/compare/oocana@0.16.12...oocana@0.16.13) (2025-06-20)
+
+
+### Features
+
+* warning when llm env has empty value ([#365](https://github.com/oomol/oocana-python/issues/365)) ([8f32404](https://github.com/oomol/oocana-python/commit/8f3240440ac0d19c718390dd196908bb0cb879e7))
+
 ## [0.16.12](https://github.com/oomol/oocana-python/compare/oocana@0.16.11...oocana@0.16.12) (2025-06-20)
 
 

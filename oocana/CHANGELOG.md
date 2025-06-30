@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.14](https://github.com/oomol/oocana-python/compare/oocana@0.16.13...oocana@0.16.14) (2025-06-30)
+
+
+### Features
+
+* output def also support nullable ([#368](https://github.com/oomol/oocana-python/issues/368)) ([646a709](https://github.com/oomol/oocana-python/commit/646a70974868907c86947ac22793dc3a1b041886))
+
 ## [0.16.13](https://github.com/oomol/oocana-python/compare/oocana@0.16.12...oocana@0.16.13) (2025-06-20)
 
 

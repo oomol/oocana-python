@@ -203,24 +203,22 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
         mainframe.publish(run_action_topic(params), message)
 
     while True:
-        await asyncio.sleep(0.1)  # Avoid busy waiting
-        if not fs.empty():
-            f = fs.get()
-            message = await f
-            if message.get("service_executor") is not None:
-                service_hash = message.get("service_hash")
-                status = service_store.get(service_hash)
-                if status is None:
-                    asyncio.create_task(spawn_service(message, service_hash))
-                elif status == "running":
-                    run_service_block(message)
-                elif status == "launching":
-                    logger.info(f"service {service_hash} is launching, set message back to fs to wait next time")
-                    fs.put(f)
-            else:
-                if not_current_session(message):
-                    continue
-                run_block_in_new_thread(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name, pkg_dir=pkg_dir)
+        f = fs.get()
+        message = await f
+        if message.get("service_executor") is not None:
+            service_hash = message.get("service_hash")
+            status = service_store.get(service_hash)
+            if status is None:
+                asyncio.create_task(spawn_service(message, service_hash))
+            elif status == "running":
+                run_service_block(message)
+            elif status == "launching":
+                logger.info(f"service {service_hash} is launching, set message back to fs to wait next time")
+                fs.put(f)
+        else:
+            if not_current_session(message):
+                continue
+            run_block_in_new_thread(message, mainframe, session_dir=session_dir, tmp_dir=tmp_dir, package_name=package_name, pkg_dir=pkg_dir)
 
 def run_block_in_new_thread(message, mainframe: Mainframe, session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str):
 

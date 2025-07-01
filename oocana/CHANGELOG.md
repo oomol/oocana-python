@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.15](https://github.com/oomol/oocana-python/compare/oocana@0.16.14...oocana@0.16.15) (2025-07-01)
+
+
+### Features
+
+* add additional handle ([#370](https://github.com/oomol/oocana-python/issues/370)) ([2cb3346](https://github.com/oomol/oocana-python/commit/2cb3346e76c1eede6cf7f83680cf49062a0a1ceb))
+
 ## [0.16.14](https://github.com/oomol/oocana-python/compare/oocana@0.16.13...oocana@0.16.14) (2025-06-30)
 
 

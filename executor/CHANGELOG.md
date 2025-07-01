@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.11](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.10...oocana-python-executor@0.16.11) (2025-07-01)
+
+
+### Code Refactoring
+
+* block until available ([#367](https://github.com/oomol/oocana-python/issues/367)) ([da85a4d](https://github.com/oomol/oocana-python/commit/da85a4d3b44ebc1c4e09155cd77252ae66c1ae1d))
+
 ## [0.16.10](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.9...oocana-python-executor@0.16.10) (2025-06-19)
 
 

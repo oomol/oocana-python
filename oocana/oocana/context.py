@@ -39,6 +39,10 @@ class HandleDefDict(TypedDict):
     """if the output can be None, should be defined in the block schema output defs, the field name is nullable
     """
 
+    is_additional: bool
+    """if the output is an additional output, should be defined in the block schema output defs, the field name is is_additional
+    """
+
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
         return self is value

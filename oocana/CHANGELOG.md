@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.16](https://github.com/oomol/oocana-python/compare/oocana@0.16.15...oocana@0.16.16) (2025-07-01)
+
+
+### Features
+
+* add is_additional type ([#373](https://github.com/oomol/oocana-python/issues/373)) ([8c23dff](https://github.com/oomol/oocana-python/commit/8c23dff42fe1b3d59060eb35eaabf8d48b31eb38))
+
 ## [0.16.15](https://github.com/oomol/oocana-python/compare/oocana@0.16.14...oocana@0.16.15) (2025-07-01)
 
 

@@ -91,7 +91,6 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
     # 目前的 mqtt 库，在 subscribe 回调里 publish 消息会导致死锁无法工作，参考 https://github.com/eclipse/paho.mqtt.python/issues/527 或者 https://stackoverflow.com/a/36964192/4770006
     # 通过这种方式来绕过，所有需要 callback 后 publish message 的情况，都需要使用 future 类似方式来绕过。
     fs = queue.Queue()
-    loop = asyncio.get_event_loop()
 
     def execute_block(message):
         if not_current_session(message):
@@ -108,9 +107,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
         job_set.add(job_id)
 
         nonlocal fs
-        f = loop.create_future()
-        fs.put(f)
-        f.set_result(message)
+        fs.put(message)
     
     def execute_service_block(message):
         if not_current_session(message):
@@ -119,10 +116,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
         if not_current_job(message):
             return
 
-        nonlocal fs
-        f = loop.create_future()
-        fs.put(f)
-        f.set_result(message)
+        fs.put(message)
 
     def service_exit(message: ReportStatusPayload):
         service_hash = message.get("service_hash")
@@ -203,8 +197,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
         mainframe.publish(run_action_topic(params), message)
 
     while True:
-        f = fs.get()
-        message = await f
+        message = fs.get()
         if message.get("service_executor") is not None:
             service_hash = message.get("service_hash")
             status = service_store.get(service_hash)
@@ -214,7 +207,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
                 run_service_block(message)
             elif status == "launching":
                 logger.info(f"service {service_hash} is launching, set message back to fs to wait next time")
-                fs.put(f)
+                fs.put(message)  
         else:
             if not_current_session(message):
                 continue

@@ -386,7 +386,7 @@ class Context:
             df = payload.get("data")
             if isinstance(df, ShapeDataFrame):
                 row_count = df.shape[0]
-                if row_count <= 10:
+                if row_count <= 200:
                     data = loads(df.to_json(orient='split'))
                     columns = data.get("columns", [])
                     rows = data.get("data", [])
@@ -398,7 +398,7 @@ class Context:
                 elif isinstance(df, PartialDataFrame):
                     need_add_index = False # TODO: some index is not begin with 0, current just always hide index
                     # to_json will serialize some default json dumps not supported type like datetime, so we just use to_json for now.
-                    head_data = loads(df.head(5).to_json(orient='split'))
+                    head_data = loads(df.head(200).to_json(orient='split'))
                     columns = head_data.get("columns", [])
 
                     rows_head = head_data.get("data", [])

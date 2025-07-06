@@ -376,7 +376,9 @@ class Context:
     
     def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
         random_str = secrets.token_hex(8)
-        csv_file = self.tmp_dir + f"/{self.job_id}/{random_str}.csv"
+        target_dir = os.path.join(self.tmp_dir, self.job_id)
+        os.makedirs(target_dir, exist_ok=True)
+        csv_file = os.path.join(target_dir, f"{random_str}.csv")
         if isinstance(payload, DataFrame):
             payload = { "type": "table", "data": payload.to_csv(path_or_buf=csv_file)}
 

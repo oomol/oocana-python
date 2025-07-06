@@ -380,12 +380,14 @@ class Context:
         os.makedirs(target_dir, exist_ok=True)
         csv_file = os.path.join(target_dir, f"{random_str}.csv")
         if isinstance(payload, DataFrame):
-            payload = { "type": "table", "data": payload.to_csv(path_or_buf=csv_file)}
+            payload.to_csv(path_or_buf=csv_file)
+            payload = { "type": "table", "data": csv_file}
 
         if isinstance(payload, dict) and payload.get("type") == "table":
             df = payload.get("data")
             if isinstance(df, ShapeDataFrame):
-                payload = { "type": "table", "data": df.to_csv(path_or_buf=csv_file)}
+                df.to_csv(path_or_buf=csv_file)
+                payload = { "type": "table", "data": csv_file }
             else:
                 print("dataframe is not support shape property")
         

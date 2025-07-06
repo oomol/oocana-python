@@ -13,6 +13,8 @@ import os.path
 import logging
 import copy
 import secrets
+import random
+import string
 
 __all__ = ["Context", "HandleDefDict"]
 
@@ -473,3 +475,24 @@ class Context:
 
     def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})
+
+    def run_block(self, block: str, inputs: Dict[str, Any]) -> None:
+        """
+        run a block with the given inputs.
+        :param block: the id of the block to run
+        :param inputs: the inputs of the block
+        """
+
+        def random_string(length=8):
+            return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+        # consider use uuid, remove job_id and block_job_id.
+        block_job_id = f"{self.job_id}-{block}-{random_string(8)}"
+        self.__mainframe.send(self.job_info, {
+            "type": "RunBlock",
+            "block": block,
+            "block_job_id": block_job_id,
+            "inputs": inputs,
+        })
+
+        

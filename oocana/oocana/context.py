@@ -1,3 +1,4 @@
+import asyncio
 from dataclasses import asdict
 from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
@@ -476,7 +477,7 @@ class Context:
     def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})
 
-    def run_block(self, block: str, inputs: Dict[str, Any]) -> None:
+    async def run_block(self, block: str, inputs: Dict[str, Any]) -> asyncio.Future[Dict[str, Any]]:
         """
         run a block with the given inputs.
         :param block: the id of the block to run
@@ -495,4 +496,20 @@ class Context:
             "inputs": inputs,
         })
 
-        
+        events = []
+
+        loop = asyncio.get_event_loop()
+        f = loop.create_future()
+
+
+        def run_block_callback(payload: Dict[str, Any]):
+
+            if payload.get("job_id") != block_job_id:
+                return
+            events.append(payload)
+            if payload.get("type") == "BlockFinished":
+                self.__mainframe.remove_report_callback(run_block_callback)
+                f.set_result(events)
+
+        self.__mainframe.add_report_callback(run_block_callback)
+        return f

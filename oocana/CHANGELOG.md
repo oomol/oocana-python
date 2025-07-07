@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.17](https://github.com/oomol/oocana-python/compare/oocana@0.16.16...oocana@0.16.17) (2025-07-07)
+
+
+### Features
+
+* increase max dataframe count ([#375](https://github.com/oomol/oocana-python/issues/375)) ([1d71cf7](https://github.com/oomol/oocana-python/commit/1d71cf7282679c849839972618201a5d00f773f4))
+* save dataframe to csv ([#378](https://github.com/oomol/oocana-python/issues/378)) ([472e8df](https://github.com/oomol/oocana-python/commit/472e8dfb31d4586cd986fe853a5c8b5d7c111346))
+
 ## [0.16.16](https://github.com/oomol/oocana-python/compare/oocana@0.16.15...oocana@0.16.16) (2025-07-01)
 
 

@@ -12,6 +12,7 @@ from .data import EXECUTOR_NAME
 import os.path
 import logging
 import copy
+import secrets
 
 __all__ = ["Context", "HandleDefDict"]
 
@@ -374,52 +375,19 @@ class Context:
         )
     
     def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
-        def not_default_index(df: DataFrame) -> bool:
-            index = df.index.tolist()
-            default_index = list(range(len(df)))
-            return index != default_index
-
+        random_str = secrets.token_hex(8)
+        target_dir = os.path.join(self.tmp_dir, self.job_id)
+        os.makedirs(target_dir, exist_ok=True)
+        csv_file = os.path.join(target_dir, f"{random_str}.csv")
         if isinstance(payload, DataFrame):
-            payload = { "type": "table", "data": payload }
+            payload.to_csv(path_or_buf=csv_file)
+            payload = { "type": "table", "data": csv_file}
 
         if isinstance(payload, dict) and payload.get("type") == "table":
             df = payload.get("data")
             if isinstance(df, ShapeDataFrame):
-                row_count = df.shape[0]
-                if row_count <= 10:
-                    data = loads(df.to_json(orient='split'))
-                    columns = data.get("columns", [])
-                    rows = data.get("data", [])
-                    if not_default_index(df):
-                        index = df.index.tolist()
-                        rows = [[index[i], *rows[i]] for i in range(len(rows))]
-                        columns = ["", *columns]
-
-                elif isinstance(df, PartialDataFrame):
-                    need_add_index = False # TODO: some index is not begin with 0, current just always hide index
-                    # to_json will serialize some default json dumps not supported type like datetime, so we just use to_json for now.
-                    head_data = loads(df.head(5).to_json(orient='split'))
-                    columns = head_data.get("columns", [])
-
-                    rows_head = head_data.get("data", [])
-                    if need_add_index:
-                        columns = ["", *columns]
-                        head_index = head_data.get("index", [])
-                        rows_head = [[head_index[i], *rows_head[i]] for i in range(len(rows_head))]
-                    
-                    tail_data = loads(df.tail(5).to_json(orient='split'))
-                    rows_tail = tail_data.get("data", [])
-                    if need_add_index:
-                        tail_index = tail_data.get("index", [])
-                        rows_tail = [[tail_index[i], *rows_tail[i]] for i in range(len(rows_tail))]
-
-                    rows_dots = [["..."] * len(columns)]
-                    rows = rows_head + rows_dots + rows_tail
-                else:
-                    print("dataframe more than 10 rows but not support head and tail is not supported")
-                    return payload
-                data: TablePreviewData = { "rows": rows, "columns": columns, "row_count": row_count }
-                payload = { "type": "table", "data": data }
+                df.to_csv(path_or_buf=csv_file)
+                payload = { "type": "table", "data": csv_file }
             else:
                 print("dataframe is not support shape property")
         

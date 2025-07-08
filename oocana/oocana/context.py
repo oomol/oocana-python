@@ -543,7 +543,7 @@ class Context:
         outputs_callbacks = set()
 
         # run_block will always run in a coroutine, so we can use asyncio.Future to wait for the result.
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         future: asyncio.Future[BlockFinishPayload] = loop.create_future()
 
         def run_block_callback(payload: Dict[str, Any]):

@@ -64,7 +64,7 @@ class RunResponse:
             raise ValueError("event_callback should be a callable function.")
         self.__events.add(fn)
 
-    async def finish(self) -> asyncio.Future[BlockFinishPayload]:
+    def finish(self) -> asyncio.Future[BlockFinishPayload]:
         return self.__finish_future
 
 class HandleDefDict(TypedDict):

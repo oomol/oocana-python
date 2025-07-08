@@ -40,7 +40,7 @@ class RunResponse:
     __events: set[Callable[[Dict[str, Any]], None]]
     __finish_future: asyncio.Future[BlockFinishPayload]
 
-    def __init__(self, event_callbacks: set[Callable[[Dict[str, Any]]]], outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future[BlockFinishPayload]) -> None:
+    def __init__(self, event_callbacks: set[Callable[[Dict[str, Any]], None]], outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future[BlockFinishPayload]) -> None:
         self.__outputs_callbacks = outputs_callbacks
         self.__events = event_callbacks
         self.__finish_future = future

@@ -523,7 +523,7 @@ class Context:
     def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})
 
-    async def run_block(self, block: str, inputs: Dict[str, Any]) -> RunResponse:
+    def run_block(self, block: str, inputs: Dict[str, Any]) -> RunResponse:
         """
         run a block with the given inputs.
         :param block: the id of the block to run
@@ -542,6 +542,7 @@ class Context:
         event_callbacks = set()
         outputs_callbacks = set()
 
+        # run_block will always run in a coroutine, so we can use asyncio.Future to wait for the result.
         loop = asyncio.get_event_loop()
         future: asyncio.Future[BlockFinishPayload] = loop.create_future()
 

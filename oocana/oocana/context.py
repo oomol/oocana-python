@@ -1,14 +1,13 @@
 import asyncio
 from dataclasses import asdict
-from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
-from .handle_data import HandleDef
 from .mainframe import Mainframe
+from .handle_data import HandleDef
 from typing import Dict, Any, TypedDict, Optional
 from base64 import b64encode
 from io import BytesIO
 from .throttler import throttle
-from .preview import PreviewPayload, TablePreviewData, DataFrame, ShapeDataFrame, PartialDataFrame
+from .preview import PreviewPayload, DataFrame, ShapeDataFrame
 from .data import EXECUTOR_NAME
 import os.path
 import logging

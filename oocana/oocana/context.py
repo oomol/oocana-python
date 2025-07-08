@@ -12,11 +12,13 @@ from .data import EXECUTOR_NAME
 import os.path
 import logging
 import copy
-import secrets
 import random
 import string
 
 __all__ = ["Context", "HandleDefDict"]
+
+def random_string(length=8):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 class HandleDefDict(TypedDict):
     """a dict that represents the handle definition, used in the block schema output and input defs.
@@ -377,10 +379,9 @@ class Context:
         )
     
     def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
-        random_str = secrets.token_hex(8)
         target_dir = os.path.join(self.tmp_dir, self.job_id)
         os.makedirs(target_dir, exist_ok=True)
-        csv_file = os.path.join(target_dir, f"{random_str}.csv")
+        csv_file = os.path.join(target_dir, f"{random_string(8)}.csv")
         if isinstance(payload, DataFrame):
             payload.to_csv(path_or_buf=csv_file)
             payload = { "type": "table", "data": csv_file}
@@ -482,9 +483,6 @@ class Context:
         :param block: the id of the block to run
         :param inputs: the inputs of the block
         """
-
-        def random_string(length=8):
-            return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
         # consider use uuid, remove job_id and block_job_id.
         block_job_id = f"{self.job_id}-{block}-{random_string(8)}"

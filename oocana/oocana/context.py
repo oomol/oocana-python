@@ -48,7 +48,7 @@ class RunResponse:
     def add_output_callback(self, fn: Callable[[str, Any], None]):
         """
         register a callback function to handle the output of the block.
-        :param fn: the callback function, it should accept a single argument, which is the output value.
+        :param fn: the callback function, it should accept two arguments, the first is the handle of the output, the second is the value of the output.
         """
         if not callable(fn):
             raise ValueError("output_callback should be a callable function.")
@@ -528,6 +528,11 @@ class Context:
         run a block with the given inputs.
         :param block: the id of the block to run
         :param inputs: the inputs of the block
+
+        Returns:
+            RunResponse: a RunResponse object, which contains the event callbacks and output callbacks.
+            You can use the `add_event_callback` and `add_output_callback` methods to register callbacks for the events and outputs of the block.
+            You can also use the `finish` method to wait for the block to finish and get the result.
         """
 
         # consider use uuid, remove job_id and block_job_id.

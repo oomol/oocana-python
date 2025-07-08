@@ -543,6 +543,7 @@ class Context:
             "block": block,
             "block_job_id": block_job_id,
             "inputs": inputs,
+            "stacks": self.__block_info.stacks,
         })
 
         event_callbacks = set()

@@ -1,0 +1,9 @@
+executor: 
+  name: python
+  options:
+    entry: "main.py"
+    function: main
+outputs_def:
+  - handle: a
+    json_schema:
+      contentMediaType: oomol/var

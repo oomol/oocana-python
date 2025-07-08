@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import uuid
 from .data import BlockDict, JobDict, dumps, EXECUTOR_NAME
 import logging
-from typing import Optional
+from typing import Optional, Callable, Any
 
 __all__ = ["Mainframe"]
 
@@ -16,6 +16,7 @@ class Mainframe:
     client_id: str
     _subscriptions: set[str] = set()
     _logger: logging.Logger
+    __report_callbacks: set[Callable[[Any], Any]] = set()
 
     def __init__(self, address: str, client_id: Optional[str] = None, logger = None) -> None:
         self.address = address
@@ -32,6 +33,19 @@ class Mainframe:
         client = self._setup_client()
         client.connect(host=url.hostname, port=url.port) # type: ignore
         client.loop_start()
+
+        def report_callback(_client, _userdata, message):
+            """Internal method to handle report messages and call registered callbacks."""
+            payload = loads(message.payload)
+            self._logger.info("Received report: {}".format(payload))
+            for callback in self.__report_callbacks:
+                try:
+                    callback(payload)
+                except Exception as e:
+                    self._logger.error("Error in report callback: {}".format(e))
+
+        self.client.message_callback_add("report", report_callback)
+        self._subscriptions.add("report")
     
     def _setup_client(self):
         self.client = mqtt.Client(
@@ -105,6 +119,21 @@ class Mainframe:
             if replay is not None:
                 self._logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
+
+
+    def add_report_callback(self, fn):
+        """Add a callback to be called when a report is received."""
+        if not callable(fn):
+            raise ValueError("Callback must be callable")
+        self.__report_callbacks.add(fn)
+
+    def remove_report_callback(self, fn):
+        """Remove a previously added report callback."""
+        if fn in self.__report_callbacks:
+            self.__report_callbacks.remove(fn)
+        else:
+            self._logger.warning("Callback not found in report callbacks")
+
             
     def publish(self, topic, payload):
         self.client.publish(topic, dumps(payload), qos=1)

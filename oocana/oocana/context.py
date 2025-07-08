@@ -1,20 +1,71 @@
+import asyncio
+from asyncio import events
 from dataclasses import asdict
-from json import loads
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
-from .handle_data import HandleDef
 from .mainframe import Mainframe
-from typing import Dict, Any, TypedDict, Optional
+from .handle_data import HandleDef
+from typing import Dict, Any, TypedDict, Optional, Callable
 from base64 import b64encode
 from io import BytesIO
 from .throttler import throttle
-from .preview import PreviewPayload, TablePreviewData, DataFrame, ShapeDataFrame, PartialDataFrame
+from .preview import PreviewPayload, DataFrame, ShapeDataFrame
 from .data import EXECUTOR_NAME
 import os.path
 import logging
 import copy
-import secrets
+import random
+import string
 
-__all__ = ["Context", "HandleDefDict"]
+__all__ = ["Context", "HandleDefDict", "RunResponse", "BlockFinishPayload"]
+
+def random_string(length=8):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+class BlockFinishPayload(TypedDict):
+    """
+    A payload that represents the block finish message.
+    """
+
+    result: Dict[str, Any] | None
+    """the result of the block, should be a dict, if the block has no result, this field should be None.
+    """
+
+    error: str | None
+    """the error message of the block, if the block has no error, this field should be None.
+    """
+
+class RunResponse:
+
+    __outputs_callbacks: set[Callable[[str, Any], None]]
+    __events: set[Callable[[Dict[str, Any]], None]]
+    __finish_future: asyncio.Future[BlockFinishPayload]
+
+    def __init__(self, event_callbacks: set[Callable[[Dict[str, Any]], None]], outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future[BlockFinishPayload]) -> None:
+        self.__outputs_callbacks = outputs_callbacks
+        self.__events = event_callbacks
+        self.__finish_future = future
+
+    def add_output_callback(self, fn: Callable[[str, Any], None]):
+        """
+        register a callback function to handle the output of the block.
+        :param fn: the callback function, it should accept two arguments, the first is the handle of the output, the second is the value of the output.
+        """
+        if not callable(fn):
+            raise ValueError("output_callback should be a callable function.")
+        self.__outputs_callbacks.add(fn)
+
+    # todo: add more detail about the event payload.
+    def add_event_callback(self, fn: Callable[[Dict[str, Any]], None]):
+        """
+        register a callback function to handle the events of the block.
+        :param fn: the callback function, it should accept a single argument, which is the event payload.
+        """
+        if not callable(fn):
+            raise ValueError("event_callback should be a callable function.")
+        self.__events.add(fn)
+
+    async def finish(self) -> asyncio.Future[BlockFinishPayload]:
+        return self.__finish_future
 
 class HandleDefDict(TypedDict):
     """a dict that represents the handle definition, used in the block schema output and input defs.
@@ -375,10 +426,9 @@ class Context:
         )
     
     def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
-        random_str = secrets.token_hex(8)
         target_dir = os.path.join(self.tmp_dir, self.job_id)
         os.makedirs(target_dir, exist_ok=True)
-        csv_file = os.path.join(target_dir, f"{random_str}.csv")
+        csv_file = os.path.join(target_dir, f"{random_string(8)}.csv")
         if isinstance(payload, DataFrame):
             payload.to_csv(path_or_buf=csv_file)
             payload = { "type": "table", "data": csv_file}
@@ -473,3 +523,64 @@ class Context:
 
     def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})
+
+    def run_block(self, block: str, inputs: Dict[str, Any]) -> RunResponse:
+        """
+        run a block with the given inputs.
+        :param block: the id of the block to run
+        :param inputs: the inputs of the block
+
+        Returns:
+            RunResponse: a RunResponse object, which contains the event callbacks and output callbacks.
+            You can use the `add_event_callback` and `add_output_callback` methods to register callbacks for the events and outputs of the block.
+            You can also use the `finish` method to wait for the block to finish and get the result.
+        """
+
+        # consider use uuid, remove job_id and block_job_id.
+        block_job_id = f"{self.job_id}-{block}-{random_string(8)}"
+        self.__mainframe.send(self.job_info, {
+            "type": "RunBlock",
+            "block": block,
+            "block_job_id": block_job_id,
+            "inputs": inputs,
+        })
+
+        event_callbacks = set()
+        outputs_callbacks = set()
+
+        # run_block will always run in a coroutine, so we can use asyncio.Future to wait for the result.
+        loop = asyncio.get_running_loop()
+        future: asyncio.Future[BlockFinishPayload] = loop.create_future()
+
+        def run_block_callback(payload: Dict[str, Any]):
+
+            if payload.get("job_id") != block_job_id:
+                return
+            elif payload.get("type") == "ExecutorReady" or payload.get("type") == "BlockReady" or payload.get("type") == "RunBlock":
+                # ignore these messages
+                return
+            for callback in event_callbacks:
+                callback(payload)
+
+            if payload.get("type") == "BlockOutput":
+                for callback in outputs_callbacks:
+                    callback(payload.get("handle"), payload.get("output"))
+            elif payload.get("type") == "BlockOutputs":
+                for handle, value in payload.get("outputs", {}).items():
+                    for callback in outputs_callbacks:
+                        callback(handle, value)
+            
+            if payload.get("type") == "BlockFinished":
+                result = payload.get("result")
+                if result is not None and not isinstance(result, dict):
+                    pass
+                elif result is not None:
+                    for handle, value in result.items():
+                        for callback in outputs_callbacks:
+                            callback(handle, value)
+
+                self.__mainframe.remove_report_callback(run_block_callback)
+                future.set_result({"result": payload.get("result"), "error": payload.get("error")})
+
+        self.__mainframe.add_report_callback(run_block_callback)
+        return RunResponse(event_callbacks, outputs_callbacks, future)

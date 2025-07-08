@@ -143,7 +143,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
 
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_block", execute_block)
     mainframe.subscribe(f"executor/{EXECUTOR_NAME}/run_service_block", execute_service_block)
-    mainframe.subscribe('report', report_message)
+    mainframe.add_report_callback(report_message)
     mainframe.subscribe(exit_report_topic(), service_exit)
     mainframe.subscribe(status_report_topic(), service_status)
 

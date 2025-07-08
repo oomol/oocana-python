@@ -34,6 +34,12 @@ describe(
       expect(code).toBe(0);
     });
 
+    it("run run-block flow", async () => {
+      files.delete("run-block");
+      const { code } = await run("run-block");
+      expect(code).toBe(0);
+    });
+
     it("run var flow", async () => {
       files.delete("var");
       const { code } = await run("var");

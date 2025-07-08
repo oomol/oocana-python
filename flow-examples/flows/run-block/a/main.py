@@ -2,7 +2,10 @@ from oocana import Context
 
 async def main(inputs, context: Context):
 
-    events = await context.run_block("blk_b", {"my_input": "111"})
-    context.log_json({"events": events})
+    run_res = context.run_block("blk_b", {"my_input": "111"})
+    run_res.add_event_callback(lambda payload: print("event callback", payload))
+    run_res.add_output_callback(lambda handle, value: print("output callback", handle, value))
+    res = await run_res.finish()
+    print("block finished with response:", res)
 
     return {"a": "a"}

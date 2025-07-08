@@ -54,6 +54,7 @@ class RunResponse:
             raise ValueError("output_callback should be a callable function.")
         self.__outputs_callbacks.add(fn)
 
+    # todo: add more detail about the event payload.
     def add_event_callback(self, fn: Callable[[Dict[str, Any]], None]):
         """
         register a callback function to handle the events of the block.

@@ -135,7 +135,7 @@ class Mainframe:
         
         if session_id not in self.__run_block_error_callbacks:
             self.__run_block_error_callbacks[session_id] = []
-            self.subscribe(f"run_block_error/{session_id}", lambda payload: [cb(payload) for cb in self.__run_block_error_callbacks[session_id].copy()])
+            self.subscribe(f"session/{session_id}/run_block/error", lambda payload: [cb(payload) for cb in self.__run_block_error_callbacks[session_id].copy()])
 
         self.__run_block_error_callbacks[session_id].append(callback)
 
@@ -145,7 +145,7 @@ class Mainframe:
             self.__run_block_error_callbacks[session_id].remove(callback)
             if len(self.__run_block_error_callbacks[session_id]) == 0:
                 del self.__run_block_error_callbacks[session_id]
-                self.unsubscribe(f"run_block_error/{session_id}")
+                self.unsubscribe(f"session/{session_id}/run_block/error")
         else:
             self._logger.warning("Callback not found in run block error callbacks for session: {}".format(session_id))
 

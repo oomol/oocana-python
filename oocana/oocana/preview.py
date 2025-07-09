@@ -75,6 +75,10 @@ class PandasPreviewPayload(TypedDict):
     type: Literal['table']
     data: DataFrame
 
+class CsvPreviewPayload(TypedDict):
+    type: Literal['csv']
+    data: str # csv file path
+
 class DefaultPreviewPayload:
     type: str
     data: Any
@@ -85,6 +89,7 @@ PreviewPayload: TypeAlias = Union[
     JSONPreviewPayload,
     ImagePreviewPayload,
     MediaPreviewPayload,
+    CsvPreviewPayload,
     DataFrame,
     PandasPreviewPayload,
     DefaultPreviewPayload

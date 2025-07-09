@@ -14,16 +14,20 @@ class Mainframe:
     address: str
     client: mqtt.Client
     client_id: str
-    _subscriptions: set[str] = set()
+    _subscriptions: set[str]
     _logger: logging.Logger
-    __report_callbacks: set[Callable[[Any], Any]] = set()
-    __session_callbacks: dict[str, list[Callable[[dict], Any]]] = {}
-    __run_block_error_callbacks: dict[str, list[Callable[[dict], Any]]] = {}
+    __report_callbacks: set[Callable[[Any], Any]]
+    __session_callbacks: dict[str, list[Callable[[dict], Any]]]
+    __run_block_error_callbacks: dict[str, list[Callable[[dict], Any]]]
 
     def __init__(self, address: str, client_id: Optional[str] = None, logger = None) -> None:
         self.address = address
         self.client_id = client_id or f"python-executor-{uuid.uuid4().hex[:8]}"
         self._logger = logger or logging.getLogger(__name__)
+        self._subscriptions = set()
+        self.__report_callbacks = set()
+        self.__session_callbacks = {}
+        self.__run_block_error_callbacks = {}
 
     def connect(self):
         connect_address = (

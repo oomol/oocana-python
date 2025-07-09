@@ -38,7 +38,9 @@ class Mainframe:
             """Internal method to handle report messages and call registered callbacks."""
             payload = loads(message.payload)
             self._logger.info("Received report: {}".format(payload))
-            for callback in self.__report_callbacks:
+            
+            callbacks = self.__report_callbacks.copy()
+            for callback in callbacks:
                 try:
                     callback(payload)
                 except Exception as e:

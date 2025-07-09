@@ -1,5 +1,4 @@
 import asyncio
-from asyncio import events
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .mainframe import Mainframe

@@ -28,9 +28,14 @@ test = { shell = "pdm run pytest ./oocana ./executor" }
 dev = [
     "-e oocana @ file:///${PROJECT_ROOT}/oocana",
     "-e oocana-python-executor @ file:///${PROJECT_ROOT}/executor",
-    "pyright>=1.1.370",
-    "pytest>=8.3.2",
 ]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.370",
+    "pytest>=8.3.2",
+    "debugpy>=1.8.14",
+]

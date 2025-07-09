@@ -560,6 +560,7 @@ class Context:
             elif payload.get("type") == "ExecutorReady" or payload.get("type") == "BlockReady" or payload.get("type") == "RunBlock":
                 # ignore these messages
                 return
+
             for callback in event_callbacks:
                 callback(payload)
 
@@ -570,8 +571,7 @@ class Context:
                 for handle, value in payload.get("outputs", {}).items():
                     for callback in outputs_callbacks:
                         callback(handle, value)
-            
-            if payload.get("type") == "BlockFinished":
+            elif payload.get("type") == "BlockFinished":
                 result = payload.get("result")
                 if result is not None and not isinstance(result, dict):
                     pass
@@ -581,7 +581,14 @@ class Context:
                             callback(handle, value)
 
                 self.__mainframe.remove_report_callback(run_block_callback)
-                future.set_result({"result": payload.get("result"), "error": payload.get("error")})
+
+                def set_future_result():
+                    if not future.done():
+                        future.set_result({"result": payload.get("result"), "error": payload.get("error")})
+                    self.__mainframe.remove_report_callback(run_block_callback)
+            
+                loop.call_soon_threadsafe(set_future_result)
+
 
         self.__mainframe.add_report_callback(run_block_callback)
         return RunResponse(event_callbacks, outputs_callbacks, future)

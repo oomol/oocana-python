@@ -14,14 +14,20 @@ class Mainframe:
     address: str
     client: mqtt.Client
     client_id: str
-    _subscriptions: set[str] = set()
+    _subscriptions: set[str]
     _logger: logging.Logger
-    __report_callbacks: set[Callable[[Any], Any]] = set()
+    __report_callbacks: set[Callable[[Any], Any]]
+    __session_callbacks: dict[str, list[Callable[[dict], Any]]]
+    __run_block_error_callbacks: dict[str, list[Callable[[dict], Any]]]
 
     def __init__(self, address: str, client_id: Optional[str] = None, logger = None) -> None:
         self.address = address
         self.client_id = client_id or f"python-executor-{uuid.uuid4().hex[:8]}"
         self._logger = logger or logging.getLogger(__name__)
+        self._subscriptions = set()
+        self.__report_callbacks = set()
+        self.__session_callbacks = {}
+        self.__run_block_error_callbacks = {}
 
     def connect(self):
         connect_address = (
@@ -38,7 +44,9 @@ class Mainframe:
             """Internal method to handle report messages and call registered callbacks."""
             payload = loads(message.payload)
             self._logger.info("Received report: {}".format(payload))
-            for callback in self.__report_callbacks:
+            
+            callbacks = self.__report_callbacks.copy()
+            for callback in callbacks:
                 try:
                     callback(payload)
                 except Exception as e:
@@ -119,6 +127,48 @@ class Mainframe:
             if replay is not None:
                 self._logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
+            
+    def add_run_block_error_callback(self, session_id: str, callback: Callable[[Any], Any]):
+        """Add a callback to be called when an error occurs while running a block."""
+        if not callable(callback):
+            raise ValueError("Callback must be callable")
+        
+        if session_id not in self.__run_block_error_callbacks:
+            self.__run_block_error_callbacks[session_id] = []
+            self.subscribe(f"session/{session_id}/run_block/error", lambda payload: [cb(payload) for cb in self.__run_block_error_callbacks[session_id].copy()])
+
+        self.__run_block_error_callbacks[session_id].append(callback)
+
+    def remove_run_block_error_callback(self, session_id: str, callback: Callable[[Any], Any]):
+        """Remove a previously added run block error callback."""
+        if session_id in self.__run_block_error_callbacks and callback in self.__run_block_error_callbacks[session_id]:
+            self.__run_block_error_callbacks[session_id].remove(callback)
+            if len(self.__run_block_error_callbacks[session_id]) == 0:
+                del self.__run_block_error_callbacks[session_id]
+                self.unsubscribe(f"session/{session_id}/run_block/error")
+        else:
+            self._logger.warning("Callback not found in run block error callbacks for session: {}".format(session_id))
+
+    def add_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
+        """Add a callback to be called when a session message is received."""
+        if not callable(callback):
+            raise ValueError("Callback must be callable")
+        
+        if session_id not in self.__session_callbacks:
+            self.__session_callbacks[session_id] = []
+            self.subscribe(f"session/{session_id}", lambda payload: [cb(payload) for cb in self.__session_callbacks[session_id].copy()])
+
+        self.__session_callbacks[session_id].append(callback)
+
+    def remove_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
+        """Remove a previously added session callback."""
+        if session_id in self.__session_callbacks and callback in self.__session_callbacks[session_id]:
+            self.__session_callbacks[session_id].remove(callback)
+            if len(self.__session_callbacks[session_id]) == 0:
+                del self.__session_callbacks[session_id]
+                self.unsubscribe(f"session/{session_id}")
+        else:
+            self._logger.warning("Callback not found in session callbacks for session: {}".format(session_id))
 
 
     def add_report_callback(self, fn):

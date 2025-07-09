@@ -1,5 +1,4 @@
 import asyncio
-from asyncio import events
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .mainframe import Mainframe
@@ -64,7 +63,7 @@ class RunResponse:
             raise ValueError("event_callback should be a callable function.")
         self.__events.add(fn)
 
-    async def finish(self) -> asyncio.Future[BlockFinishPayload]:
+    def finish(self) -> asyncio.Future[BlockFinishPayload]:
         return self.__finish_future
 
 class HandleDefDict(TypedDict):
@@ -543,6 +542,7 @@ class Context:
             "block": block,
             "block_job_id": block_job_id,
             "inputs": inputs,
+            "stacks": self.__block_info.stacks,
         })
 
         event_callbacks = set()
@@ -552,6 +552,22 @@ class Context:
         loop = asyncio.get_running_loop()
         future: asyncio.Future[BlockFinishPayload] = loop.create_future()
 
+        def run_block_error_callback(payload: Dict[str, Any]):
+            """
+            This callback is called when an error occurs while running a block.
+            It will call the error callbacks registered by the user.
+            """
+            if payload.get("job_id") != block_job_id:
+                return
+
+            def set_future_with_error():
+                if not future.done():
+                    future.set_result({
+                        "result": None,
+                        "error": payload.get("error", "Unknown error occurred while running the block.")
+                    })
+            loop.call_soon_threadsafe(set_future_with_error)
+
         def run_block_callback(payload: Dict[str, Any]):
 
             if payload.get("job_id") != block_job_id:
@@ -559,6 +575,7 @@ class Context:
             elif payload.get("type") == "ExecutorReady" or payload.get("type") == "BlockReady" or payload.get("type") == "RunBlock":
                 # ignore these messages
                 return
+
             for callback in event_callbacks:
                 callback(payload)
 
@@ -569,8 +586,7 @@ class Context:
                 for handle, value in payload.get("outputs", {}).items():
                     for callback in outputs_callbacks:
                         callback(handle, value)
-            
-            if payload.get("type") == "BlockFinished":
+            elif payload.get("type") == "BlockFinished":
                 result = payload.get("result")
                 if result is not None and not isinstance(result, dict):
                     pass
@@ -579,8 +595,17 @@ class Context:
                         for callback in outputs_callbacks:
                             callback(handle, value)
 
-                self.__mainframe.remove_report_callback(run_block_callback)
-                future.set_result({"result": payload.get("result"), "error": payload.get("error")})
+                self.__mainframe.remove_session_callback(self.session_id, run_block_callback)
+                self.__mainframe.remove_run_block_error_callback(self.session_id, run_block_error_callback)
 
-        self.__mainframe.add_report_callback(run_block_callback)
+                def set_future_result():
+                    if not future.done():
+                        future.set_result({"result": payload.get("result"), "error": payload.get("error")})
+
+                loop.call_soon_threadsafe(set_future_result)
+
+
+        self.__mainframe.add_session_callback(self.session_id, run_block_callback)
+        self.__mainframe.add_run_block_error_callback(self.session_id, run_block_error_callback)
+
         return RunResponse(event_callbacks, outputs_callbacks, future)

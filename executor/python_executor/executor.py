@@ -179,7 +179,6 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
                 service_store[service_hash] = "running"
             run_in_new_thread(run)
 
-        # FIXME: mqtt 不能在 subscribe 后立即 publish，需要修复。
         mainframe.subscribe(prepare_report_topic(params), lambda _: send_service_config(params, message))
 
         await process.wait()

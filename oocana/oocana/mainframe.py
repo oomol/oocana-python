@@ -17,6 +17,7 @@ class Mainframe:
     _subscriptions: set[str] = set()
     _logger: logging.Logger
     __report_callbacks: set[Callable[[Any], Any]] = set()
+    __session_callbacks: dict[str, list[Callable[[dict], Any]]] = {}
 
     def __init__(self, address: str, client_id: Optional[str] = None, logger = None) -> None:
         self.address = address
@@ -121,6 +122,27 @@ class Mainframe:
             if replay is not None:
                 self._logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
+
+    def add_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
+        """Add a callback to be called when a session message is received."""
+        if not callable(callback):
+            raise ValueError("Callback must be callable")
+        
+        if session_id not in self.__session_callbacks:
+            self.__session_callbacks[session_id] = []
+            self.subscribe(f"session/{session_id}", lambda payload: [cb(payload) for cb in self.__session_callbacks[session_id].copy()])
+
+        self.__session_callbacks[session_id].append(callback)
+
+    def remove_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
+        """Remove a previously added session callback."""
+        if session_id in self.__session_callbacks and callback in self.__session_callbacks[session_id]:
+            self.__session_callbacks[session_id].remove(callback)
+            if len(self.__session_callbacks[session_id]) == 0:
+                del self.__session_callbacks[session_id]
+                self.unsubscribe(f"session/{session_id}")
+        else:
+            self._logger.warning("Callback not found in session callbacks for session: {}".format(session_id))
 
 
     def add_report_callback(self, fn):

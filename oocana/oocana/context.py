@@ -580,15 +580,15 @@ class Context:
                         for callback in outputs_callbacks:
                             callback(handle, value)
 
-                self.__mainframe.remove_report_callback(run_block_callback)
+                self.__mainframe.remove_session_callback(self.session_id, run_block_callback)
 
                 def set_future_result():
                     if not future.done():
                         future.set_result({"result": payload.get("result"), "error": payload.get("error")})
-                    self.__mainframe.remove_report_callback(run_block_callback)
-            
+
                 loop.call_soon_threadsafe(set_future_result)
 
 
-        self.__mainframe.add_report_callback(run_block_callback)
+        self.__mainframe.add_session_callback(self.session_id, run_block_callback)
+
         return RunResponse(event_callbacks, outputs_callbacks, future)

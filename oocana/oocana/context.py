@@ -552,6 +552,22 @@ class Context:
         loop = asyncio.get_running_loop()
         future: asyncio.Future[BlockFinishPayload] = loop.create_future()
 
+        def run_block_error_callback(payload: Dict[str, Any]):
+            """
+            This callback is called when an error occurs while running a block.
+            It will call the error callbacks registered by the user.
+            """
+            if payload.get("job_id") != block_job_id:
+                return
+
+            def set_future_with_error():
+                if not future.done():
+                    future.set_result({
+                        "result": None,
+                        "error": payload.get("error", "Unknown error occurred while running the block.")
+                    })
+            loop.call_soon_threadsafe(set_future_with_error)
+
         def run_block_callback(payload: Dict[str, Any]):
 
             if payload.get("job_id") != block_job_id:
@@ -580,6 +596,7 @@ class Context:
                             callback(handle, value)
 
                 self.__mainframe.remove_session_callback(self.session_id, run_block_callback)
+                self.__mainframe.remove_run_block_error_callback(self.session_id, run_block_error_callback)
 
                 def set_future_result():
                     if not future.done():
@@ -589,5 +606,6 @@ class Context:
 
 
         self.__mainframe.add_session_callback(self.session_id, run_block_callback)
+        self.__mainframe.add_run_block_error_callback(self.session_id, run_block_error_callback)
 
         return RunResponse(event_callbacks, outputs_callbacks, future)

@@ -18,7 +18,7 @@ class Mainframe:
     _logger: logging.Logger
     __report_callbacks: set[Callable[[Any], Any]]
     __session_callbacks: dict[str, list[Callable[[dict], Any]]]
-    __run_block_error_callbacks: dict[str, list[Callable[[dict], Any]]]
+    __request_response_callbacks: dict[str, list[Callable[[dict], Any]]]
 
     def __init__(self, address: str, client_id: Optional[str] = None, logger = None) -> None:
         self.address = address
@@ -27,7 +27,7 @@ class Mainframe:
         self._subscriptions = set()
         self.__report_callbacks = set()
         self.__session_callbacks = {}
-        self.__run_block_error_callbacks = {}
+        self.__request_response_callbacks = {}
 
     def connect(self):
         connect_address = (
@@ -128,26 +128,26 @@ class Mainframe:
                 self._logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
             
-    def add_run_block_error_callback(self, session_id: str, callback: Callable[[Any], Any]):
+    def add_request_response_callback(self, session_id: str, request_id: str, callback: Callable[[Any], Any]):
         """Add a callback to be called when an error occurs while running a block."""
         if not callable(callback):
             raise ValueError("Callback must be callable")
         
-        if session_id not in self.__run_block_error_callbacks:
-            self.__run_block_error_callbacks[session_id] = []
-            self.subscribe(f"session/{session_id}/run_block/error", lambda payload: [cb(payload) for cb in self.__run_block_error_callbacks[session_id].copy()])
+        if request_id not in self.__request_response_callbacks:
+            self.__request_response_callbacks[session_id] = []
+            self.subscribe(f"session/{session_id}/request/{request_id}/response", lambda payload: [cb(payload) for cb in self.__request_response_callbacks[request_id].copy()])
 
-        self.__run_block_error_callbacks[session_id].append(callback)
+        self.__request_response_callbacks[request_id].append(callback)
 
-    def remove_run_block_error_callback(self, session_id: str, callback: Callable[[Any], Any]):
+    def remove_request_response_callback(self, session_id: str, request_id: str, callback: Callable[[Any], Any]):
         """Remove a previously added run block error callback."""
-        if session_id in self.__run_block_error_callbacks and callback in self.__run_block_error_callbacks[session_id]:
-            self.__run_block_error_callbacks[session_id].remove(callback)
-            if len(self.__run_block_error_callbacks[session_id]) == 0:
-                del self.__run_block_error_callbacks[session_id]
-                self.unsubscribe(f"session/{session_id}/run_block/error")
+        if request_id in self.__request_response_callbacks and callback in self.__request_response_callbacks[session_id]:
+            self.__request_response_callbacks[request_id].remove(callback)
+            if len(self.__request_response_callbacks[request_id]) == 0:
+                del self.__request_response_callbacks[request_id]
+                self.unsubscribe(f"session/{session_id}/request/{request_id}/response")
         else:
-            self._logger.warning("Callback not found in run block error callbacks for session: {}".format(session_id))
+            self._logger.warning("Callback not found in run block error callbacks for session: {}".format(request_id))
 
     def add_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
         """Add a callback to be called when a session message is received."""

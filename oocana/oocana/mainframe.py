@@ -147,7 +147,7 @@ class Mainframe:
                 del self.__request_response_callbacks[request_id]
                 self.unsubscribe(f"session/{session_id}/request/{request_id}/response")
         else:
-            self._logger.warning("Callback not found in run block error callbacks for session: {}".format(request_id))
+            self._logger.warning("Callback not found in request/response callbacks for session {} and request {}.".format(session_id, request_id))
 
     def add_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
         """Add a callback to be called when a session message is received."""

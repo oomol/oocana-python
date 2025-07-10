@@ -141,7 +141,7 @@ class Mainframe:
 
     def remove_request_response_callback(self, session_id: str, request_id: str, callback: Callable[[Any], Any]):
         """Remove a previously added run block error callback."""
-        if request_id in self.__request_response_callbacks and callback in self.__request_response_callbacks[session_id]:
+        if request_id in self.__request_response_callbacks and callback in self.__request_response_callbacks[request_id]:
             self.__request_response_callbacks[request_id].remove(callback)
             if len(self.__request_response_callbacks[request_id]) == 0:
                 del self.__request_response_callbacks[request_id]

@@ -134,7 +134,7 @@ class Mainframe:
             raise ValueError("Callback must be callable")
         
         if request_id not in self.__request_response_callbacks:
-            self.__request_response_callbacks[session_id] = []
+            self.__request_response_callbacks[request_id] = []
             self.subscribe(f"session/{session_id}/request/{request_id}/response", lambda payload: [cb(payload) for cb in self.__request_response_callbacks[request_id].copy()])
 
         self.__request_response_callbacks[request_id].append(callback)

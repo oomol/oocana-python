@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.16.18](https://github.com/oomol/oocana-python/compare/oocana@0.16.17...oocana@0.16.18) (2025-07-10)
+
+
+### Features
+
+* add csv preview type ([#382](https://github.com/oomol/oocana-python/issues/382)) ([1acee6b](https://github.com/oomol/oocana-python/commit/1acee6bf641a63a58ba3a167dcaa4a952fe3e083))
+* add run block api ([#379](https://github.com/oomol/oocana-python/issues/379)) ([4068195](https://github.com/oomol/oocana-python/commit/406819547788d67d569151e4ae3fb936d88ffe83))
+
+
+### Bug Fixes
+
+* complete block api ([#381](https://github.com/oomol/oocana-python/issues/381)) ([8519ded](https://github.com/oomol/oocana-python/commit/8519ded8122f67924c782ebe032dd7346e2dcb69))
+* use dict instead of dataclass ([#383](https://github.com/oomol/oocana-python/issues/383)) ([c148ac0](https://github.com/oomol/oocana-python/commit/c148ac0b0ba926bbe81684b6883f4de4dcd27cfa))
+
+
+### Code Refactoring
+
+* make block request and response more flexible to support more request in the future ([#384](https://github.com/oomol/oocana-python/issues/384)) ([fa0ca9e](https://github.com/oomol/oocana-python/commit/fa0ca9ecbe6947133ffa02b297ce2a93eb46e093))
+
 ## [0.16.17](https://github.com/oomol/oocana-python/compare/oocana@0.16.16...oocana@0.16.17) (2025-07-07)
 
 

@@ -127,7 +127,7 @@ class Context:
     __pkg_dir: str
 
     def __init__(
-        self, *, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, inputs_def, outputs_def, session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str
+        self, *, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, inputs_def, outputs_def: Dict[str, Any], session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str
     ) -> None:
 
         self.__block_info = blockInfo
@@ -136,12 +136,12 @@ class Context:
         self.__store = store
         self.__inputs = inputs
 
-        outputs_defs = {}
         self.__outputs_def_dict = outputs_def
+        outputs_defs_cls = {}
         if outputs_def is not None:
             for k, v in outputs_def.items():
-                outputs_defs[k] = HandleDef(**v)
-        self.__outputs_def = outputs_defs
+                outputs_defs_cls[k] = HandleDef(**v)
+        self.__outputs_def = outputs_defs_cls
         self.__inputs_def = inputs_def
         self.__session_dir = session_dir
         self.__tmp_dir = tmp_dir

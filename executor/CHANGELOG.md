@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.12](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.11...oocana-python-executor@0.16.12) (2025-07-10)
+
+
+### Features
+
+* add run block api ([#379](https://github.com/oomol/oocana-python/issues/379)) ([4068195](https://github.com/oomol/oocana-python/commit/406819547788d67d569151e4ae3fb936d88ffe83))
+
+
+### Bug Fixes
+
+* complete block api ([#381](https://github.com/oomol/oocana-python/issues/381)) ([8519ded](https://github.com/oomol/oocana-python/commit/8519ded8122f67924c782ebe032dd7346e2dcb69))
+
 ## [0.16.11](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.10...oocana-python-executor@0.16.11) (2025-07-01)
 
 

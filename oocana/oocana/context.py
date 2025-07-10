@@ -115,7 +115,9 @@ class Context:
 
     __block_info: BlockInfo
     __outputs_def: Dict[str, HandleDef]
-    __inputs_def: Dict[str, Any]
+    # Only dict can support some field type like `Optional[FieldSchema]`(this key can not in dict). Dataclass will always convert it to None if the field is not set which will cause some issues.
+    __outputs_def_dict: Dict[str, HandleDefDict]
+    __inputs_def: Dict[str, HandleDefDict]
     __store: Any
     __keep_alive: OnlyEqualSelf = OnlyEqualSelf()
     __session_dir: str
@@ -135,6 +137,7 @@ class Context:
         self.__inputs = inputs
 
         outputs_defs = {}
+        self.__outputs_def_dict = outputs_def
         if outputs_def is not None:
             for k, v in outputs_def.items():
                 outputs_defs[k] = HandleDef(**v)
@@ -193,10 +196,7 @@ class Context:
 
     @property
     def outputs_def(self) -> Dict[str, HandleDefDict]:
-        outputs = {}
-        for k, v in self.__outputs_def.items():
-            outputs[k] = asdict(v)
-        return outputs
+        return copy.deepcopy(self.__outputs_def_dict) if self.__outputs_def_dict is not None else {}
 
     @property
     def session_id(self):

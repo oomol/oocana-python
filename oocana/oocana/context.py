@@ -543,12 +543,15 @@ class Context:
 
         # consider use uuid, remove job_id and block_job_id.
         block_job_id = f"{self.job_id}-{block}-{random_string(8)}"
+        request_id = random_string(16)
         self.__mainframe.send(self.job_info, {
-            "type": "RunBlock",
+            "type": "BlockRequest",
+            "action": "RunBlock",
             "block": block,
             "block_job_id": block_job_id,
             "inputs": inputs,
             "stacks": self.__block_info.stacks,
+            "request_id": request_id,
         })
 
         event_callbacks = set()
@@ -558,12 +561,12 @@ class Context:
         loop = asyncio.get_running_loop()
         future: asyncio.Future[BlockFinishPayload] = loop.create_future()
 
-        def run_block_error_callback(payload: Dict[str, Any]):
+        def response_callback(payload: Dict[str, Any]):
             """
             This callback is called when an error occurs while running a block.
             It will call the error callbacks registered by the user.
             """
-            if payload.get("job_id") != block_job_id:
+            if payload.get("request_id") != request_id:
                 return
 
             def set_future_with_error():
@@ -574,11 +577,11 @@ class Context:
                     })
             loop.call_soon_threadsafe(set_future_with_error)
 
-        def run_block_callback(payload: Dict[str, Any]):
+        def event_callback(payload: Dict[str, Any]):
 
             if payload.get("job_id") != block_job_id:
                 return
-            elif payload.get("type") == "ExecutorReady" or payload.get("type") == "BlockReady" or payload.get("type") == "RunBlock":
+            elif payload.get("type") == "ExecutorReady" or payload.get("type") == "BlockReady" or payload.get("type") == "BlockRequest":
                 # ignore these messages
                 return
 
@@ -601,8 +604,8 @@ class Context:
                         for callback in outputs_callbacks:
                             callback(handle, value)
 
-                self.__mainframe.remove_session_callback(self.session_id, run_block_callback)
-                self.__mainframe.remove_run_block_error_callback(self.session_id, run_block_error_callback)
+                self.__mainframe.remove_session_callback(self.session_id, event_callback)
+                self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
 
                 def set_future_result():
                     if not future.done():
@@ -611,7 +614,7 @@ class Context:
                 loop.call_soon_threadsafe(set_future_result)
 
 
-        self.__mainframe.add_session_callback(self.session_id, run_block_callback)
-        self.__mainframe.add_run_block_error_callback(self.session_id, run_block_error_callback)
+        self.__mainframe.add_session_callback(self.session_id, event_callback)
+        self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)
 
         return RunResponse(event_callbacks, outputs_callbacks, future)

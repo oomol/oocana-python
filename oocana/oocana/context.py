@@ -3,7 +3,8 @@ from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .mainframe import Mainframe
 from .handle_data import HandleDef
-from typing import Dict, Any, TypedDict, Optional, Callable
+from typing import Dict, Any, TypedDict, Optional, Callable, Mapping
+from types import MappingProxyType
 from base64 import b64encode
 from io import BytesIO
 from .throttler import throttle
@@ -11,7 +12,6 @@ from .preview import PreviewPayload, DataFrame, ShapeDataFrame
 from .data import EXECUTOR_NAME
 import os.path
 import logging
-import copy
 import random
 import string
 
@@ -191,12 +191,18 @@ class Context:
         return self.__inputs
     
     @property
-    def inputs_def(self) -> Dict[str, HandleDefDict]:
-        return copy.deepcopy(self.__inputs_def) if self.__inputs_def is not None else {}
+    def inputs_def(self) -> Mapping[str, HandleDefDict]:
+        """a dict that represents the input definitions, used in the block schema input defs.
+        This is a read-only property, you can not modify it.
+        """
+        return MappingProxyType(self.__inputs_def) if self.__inputs_def is not None else MappingProxyType({})
 
     @property
-    def outputs_def(self) -> Dict[str, HandleDefDict]:
-        return copy.deepcopy(self.__outputs_def_dict) if self.__outputs_def_dict is not None else {}
+    def outputs_def(self) -> Mapping[str, HandleDefDict]:
+        """a dict that represents the output definitions, used in the block schema output defs.
+        This is a read-only property, you can not modify it.
+        """
+        return MappingProxyType(self.__outputs_def_dict) if self.__outputs_def_dict is not None else MappingProxyType({})
 
     @property
     def session_id(self):

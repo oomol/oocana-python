@@ -40,6 +40,12 @@ describe(
       expect(code).toBe(0);
     });
 
+    it("run query-block flow", async () => {
+      files.delete("query-block");
+      const { code } = await run("query-block");
+      expect(code).toBe(0);
+    });
+
     it("run var flow", async () => {
       files.delete("var");
       const { code } = await run("var");

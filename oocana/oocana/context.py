@@ -94,6 +94,30 @@ class HandleDefDict(TypedDict):
     """if the output is an additional output, should be defined in the block schema output defs, the field name is is_additional
     """
 
+class QueryBlockResponse(TypedDict):
+    description: str | None
+    """the description of the block, if the block has no description, this field should be
+    None.
+    """
+
+    inputs: Dict[str, HandleDefDict] | None
+    """the inputs of the block, should be a dict, if the block has no inputs
+    this field should be None.
+    """
+
+    outputs: Dict[str, HandleDefDict] | None
+    """the outputs of the block, should be a dict, if the block has no outputs  
+    this field should be None.
+    """
+
+    additional_outputs: bool
+    """if the block has additional outputs, this field should be True, otherwise False.
+    """
+
+    additional_inputs: bool
+    """if the block has additional inputs, this field should be True, otherwise False.
+    """
+
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
         return self is value
@@ -528,6 +552,48 @@ class Context:
 
     def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})
+    
+    async def query_block(self, block: str) -> QueryBlockResponse:
+        """
+        query a block by its id.
+        :param block: the id of the block to query
+        :return: a dict that contains the block information, including the block schema, inputs and outputs.
+
+        if the block is not found, it will raise a ValueError.
+        """
+
+        request_id = random_string(16)
+        loop = asyncio.get_running_loop()
+        f: asyncio.Future[QueryBlockResponse] = loop.create_future()
+
+        def response_callback(payload: Dict[str, Any]):
+            """
+            This callback is called when the block information is received.
+            It will return the block information to the caller.
+            """
+            if payload.get("request_id") != request_id:
+                return
+            self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
+            
+            if payload.get("result") is not None:
+                f.set_result(payload.get("result", {}))
+            elif payload.get("error") is not None:
+                f.set_exception(ValueError(payload.get("error", "Unknown error occurred while querying the block.")))
+
+        
+        self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)
+
+        self.__mainframe.send(self.job_info, {
+            "type": "BlockRequest",
+            "action": "QueryBlock",
+            "block": block,
+            "session_id": self.session_id,
+            "job_id": self.job_id,
+            "request_id": request_id,
+        })
+
+        return await f
+        
 
     def run_block(self, block: str, inputs: Dict[str, Any]) -> RunResponse:
         """

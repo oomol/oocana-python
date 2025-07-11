@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.19](https://github.com/oomol/oocana-python/compare/oocana@0.16.18...oocana@0.16.19) (2025-07-11)
+
+
+### Features
+
+* add query block api ([#385](https://github.com/oomol/oocana-python/issues/385)) ([e33e967](https://github.com/oomol/oocana-python/commit/e33e9677a8e420e46eb1b61beb828b7a59f95dbb))
+
 ## [0.16.18](https://github.com/oomol/oocana-python/compare/oocana@0.16.17...oocana@0.16.18) (2025-07-10)
 
 

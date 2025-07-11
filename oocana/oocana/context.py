@@ -576,9 +576,9 @@ class Context:
             self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
             
             if payload.get("result") is not None:
-                f.set_result(payload.get("result", {}))
+                loop.call_soon_threadsafe(lambda: f.set_result(payload.get("result", {})))
             elif payload.get("error") is not None:
-                f.set_exception(ValueError(payload.get("error", "Unknown error occurred while querying the block.")))
+                loop.call_soon_threadsafe(lambda: f.set_exception(ValueError(payload.get("error", "Unknown error occurred while querying the block."))))
 
         
         self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)

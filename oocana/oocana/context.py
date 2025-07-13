@@ -26,7 +26,7 @@ class BlockFinishPayload(TypedDict):
     """
 
     result: Dict[str, Any] | None
-    """the result of the block, should be a dict, if the block has no result, this field should be None.
+    """the result of the block, should be a dict, if the block has no result (which means has error), this field should be None.
     """
 
     error: str | None
@@ -446,6 +446,10 @@ class Context:
             self.__mainframe.send(self.job_info, {"type": "BlockFinished"})
 
     def send_message(self, payload):
+        """
+        send a message to the block, this message will be displayed in the log of the block.
+        :param payload: the payload of the message, it can be a string or a dict
+        """
         self.__mainframe.report(
             self.block_info,
             {
@@ -555,11 +559,18 @@ class Context:
     
     async def query_block(self, block: str) -> QueryBlockResponse:
         """
+        this is a experimental api, it is used to query the block information..
+
         query a block by its id.
-        :param block: the id of the block to query
+        :param block: the id of the block to query. format: `self::<block_name>` or `<package_name>::<block_name>`.
         :return: a dict that contains the block information, including the block schema, inputs and outputs.
 
         if the block is not found, it will raise a ValueError.
+
+        example:
+        ```python
+        response = await context.query_block("self::my_block")
+        print(response)
         """
 
         request_id = random_string(16)
@@ -597,14 +608,28 @@ class Context:
 
     def run_block(self, block: str, inputs: Dict[str, Any]) -> RunResponse:
         """
-        run a block with the given inputs.
-        :param block: the id of the block to run
-        :param inputs: the inputs of the block
+        :param block: the id of the block to run. format: `self::<block_name>` or `<package_name>::<block_name>`.
+        :param inputs: the inputs of the block. if the block has no inputs, this parameter can be dict. If the inputs missing some required inputs, the response's finish future will send {"error": "error message" }.
+        :return: a RunResponse object, which contains the event callbacks and output callbacks. You can use the `add_event_callback` and `add_output_callback` methods to register callbacks for the events and outputs of the block. You can also use the `finish` method to wait for the block to finish and get the result.
+        Notice do not call any context.send_message or context.report_progress or context.preview and other context methods(which will send message) directly in the callbacks, it may cause deadlock.
 
-        Returns:
-            RunResponse: a RunResponse object, which contains the event callbacks and output callbacks.
-            You can use the `add_event_callback` and `add_output_callback` methods to register callbacks for the events and outputs of the block.
-            You can also use the `finish` method to wait for the block to finish and get the result.
+        this is a experimental api, it is used to run a block in the current context.
+        It will send a request to the mainframe to run the block with the given inputs.
+        It will return a RunResponse object, which contains the event callbacks and output callbacks.
+        You can use the `add_event_callback` and `add_output_callback` methods to register callbacks for the events and outputs of the block.
+        You can also use the `finish` method to wait for the block to finish and get the result or error.
+
+        example:
+        ```python
+        response = context.run_block("self::my_block", {"input1": "value1", "input2": "value2"})
+        response.add_event_callback(lambda event: print(f"Event received: {event}"))
+        response.add_output_callback(lambda handle, value: print(f"Output received: {handle} = {value}"))
+        payload = await response.finish()
+        if payload.get("error"):
+            print(f"Block finished with error: {payload['error']}")
+        else:
+            print(f"Block finished with result: {payload['result']}")
+        ```
         """
 
         # consider use uuid, remove job_id and block_job_id.

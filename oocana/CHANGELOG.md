@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.20](https://github.com/oomol/oocana-python/compare/oocana@0.16.19...oocana@0.16.20) (2025-07-13)
+
+
+### Code Refactoring
+
+* add some api docs ([#387](https://github.com/oomol/oocana-python/issues/387)) ([82e83ea](https://github.com/oomol/oocana-python/commit/82e83ea548c10afd16b4a26212277e99254645b8))
+
 ## [0.16.19](https://github.com/oomol/oocana-python/compare/oocana@0.16.18...oocana@0.16.19) (2025-07-11)
 
 

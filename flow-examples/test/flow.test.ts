@@ -40,6 +40,12 @@ describe(
       expect(code).toBe(0);
     });
 
+    it("run run-subflow flow", async () => {
+      files.delete("run-block");
+      const { code } = await run("run-subflow");
+      expect(code).toBe(0);
+    });
+
     it("run query-block flow", async () => {
       files.delete("query-block");
       const { code } = await run("query-block");

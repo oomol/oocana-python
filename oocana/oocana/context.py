@@ -610,7 +610,7 @@ class Context:
         return await f
         
 
-    def run_block(self, block: str, *, inputs: Dict[str, Any], additional_inputs_def: list[HandleDefDict], additional_outputs_def: list[HandleDefDict]) -> RunResponse:
+    def run_block(self, block: str, *, inputs: Dict[str, Any], additional_inputs_def: list[HandleDefDict] | None = None, additional_outputs_def: list[HandleDefDict] | None = None) -> RunResponse:
         """
         :param block: the id of the block to run. format: `self::<block_name>` or `<package_name>::<block_name>`.
         :param inputs: the inputs of the block. if the block has no inputs, this parameter can be dict. If the inputs missing some required inputs, the response's finish future will send {"error": "error message" }.

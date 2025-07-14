@@ -678,7 +678,11 @@ class Context:
                     })
             loop.call_soon_threadsafe(set_future_with_error)
 
+        # TODO: add more types
         def event_callback(payload: Dict[str, Any]):
+
+            if payload.get("session_id") != self.session_id:
+                return
 
             if payload.get("job_id") != block_job_id:
                 return
@@ -696,6 +700,23 @@ class Context:
                 for handle, value in payload.get("outputs", {}).items():
                     for callback in outputs_callbacks:
                         callback(handle, value)
+            elif payload.get("type") == "SubflowBlockOutput":
+                for callback in outputs_callbacks:
+                    callback(payload.get("handle"), payload.get("output"))
+            elif payload.get("type") == "SubflowBlockFinished":
+                error = payload.get("error")
+
+                self.__mainframe.remove_report_callback(event_callback)
+                self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
+
+                def set_future_with_error():
+                    if not future.done():
+                        future.set_result({
+                            "result": None,
+                            "error": error
+                        })
+                loop.call_soon_threadsafe(set_future_with_error)
+
             elif payload.get("type") == "BlockFinished":
                 result = payload.get("result")
                 if result is not None and not isinstance(result, dict):
@@ -705,7 +726,7 @@ class Context:
                         for callback in outputs_callbacks:
                             callback(handle, value)
 
-                self.__mainframe.remove_session_callback(self.session_id, event_callback)
+                self.__mainframe.remove_report_callback(event_callback)
                 self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
 
                 def set_future_result():
@@ -715,7 +736,7 @@ class Context:
                 loop.call_soon_threadsafe(set_future_result)
 
 
-        self.__mainframe.add_session_callback(self.session_id, event_callback)
+        self.__mainframe.add_report_callback(event_callback)
         self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)
 
         return RunResponse(event_callbacks, outputs_callbacks, future)

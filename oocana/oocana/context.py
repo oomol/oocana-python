@@ -458,25 +458,25 @@ class Context:
             },
         )
     
-    def __dataframe(self, payload: PreviewPayload, id: str | None = None) -> PreviewPayloadInternal:
+    def __dataframe(self, payload: PreviewPayload) -> PreviewPayloadInternal:
         target_dir = os.path.join(self.tmp_dir, self.job_id)
         os.makedirs(target_dir, exist_ok=True)
         csv_file = os.path.join(target_dir, f"{random_string(8)}.csv")
         if isinstance(payload, DataFrame):
             payload.to_csv(path_or_buf=csv_file)
-            payload = { "type": "table", "data": csv_file, "id": id }
+            payload = { "type": "table", "data": csv_file }
 
         if isinstance(payload, dict) and payload.get("type") == "table":
             df = payload.get("data")
             if isinstance(df, ShapeDataFrame):
                 df.to_csv(path_or_buf=csv_file)
-                payload = { "type": "table", "data": csv_file, "id": id }
+                payload = { "type": "table", "data": csv_file }
             else:
                 print("dataframe is not support shape property")
         
         return payload
 
-    def __matplotlib(self, payload: PreviewPayloadInternal, id: str | None = None) -> PreviewPayloadInternal:
+    def __matplotlib(self, payload: PreviewPayloadInternal) -> PreviewPayloadInternal:
         # payload is a matplotlib Figure
         if hasattr(payload, 'savefig'):
             fig: Any = payload
@@ -486,7 +486,7 @@ class Context:
             png = buffer.getvalue()
             buffer.close()
             url = f'data:image/png;base64,{b64encode(png).decode("utf-8")}'
-            payload = { "type": "image", "data": url, "id": id }
+            payload = { "type": "image", "data": url }
 
         return payload
         
@@ -496,7 +496,7 @@ class Context:
         payload_internal = self.__matplotlib(payload_internal)
 
         if id is not None:
-            payload_internal["id"] = id
+            payload_internal["id"] = id #type: ignore
 
         self.__mainframe.report(
             self.block_info,

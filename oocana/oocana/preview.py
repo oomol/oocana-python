@@ -54,42 +54,34 @@ class TablePreviewData(TypedDict):
 class TablePreviewPayload(TypedDict):
     type: Literal['table']
     data: TablePreviewData | Any
-    id: str | None
 
 class TextPreviewPayload(TypedDict):
     type: Literal["text"]
     data: Any
-    id: str | None
 
 class JSONPreviewPayload(TypedDict):
     type: Literal["json"]
     data: Any
-    id: str | None
 
 class ImagePreviewPayload(TypedDict):
     type: Literal['image']
     data: str | List[str]
-    id: str | None
 
 class MediaPreviewPayload(TypedDict):
     type: Literal["image", 'video', 'audio', 'markdown', "iframe", "html"]
     data: str
-    id: str | None
 
 class PandasPreviewPayload(TypedDict):
     type: Literal['table']
     data: DataFrame
-    id: str | None
 
 class CsvPreviewPayload(TypedDict):
     type: Literal['csv']
     data: str # csv file path
-    id: str | None
 
 class DefaultPreviewPayload(TypedDict):
     type: str
     data: Any
-    id: str | None
 
 PreviewPayloadInternal: TypeAlias = Union[
     TablePreviewPayload,

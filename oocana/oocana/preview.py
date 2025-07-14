@@ -1,7 +1,7 @@
 
 from typing import Any, TypedDict, List, Literal, TypeAlias, Union, Protocol, runtime_checkable
 
-__all__ = ["PreviewPayload", "TablePreviewPayload", "TextPreviewPayload", "JSONPreviewPayload", "ImagePreviewPayload", "MediaPreviewPayload", "PandasPreviewPayload", "DefaultPreviewPayload"]
+__all__ = ["PreviewPayload", "PreviewPayloadInternal", "TablePreviewPayload", "TextPreviewPayload", "JSONPreviewPayload", "ImagePreviewPayload", "MediaPreviewPayload", "PandasPreviewPayload", "DefaultPreviewPayload"]
 
 @runtime_checkable
 class DataFrameIndex(Protocol):
@@ -54,34 +54,53 @@ class TablePreviewData(TypedDict):
 class TablePreviewPayload(TypedDict):
     type: Literal['table']
     data: TablePreviewData | Any
+    id: str | None
 
 class TextPreviewPayload(TypedDict):
     type: Literal["text"]
     data: Any
+    id: str | None
 
 class JSONPreviewPayload(TypedDict):
     type: Literal["json"]
     data: Any
+    id: str | None
 
 class ImagePreviewPayload(TypedDict):
     type: Literal['image']
     data: str | List[str]
+    id: str | None
 
 class MediaPreviewPayload(TypedDict):
     type: Literal["image", 'video', 'audio', 'markdown', "iframe", "html"]
     data: str
+    id: str | None
 
 class PandasPreviewPayload(TypedDict):
     type: Literal['table']
     data: DataFrame
+    id: str | None
 
 class CsvPreviewPayload(TypedDict):
     type: Literal['csv']
     data: str # csv file path
+    id: str | None
 
-class DefaultPreviewPayload:
+class DefaultPreviewPayload(TypedDict):
     type: str
     data: Any
+    id: str | None
+
+PreviewPayloadInternal: TypeAlias = Union[
+    TablePreviewPayload,
+    TextPreviewPayload,
+    JSONPreviewPayload,
+    ImagePreviewPayload,
+    MediaPreviewPayload,
+    CsvPreviewPayload,
+    PandasPreviewPayload,
+    DefaultPreviewPayload
+]
 
 PreviewPayload: TypeAlias = Union[
     TablePreviewPayload,

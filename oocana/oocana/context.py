@@ -8,7 +8,7 @@ from types import MappingProxyType
 from base64 import b64encode
 from io import BytesIO
 from .throttler import throttle
-from .preview import PreviewPayload, DataFrame, ShapeDataFrame
+from .preview import PreviewPayload, DataFrame, PreviewPayloadInternal, ShapeDataFrame
 from .data import EXECUTOR_NAME
 import os.path
 import logging
@@ -458,25 +458,25 @@ class Context:
             },
         )
     
-    def __dataframe(self, payload: PreviewPayload) -> PreviewPayload:
+    def __dataframe(self, payload: PreviewPayload, id: str | None = None) -> PreviewPayloadInternal:
         target_dir = os.path.join(self.tmp_dir, self.job_id)
         os.makedirs(target_dir, exist_ok=True)
         csv_file = os.path.join(target_dir, f"{random_string(8)}.csv")
         if isinstance(payload, DataFrame):
             payload.to_csv(path_or_buf=csv_file)
-            payload = { "type": "table", "data": csv_file}
+            payload = { "type": "table", "data": csv_file, "id": id }
 
         if isinstance(payload, dict) and payload.get("type") == "table":
             df = payload.get("data")
             if isinstance(df, ShapeDataFrame):
                 df.to_csv(path_or_buf=csv_file)
-                payload = { "type": "table", "data": csv_file }
+                payload = { "type": "table", "data": csv_file, "id": id }
             else:
                 print("dataframe is not support shape property")
         
         return payload
 
-    def __matplotlib(self, payload: PreviewPayload) -> PreviewPayload:
+    def __matplotlib(self, payload: PreviewPayloadInternal, id: str | None = None) -> PreviewPayloadInternal:
         # payload is a matplotlib Figure
         if hasattr(payload, 'savefig'):
             fig: Any = payload
@@ -486,13 +486,17 @@ class Context:
             png = buffer.getvalue()
             buffer.close()
             url = f'data:image/png;base64,{b64encode(png).decode("utf-8")}'
-            payload = { "type": "image", "data": url }
+            payload = { "type": "image", "data": url, "id": id }
 
         return payload
+        
 
-    def preview(self, payload: PreviewPayload):
-        payload = self.__dataframe(payload)
-        payload = self.__matplotlib(payload)
+    def preview(self, payload: PreviewPayload, id: str | None = None):
+        payload_internal = self.__dataframe(payload)
+        payload_internal = self.__matplotlib(payload_internal)
+
+        if id is not None:
+            payload_internal["id"] = id
 
         self.__mainframe.report(
             self.block_info,

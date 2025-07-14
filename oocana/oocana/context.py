@@ -610,10 +610,12 @@ class Context:
         return await f
         
 
-    def run_block(self, block: str, inputs: Dict[str, Any]) -> RunResponse:
+    def run_block(self, block: str, *, inputs: Dict[str, Any], additional_inputs_def: list[HandleDefDict], additional_outputs_def: list[HandleDefDict]) -> RunResponse:
         """
         :param block: the id of the block to run. format: `self::<block_name>` or `<package_name>::<block_name>`.
         :param inputs: the inputs of the block. if the block has no inputs, this parameter can be dict. If the inputs missing some required inputs, the response's finish future will send {"error": "error message" }.
+        :param additional_inputs_def: additional inputs definitions, this is a list of dicts, each dict should contain the handle(required), description, json_schema, kind, nullable and is_additional fields. This is used to define additional inputs that are not defined in the block schema.
+        :param additional_outputs_def: additional outputs definitions, this is a list of dicts, each dict should contain the handle(required), description, json_schema, kind, nullable and is_additional fields. This is used to define additional outputs that are not defined in the block schema.
         :return: a RunResponse object, which contains the event callbacks and output callbacks. You can use the `add_event_callback` and `add_output_callback` methods to register callbacks for the events and outputs of the block. You can also use the `finish` method to wait for the block to finish and get the result.
         Notice do not call any context.send_message or context.report_progress or context.preview and other context methods(which will send message) directly in the callbacks, it may cause deadlock.
 
@@ -644,7 +646,11 @@ class Context:
             "action": "RunBlock",
             "block": block,
             "block_job_id": block_job_id,
-            "inputs": inputs,
+            "payload": {
+                "inputs": inputs,
+                "additional_inputs_def": additional_inputs_def,
+                "additional_outputs_def": additional_outputs_def,
+            },
             "stacks": self.__block_info.stacks,
             "request_id": request_id,
         })

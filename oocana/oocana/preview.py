@@ -1,7 +1,7 @@
 
 from typing import Any, TypedDict, List, Literal, TypeAlias, Union, Protocol, runtime_checkable
 
-__all__ = ["PreviewPayload", "TablePreviewPayload", "TextPreviewPayload", "JSONPreviewPayload", "ImagePreviewPayload", "MediaPreviewPayload", "PandasPreviewPayload", "DefaultPreviewPayload"]
+__all__ = ["PreviewPayload", "PreviewPayloadInternal", "TablePreviewPayload", "TextPreviewPayload", "JSONPreviewPayload", "ImagePreviewPayload", "MediaPreviewPayload", "PandasPreviewPayload", "DefaultPreviewPayload"]
 
 @runtime_checkable
 class DataFrameIndex(Protocol):
@@ -79,9 +79,20 @@ class CsvPreviewPayload(TypedDict):
     type: Literal['csv']
     data: str # csv file path
 
-class DefaultPreviewPayload:
+class DefaultPreviewPayload(TypedDict):
     type: str
     data: Any
+
+PreviewPayloadInternal: TypeAlias = Union[
+    TablePreviewPayload,
+    TextPreviewPayload,
+    JSONPreviewPayload,
+    ImagePreviewPayload,
+    MediaPreviewPayload,
+    CsvPreviewPayload,
+    PandasPreviewPayload,
+    DefaultPreviewPayload
+]
 
 PreviewPayload: TypeAlias = Union[
     TablePreviewPayload,

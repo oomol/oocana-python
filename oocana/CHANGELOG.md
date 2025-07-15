@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.17.0](https://github.com/oomol/oocana-python/compare/oocana@0.16.20...oocana@0.17.0) (2025-07-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* refactor run block parameter ([#389](https://github.com/oomol/oocana-python/issues/389))
+
+### Features
+
+* **preview:** add preview id ([#390](https://github.com/oomol/oocana-python/issues/390)) ([5c8db18](https://github.com/oomol/oocana-python/commit/5c8db18974b8709c52e68bfc55b7e469c992c493))
+
+
+### Code Refactoring
+
+* refactor run block parameter ([#389](https://github.com/oomol/oocana-python/issues/389)) ([61aa118](https://github.com/oomol/oocana-python/commit/61aa1185b62446c38e394314bbb237ea33758061))
+
 ## [0.16.20](https://github.com/oomol/oocana-python/compare/oocana@0.16.19...oocana@0.16.20) (2025-07-13)
 
 

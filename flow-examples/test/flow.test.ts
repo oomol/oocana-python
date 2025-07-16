@@ -96,6 +96,14 @@ describe(
       expect(lastFinishEvent?.stacks[0].node_id).toBe("end");
     });
 
+    it("run dataframe flow", async () => {
+      files.delete("dataframe");
+      if (await isPackageLayerEnable()) {
+        const { code, events } = await run("dataframe");
+        expect(code).toBe(0); 
+      }
+    });
+
     it("run bin flow", async () => {
       files.delete("bin");
       const { code, events } = await run("bin");

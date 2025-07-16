@@ -126,6 +126,22 @@ class QueryBlockResponse(TypedDict):
     """if the block has additional inputs, this field should be True, otherwise False.
     """
 
+
+class FlowDownstream(TypedDict):
+    output_handle: str
+    output_handle_def: HandleDefDict | None
+
+class NodeDownstream(TypedDict):
+    node_id: str
+    description: str | None
+    """node description"""
+    input_handle: str
+    input_handle_def: HandleDefDict | None
+
+class Downstream(TypedDict):
+    to_flow: list[FlowDownstream]
+    to_node: list[NodeDownstream]
+
 class OnlyEqualSelf:
     def __eq__(self, value: object) -> bool:
         return self is value
@@ -582,8 +598,7 @@ class Context:
     def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})
 
-    # TODO: return type
-    async def query_downstream(self, handles: list[str] | None = None) -> Dict[str, Any]:
+    async def query_downstream(self, handles: list[str] | None = None) -> Dict[str, Downstream]:
         """
         query the downstream nodes of the given output handles.
         :param handle: the handle of the output, should be defined in the block schema output defs. If None means query all handles.

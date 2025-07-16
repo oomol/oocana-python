@@ -1,0 +1,5 @@
+nodes:
+  - task: dataframe::preview
+    node_id: preview
+    inputs_from:
+      []

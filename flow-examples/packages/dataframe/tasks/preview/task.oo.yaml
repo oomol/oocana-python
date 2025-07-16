@@ -1,0 +1,11 @@
+executor:
+  name: python
+  options:
+    entry: __init__.py
+inputs_def:
+  []
+outputs_def:
+  - handle: output
+    json_schema:
+      type: string
+title: matplotlib-show

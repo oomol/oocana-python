@@ -401,8 +401,9 @@ class Context:
             "type": "BlockOutput",
             "handle": key,
             "output": wrap_value,
-            "target": target if target else None,
         }
+        if target is not None:
+            payload["target"] = target
         self.__mainframe.send(self.job_info, payload)
     
     def outputs(self, outputs: Dict[str, Any]):

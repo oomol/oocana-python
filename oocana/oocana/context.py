@@ -581,6 +581,39 @@ class Context:
 
     def error(self, error: str):
         self.__mainframe.send(self.job_info, {"type": "BlockError", "error": error})
+
+    # TODO: return type
+    async def query_downstream(self, handles: list[str] | None = None) -> Dict[str, Any]:
+        """
+        query the downstream nodes of the given output handles.
+        :param handle: the handle of the output, should be defined in the block schema output defs. If None means query all handles.
+        :return: a dict that contains the downstream nodes, including the node id and input handle.
+        """
+        request_id = random_string(16)
+        loop = asyncio.get_running_loop()
+        f: asyncio.Future[Dict[str, Any]] = loop.create_future()
+
+        def response_callback(payload: Dict[str, Any]):
+            if payload.get("request_id") != request_id:
+                return
+            self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
+            if payload.get("result") is not None:
+                loop.call_soon_threadsafe(lambda: f.set_result(payload.get("result", {})))
+            elif payload.get("error") is not None:
+                loop.call_soon_threadsafe(lambda: f.set_exception(ValueError(payload.get("error", "Unknown error occurred while querying the downstream."))))
+
+        self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)
+
+        self.__mainframe.send(self.job_info, {
+            "type": "BlockRequest",
+            "action": "QueryDownstream",
+            "handles": handles,
+            "session_id": self.session_id,
+            "job_id": self.job_id,
+            "request_id": request_id,
+        })
+
+        return await f
     
     async def query_block(self, block: str) -> QueryBlockResponse:
         """

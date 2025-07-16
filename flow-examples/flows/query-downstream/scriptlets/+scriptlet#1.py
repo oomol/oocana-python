@@ -24,11 +24,11 @@ async def main(params: Inputs, context: Context) -> Outputs:
     first_upstream_node = node_upstream[0]
     assert isinstance(first_upstream_node, dict), "Expected first upstream node to be a dictionary"
     assert first_upstream_node.get("node_id") == "end", "Expected first upstream node to have node_id 'end'"
-    assert first_upstream_node.get("description") == "this is a downstream node", "Expected first upstream node to have no description"
+    assert first_upstream_node.get("description") == "this is a downstream node", "Expected first upstream node to have description"
     assert first_upstream_node.get("input_handle") == "output1", "Expected first upstream node to have input_handle 'output1'"
     input_handle_def = first_upstream_node.get("input_handle_def")
     assert isinstance(input_handle_def, dict), "Expected input_handle_def to be a dictionary"
     assert input_handle_def.get("handle") == "output1", "Expected input_handle_def to have handle 'output1'"
-    assert input_handle_def.get("description") == "this is a description for handle", "Expected input_handle_def to have no description"
+    assert input_handle_def.get("description") == "this is a description for handle", "Expected input_handle_def to have description"
 
     return { "output": "output_value" }

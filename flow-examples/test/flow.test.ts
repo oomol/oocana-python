@@ -77,6 +77,19 @@ describe(
       expect(finishEvent!.result!["a"], JSON.stringify(finishEvent)).eq("finished");
     });
 
+    it("run output-option flow", async () => {
+      files.delete("output");
+      const { code, events } = await run("output-option");
+      expect(code).toBe(0);
+
+      const finishEvents = events.filter(e => e.event === "BlockFinished");
+      expect(finishEvents.length).toBe(2);
+
+      const lastFinishEvent = finishEvents.findLast(e => e.event === "BlockFinished")?.data;
+      expect(lastFinishEvent).toBeDefined();
+      expect(lastFinishEvent?.stacks[0].node_id).toBe("end");
+    });
+
     it("run bin flow", async () => {
       files.delete("bin");
       const { code, events } = await run("bin");

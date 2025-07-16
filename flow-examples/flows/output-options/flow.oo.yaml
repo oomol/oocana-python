@@ -1,0 +1,61 @@
+nodes:
+  - node_id: +python#1
+    title: "Python #1"
+    icon: ":logos:python:"
+    task:
+      ui:
+        default_width: 450
+      inputs_def:
+        []
+      outputs_def:
+        - handle: output1
+          json_schema:
+            {}
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+scriptlet#1.py
+  - node_id: +python#2
+    title: "Python #2"
+    icon: ":logos:python:"
+    task:
+      ui:
+        default_width: 450
+      inputs_def:
+        - handle: output1
+          json_schema:
+            {}
+          nullable: false
+      outputs_def:
+        []
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+scriptlet#2.py
+    inputs_from:
+      - handle: output1
+        from_node:
+          - node_id: +python#1
+            output_handle: output1
+  - node_id: end
+    title: "Python #3"
+    icon: ":logos:python:"
+    task:
+      ui:
+        default_width: 450
+      inputs_def:
+        - handle: k
+          json_schema:
+            {}
+          nullable: false
+      outputs_def:
+        []
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+scriptlet#3.py
+    inputs_from:
+      - handle: k
+        from_node:
+          - node_id: +python#1
+            output_handle: output1

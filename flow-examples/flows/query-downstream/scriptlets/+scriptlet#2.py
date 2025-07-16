@@ -11,4 +11,4 @@ def main(params: Inputs, context: Context) -> Outputs:
 
     # your code
 
-    return { "output": "output_value" }
+    return { "output1": "output_value" }

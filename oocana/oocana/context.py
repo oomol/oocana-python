@@ -20,6 +20,14 @@ __all__ = ["Context", "HandleDefDict", "RunResponse", "BlockFinishPayload"]
 def random_string(length=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
+class ToNode(TypedDict):
+    node_id: str
+
+    input_handle: str
+
+class ToFlow(TypedDict):
+    output_handle: str
+
 class BlockFinishPayload(TypedDict):
     """
     A payload that represents the block finish message.
@@ -357,12 +365,15 @@ class Context:
                 )
         return value
 
-    def output(self, key: str, value: Any):
+    def output(self, key: str, value: Any, *, to_node: list[ToNode] | None = None, to_flow: list[ToFlow] | None = None):
         """
         output the value to the next block
 
         key: str, the key of the output, should be defined in the block schema output defs, the field name is handle
         value: Any, the value of the output
+        to_node: list[ToNode] | None, the target node(with input handle) to send the output
+        to_flow: list[ToFlow] | None, the target flow(with output handle) to send the output
+        if both to_node and to_flow are None, the output will be sent to all connected nodes and flows.
         """
 
         try:
@@ -378,12 +389,21 @@ class Context:
             )
             return
 
-        node_result = {
+        if to_node is not None or to_flow is not None:
+            target = {
+                "to_node": to_node,
+                "to_flow": to_flow,
+            }
+        else:
+            target = None
+
+        payload = {
             "type": "BlockOutput",
             "handle": key,
             "output": wrap_value,
+            "target": target if target else None,
         }
-        self.__mainframe.send(self.job_info, node_result)
+        self.__mainframe.send(self.job_info, payload)
     
     def outputs(self, outputs: Dict[str, Any]):
         """

@@ -26,7 +26,7 @@ nodes:
           json_schema:
             {}
           nullable: false
-          description: this is a description for hanle
+          description: this is a description for handle
       outputs_def:
         []
       executor:

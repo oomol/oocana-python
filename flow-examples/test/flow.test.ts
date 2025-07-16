@@ -77,9 +77,9 @@ describe(
       expect(finishEvent!.result!["a"], JSON.stringify(finishEvent)).eq("finished");
     });
 
-    it("run output-option flow", async () => {
+    it("run output-options flow", async () => {
       files.delete("output");
-      const { code, events } = await run("output-option");
+      const { code, events } = await run("output-options");
       expect(code).toBe(0);
 
       const finishEvents = events.filter(e => e.event === "BlockFinished");

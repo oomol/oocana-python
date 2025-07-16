@@ -403,7 +403,7 @@ class Context:
             "output": wrap_value,
         }
         if target is not None:
-            payload["target"] = target
+            payload["options"] = {"target": target}
         self.__mainframe.send(self.job_info, payload)
     
     def outputs(self, outputs: Dict[str, Any]):

@@ -1,0 +1,41 @@
+nodes:
+  - node_id: +python#1
+    title: "Python #1"
+    icon: ":logos:python:"
+    task:
+      ui:
+        default_width: 450
+      inputs_def:
+        []
+      outputs_def:
+        - handle: output1
+          json_schema:
+            {}
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+scriptlet#1.py
+  - node_id: end
+    title: "Python #2"
+    icon: ":logos:python:"
+    task:
+      ui:
+        default_width: 450
+      inputs_def:
+        - handle: output1
+          json_schema:
+            {}
+          nullable: false
+          description: this is a description for handle
+      outputs_def:
+        []
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+scriptlet#2.py
+    inputs_from:
+      - handle: output1
+        from_node:
+          - node_id: +python#1
+            output_handle: output1
+    description: this is a downstream node

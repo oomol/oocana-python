@@ -52,6 +52,12 @@ describe(
       expect(code).toBe(0);
     });
 
+    it("run query-downstream flow", async () => {
+      files.delete("query-downstream");
+      const { code } = await run("query-downstream");
+      expect(code).toBe(0);
+    });
+
     it("run var flow", async () => {
       files.delete("var");
       const { code } = await run("var");

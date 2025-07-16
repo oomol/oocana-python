@@ -539,7 +539,7 @@ class Context:
             self.block_info,
             {
                 "type": "BlockPreview",
-                "payload": payload,
+                "payload": payload_internal,  # type: ignore
             },
         )
 

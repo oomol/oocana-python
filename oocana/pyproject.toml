@@ -1,6 +1,6 @@
 [project]
 name = "oocana"
-version = "0.17.0"
+version = "0.17.1"
 description = "python implement of oocana to give a context for oocana block"
 dependencies = [
     "paho-mqtt>=2",

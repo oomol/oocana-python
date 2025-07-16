@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.17.1](https://github.com/oomol/oocana-python/compare/oocana@0.17.0...oocana@0.17.1) (2025-07-16)
+
+
+### Features
+
+* add output option ([#392](https://github.com/oomol/oocana-python/issues/392)) ([75d46e3](https://github.com/oomol/oocana-python/commit/75d46e3fbefba6b71236fb1cfc1282ca2b8f2f9e))
+* add query downstream api ([#394](https://github.com/oomol/oocana-python/issues/394)) ([0c1cc21](https://github.com/oomol/oocana-python/commit/0c1cc21a7b09ffeb23485ac9d2df30f93b45b6f9))
+
+
+### Bug Fixes
+
+* preview dataframe error ([#395](https://github.com/oomol/oocana-python/issues/395)) ([9fd88ea](https://github.com/oomol/oocana-python/commit/9fd88ea6a9dfd4c8c7333fc600af243e72e09b98))
+
 ## [0.17.0](https://github.com/oomol/oocana-python/compare/oocana@0.16.20...oocana@0.17.0) (2025-07-15)
 
 

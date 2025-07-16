@@ -369,10 +369,10 @@ class Context:
         """
         output the value to the next block
 
-        key: str, the key of the output, should be defined in the block schema output defs, the field name is handle
-        value: Any, the value of the output
-        to_node: list[ToNode] | None, the target node(with input handle) to send the output
-        to_flow: list[ToFlow] | None, the target flow(with output handle) to send the output
+        :param key: str, the key of the output, should be defined in the block schema output defs, the field name is handle
+        :param value: Any, the value of the output
+        :param to_node: list[ToNode] | None, the target node(with input handle) to send the output
+        :param to_flow: list[ToFlow] | None, the target flow(with output handle) to send the output
         if both to_node and to_flow are None, the output will be sent to all connected nodes and flows.
         """
 

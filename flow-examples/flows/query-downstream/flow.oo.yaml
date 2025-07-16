@@ -38,4 +38,4 @@ nodes:
         from_node:
           - node_id: +python#1
             output_handle: output1
-    description: this is a download stream node
+    description: this is a downstream node

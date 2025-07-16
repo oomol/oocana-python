@@ -8,4 +8,4 @@ class Outputs(typing.TypedDict):
 #endregion
 
 def main(params: Inputs, context: Context) -> Outputs:
-    context.output("output1", "Hello World", to_node={"node_id": "end", "input_handle": "k"})
+    context.output("output1", "Hello World", to_node=[{"node_id": "end", "input_handle": "k"}])

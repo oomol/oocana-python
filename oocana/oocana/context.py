@@ -119,11 +119,11 @@ class QueryBlockResponse(TypedDict):
     """
 
     additional_outputs: bool
-    """if the block has additional outputs, this field should be True, otherwise False.
+    """if the block author declare this block accept additional outputs, this field should be True, otherwise False.
     """
 
     additional_inputs: bool
-    """if the block has additional inputs, this field should be True, otherwise False.
+    """if the block author declare this block accept additional inputs, this field should be True, otherwise False.
     """
 
 

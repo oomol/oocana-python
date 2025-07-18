@@ -17,4 +17,8 @@ async def main(inputs, context: Context):
     res = await run_res.finish()
     assert res.get("error") is not None
 
+    run_res = context.run_block("self::inputs", inputs={"schema_input": "aaa"})
+    res = await run_res.finish()
+    assert res.get("error") is None
+
     return {"a": "a"}

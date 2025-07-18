@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.3](https://github.com/oomol/oocana-python/compare/oocana@0.17.2...oocana@0.17.3) (2025-07-18)
+
+
+### Features
+
+* run block add strict parameter ([#399](https://github.com/oomol/oocana-python/issues/399)) ([c4342ec](https://github.com/oomol/oocana-python/commit/c4342ec4df17a5c5a4cb4a789018a59b3b83a732))
+
 ## [0.17.2](https://github.com/oomol/oocana-python/compare/oocana@0.17.1...oocana@0.17.2) (2025-07-18)
 
 

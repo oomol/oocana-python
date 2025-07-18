@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.2](https://github.com/oomol/oocana-python/compare/oocana@0.17.1...oocana@0.17.2) (2025-07-18)
+
+
+### Bug Fixes
+
+* wrong field name ([#397](https://github.com/oomol/oocana-python/issues/397)) ([c77e152](https://github.com/oomol/oocana-python/commit/c77e1527005303b988a59adbad527225eda8a20a))
+
 ## [0.17.1](https://github.com/oomol/oocana-python/compare/oocana@0.17.0...oocana@0.17.1) (2025-07-16)
 
 

@@ -108,12 +108,12 @@ class QueryBlockResponse(TypedDict):
     None.
     """
 
-    inputs: Dict[str, HandleDefDict] | None
+    inputs_def: Dict[str, HandleDefDict] | None
     """the inputs of the block, should be a dict, if the block has no inputs
     this field should be None.
     """
 
-    outputs: Dict[str, HandleDefDict] | None
+    outputs_def: Dict[str, HandleDefDict] | None
     """the outputs of the block, should be a dict, if the block has no outputs  
     this field should be None.
     """

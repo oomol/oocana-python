@@ -1,0 +1,15 @@
+executor:
+  name: python
+  options: 
+    entry: __init__.py
+inputs_def:
+  - handle: nullable_input
+    nullable: true
+  - handle: default_input
+    value: "default_value"
+  - handle: schema_input
+    json_schema:
+      type: "string"
+outputs_def:
+  - handle: nullable_output
+  - handle: default_output

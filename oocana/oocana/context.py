@@ -227,8 +227,7 @@ class Context:
 
     @property
     def pkg_dir(self) -> str:
-        """
-        deprecated, use pkg_data_dir instead.
+        """Deprecated, use pkg_data_dir instead.
         """
         return self.__pkg_data_dir
 

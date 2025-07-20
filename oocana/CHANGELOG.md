@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.4](https://github.com/oomol/oocana-python/compare/oocana@0.17.3...oocana@0.17.4) (2025-07-20)
+
+
+### Features
+
+* add pkg_data_dir ([#401](https://github.com/oomol/oocana-python/issues/401)) ([4ce517a](https://github.com/oomol/oocana-python/commit/4ce517add738c275b4d5da2f0b17f035c516f621))
+
 ## [0.17.3](https://github.com/oomol/oocana-python/compare/oocana@0.17.2...oocana@0.17.3) (2025-07-18)
 
 

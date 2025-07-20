@@ -174,7 +174,7 @@ class Context:
     _logger: Optional[logging.Logger] = None
     __pkg_data_dir: str
 
-    # TODO: remove all pkg_dir parameter, use pkg_data_dir instead.
+    # TODO: remove the pkg_dir parameter, use pkg_data_dir instead.
     def __init__(
         self, *, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, inputs_def, outputs_def: Dict[str, Any], session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str
     ) -> None:

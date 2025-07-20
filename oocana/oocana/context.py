@@ -233,9 +233,9 @@ class Context:
 
     @property
     def pkg_data_dir(self) -> str:
-        """a directory for the current package data, all blocks in this package will share the same directory. 
-        this directory's content will be persisted after the session finished, so you can use it to store some data that need to be shared between blocks in the same package.
-        Please note that this directory is not cleaned after the session finished, so you need to manage the content of this directory by yourself. The same package with different versions will share the same directory, so you need to be careful with different package versions.
+        """A directory for the current package data, all blocks in this package will share the same directory. 
+        This directory's content will be persisted after the session finishes, so you can use it to store some data that need to be shared between blocks in the same package.
+        Please note that this directory is not cleaned after the session finishes, so you need to manage the content of this directory by yourself. The same package with different versions will share the same directory, so you need to be careful with different package versions.
         """
         return self.__pkg_data_dir
 

@@ -172,8 +172,9 @@ class Context:
     __tmp_dir: str
     __package_name: str | None = None
     _logger: Optional[logging.Logger] = None
-    __pkg_dir: str
+    __pkg_data_dir: str
 
+    # TODO: remove the pkg_dir parameter, use pkg_data_dir instead.
     def __init__(
         self, *, inputs: Dict[str, Any], blockInfo: BlockInfo, mainframe: Mainframe, store, inputs_def, outputs_def: Dict[str, Any], session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str
     ) -> None:
@@ -194,7 +195,7 @@ class Context:
         self.__session_dir = session_dir
         self.__tmp_dir = tmp_dir
         self.__package_name = package_name
-        self.__pkg_dir = pkg_dir
+        self.__pkg_data_dir = pkg_dir
 
     @property
     def logger(self) -> logging.Logger:
@@ -226,9 +227,17 @@ class Context:
 
     @property
     def pkg_dir(self) -> str:
-        """a directory for the current package, all blocks in the this package will share the same directory. this directory will be cleaned if this session finish successfully, otherwise it will be kept for debugging or other purpose.
+        """Deprecated, use pkg_data_dir instead.
         """
-        return self.__pkg_dir
+        return self.__pkg_data_dir
+
+    @property
+    def pkg_data_dir(self) -> str:
+        """A directory for the current package data, all blocks in this package will share the same directory. 
+        This directory's content will be persisted after the session finishes, so you can use it to store some data that need to be shared between blocks in the same package.
+        Please note that this directory is not cleaned after the session finishes, so you need to manage the content of this directory by yourself. The same package with different versions will share the same directory, so you need to be careful with different package versions.
+        """
+        return self.__pkg_data_dir
 
     @property
     def keepAlive(self):

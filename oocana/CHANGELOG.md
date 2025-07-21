@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.0](https://github.com/oomol/oocana-python/compare/oocana@0.17.4...oocana@0.18.0) (2025-07-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* refactor run block api ([#403](https://github.com/oomol/oocana-python/issues/403))
+
+### Code Refactoring
+
+* improve run block docs and callbacks ([#405](https://github.com/oomol/oocana-python/issues/405)) ([4753824](https://github.com/oomol/oocana-python/commit/475382428e9edc103eb34e5b0e67d85b620de97e))
+* refactor run block api ([#403](https://github.com/oomol/oocana-python/issues/403)) ([6c26521](https://github.com/oomol/oocana-python/commit/6c2652105dbde2998df699966616c78645485ebf))
+
 ## [0.17.4](https://github.com/oomol/oocana-python/compare/oocana@0.17.3...oocana@0.17.4) (2025-07-20)
 
 

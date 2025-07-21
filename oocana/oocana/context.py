@@ -47,9 +47,10 @@ class BlockJob:
         self.__finish_future = future
 
     def add_output_callback(self, fn: Callable[[Dict[str, Any]], None]):
-        """
-        register a callback function to handle the output of the block.
+        """Register a callback function to handle the output of the block.
         :param fn: the callback function, it should accept a dict as the first parameter, the output handle will be the key, and the output value will be the value.
+
+        Note: the callback function is running in mqtt's callback thread, so it currently does not support run context.sendXX message directly.
         """
         if not callable(fn):
             raise ValueError("output_callback should be a callable function.")
@@ -748,6 +749,11 @@ class Context:
             if error is not None:
                 set_future_and_clean(error)
 
+        def run_output_callback(payload: Dict[str, Any]):
+            # TODO: run callback in different coroutine, so it can send mqtt message directly.
+            for output_callback in outputs_callbacks:
+                output_callback(payload)
+
         def event_callback(payload: Dict[str, Any]):
 
             if payload.get("session_id") != self.session_id:
@@ -762,16 +768,13 @@ class Context:
             if payload.get("type") == "BlockOutput":
                 output = {}
                 output[payload.get("handle")] = payload.get("output")
-                for callback in outputs_callbacks:
-                    callback(output)
+                run_output_callback(output)
             elif payload.get("type") == "BlockOutputs":
-                for callback in outputs_callbacks:
-                    callback(payload.get("outputs", {}))
+                run_output_callback(payload.get("outputs", {}))
             elif payload.get("type") == "SubflowBlockOutput":
                 output = {}
                 output[payload.get("handle")] = payload.get("output")
-                for callback in outputs_callbacks:
-                    callback(output)
+                run_output_callback(output)
             elif payload.get("type") == "SubflowBlockFinished":
                 error = payload.get("error")
                 set_future_and_clean(error)
@@ -781,10 +784,11 @@ class Context:
                 if result is not None and not isinstance(result, dict):
                     pass
                 elif result is not None:
-                    for callback in outputs_callbacks:
-                        callback(result)
+                    run_output_callback(result)
 
                 set_future_and_clean(error)
+
+        job = BlockJob(outputs_callbacks, future)
 
         def set_future_and_clean(error: None | str = None):
             self.__mainframe.remove_report_callback(event_callback)
@@ -799,9 +803,10 @@ class Context:
                     future.set_exception(BlockExecuteException(f"run block {block} failed: {error}"))
 
             loop.call_soon_threadsafe(set_future)
+            outputs_callbacks.clear()
 
 
         self.__mainframe.add_report_callback(event_callback)
         self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)
 
-        return BlockJob(outputs_callbacks, future)
+        return job

@@ -1,5 +1,6 @@
 import asyncio
 from dataclasses import asdict
+from turtle import st
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .mainframe import Mainframe
 from .handle_data import HandleDef
@@ -31,17 +32,17 @@ class ToFlow(TypedDict):
 
 class BlockJob:
 
-    __outputs_callbacks: set[Callable[[str, Any], None]]
+    __outputs_callbacks: set[Callable[[Dict[str, Any]], None]]
     __finish_future: asyncio.Future[None]
 
-    def __init__(self, outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future) -> None:
+    def __init__(self, outputs_callbacks: set[Callable[[Dict[str, Any]], None]], future: asyncio.Future) -> None:
         self.__outputs_callbacks = outputs_callbacks
         self.__finish_future = future
 
-    def add_output_callback(self, fn: Callable[[str, Any], None]):
+    def add_output_callback(self, fn: Callable[[Dict[str, Any]], None]):
         """
         register a callback function to handle the output of the block.
-        :param fn: the callback function, it should accept two arguments, the first is the handle of the output, the second is the value of the output.
+        :param fn: the callback function, it should accept a dict as the first parameter, the output handle will be the key, and the output value will be the value.
         """
         if not callable(fn):
             raise ValueError("output_callback should be a callable function.")
@@ -721,7 +722,7 @@ class Context:
             "request_id": request_id,
         })
 
-        outputs_callbacks = set()
+        outputs_callbacks: set[Callable[[Dict[str, Any]], None]] = set()
 
         # run_block will always run in a coroutine, so we can use asyncio.Future to wait for the result.
         loop = asyncio.get_running_loop()
@@ -752,27 +753,29 @@ class Context:
                 return
 
             if payload.get("type") == "BlockOutput":
+                output = {}
+                output[payload.get("handle")] = payload.get("output")
                 for callback in outputs_callbacks:
-                    callback(payload.get("handle"), payload.get("output"))
+                    callback(output)
             elif payload.get("type") == "BlockOutputs":
-                for handle, value in payload.get("outputs", {}).items():
-                    for callback in outputs_callbacks:
-                        callback(handle, value)
-            elif payload.get("type") == "SubflowBlockOutput":
                 for callback in outputs_callbacks:
-                    callback(payload.get("handle"), payload.get("output"))
+                    callback(payload.get("outputs", {}))
+            elif payload.get("type") == "SubflowBlockOutput":
+                output = {}
+                output[payload.get("handle")] = payload.get("output")
+                for callback in outputs_callbacks:
+                    callback(output)
             elif payload.get("type") == "SubflowBlockFinished":
                 error = payload.get("error")
                 set_future_and_clean(error)
             elif payload.get("type") == "BlockFinished":
-                result = payload.get("result")
+                result = payload.get("result", {})
                 error = payload.get("error")
                 if result is not None and not isinstance(result, dict):
                     pass
                 elif result is not None:
-                    for handle, value in result.items():
-                        for callback in outputs_callbacks:
-                            callback(handle, value)
+                    for callback in outputs_callbacks:
+                        callback(result)
 
                 set_future_and_clean(error)
 

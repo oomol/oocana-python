@@ -44,12 +44,10 @@ class BlockFinishPayload(TypedDict):
 class BlockJob:
 
     __outputs_callbacks: set[Callable[[str, Any], None]]
-    __events: set[Callable[[Dict[str, Any]], None]]
     __finish_future: asyncio.Future[BlockFinishPayload]
 
-    def __init__(self, event_callbacks: set[Callable[[Dict[str, Any]], None]], outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future[BlockFinishPayload]) -> None:
+    def __init__(self, outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future[BlockFinishPayload]) -> None:
         self.__outputs_callbacks = outputs_callbacks
-        self.__events = event_callbacks
         self.__finish_future = future
 
     def add_output_callback(self, fn: Callable[[str, Any], None]):
@@ -60,16 +58,6 @@ class BlockJob:
         if not callable(fn):
             raise ValueError("output_callback should be a callable function.")
         self.__outputs_callbacks.add(fn)
-
-    # todo: add more detail about the event payload.
-    def add_event_callback(self, fn: Callable[[Dict[str, Any]], None]):
-        """
-        register a callback function to handle the events of the block.
-        :param fn: the callback function, it should accept a single argument, which is the event payload.
-        """
-        if not callable(fn):
-            raise ValueError("event_callback should be a callable function.")
-        self.__events.add(fn)
 
     def finish(self) -> asyncio.Future[BlockFinishPayload]:
         return self.__finish_future
@@ -739,7 +727,6 @@ class Context:
             "request_id": request_id,
         })
 
-        event_callbacks = set()
         outputs_callbacks = set()
 
         # run_block will always run in a coroutine, so we can use asyncio.Future to wait for the result.
@@ -762,7 +749,6 @@ class Context:
                     })
             loop.call_soon_threadsafe(set_future_with_error)
 
-        # TODO: add more types
         def event_callback(payload: Dict[str, Any]):
 
             if payload.get("session_id") != self.session_id:
@@ -773,9 +759,6 @@ class Context:
             elif payload.get("type") == "ExecutorReady" or payload.get("type") == "BlockReady" or payload.get("type") == "BlockRequest":
                 # ignore these messages
                 return
-
-            for callback in event_callbacks:
-                callback(payload)
 
             if payload.get("type") == "BlockOutput":
                 for callback in outputs_callbacks:
@@ -823,4 +806,4 @@ class Context:
         self.__mainframe.add_report_callback(event_callback)
         self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)
 
-        return BlockJob(event_callbacks, outputs_callbacks, future)
+        return BlockJob(outputs_callbacks, future)

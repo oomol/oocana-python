@@ -34,7 +34,7 @@ class BlockJob:
     __outputs_callbacks: set[Callable[[Dict[str, Any]], None]]
     __finish_future: asyncio.Future[None]
 
-    def __init__(self, outputs_callbacks: set[Callable[[Dict[str, Any]], None]], future: asyncio.Future) -> None:
+    def __init__(self, outputs_callbacks: set[Callable[[Dict[str, Any]], None]], future: asyncio.Future[None]) -> None:
         self.__outputs_callbacks = outputs_callbacks
         self.__finish_future = future
 

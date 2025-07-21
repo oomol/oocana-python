@@ -789,6 +789,7 @@ class Context:
         def set_future_and_clean(error: None | str = None):
             self.__mainframe.remove_report_callback(event_callback)
             self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
+            outputs_callbacks.clear()
 
             def set_future():
                 if future.done():

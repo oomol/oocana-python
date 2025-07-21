@@ -15,7 +15,7 @@ import logging
 import random
 import string
 
-__all__ = ["Context", "HandleDefDict", "RunResponse", "BlockFinishPayload"]
+__all__ = ["Context", "HandleDefDict", "BlockJob", "BlockFinishPayload"]
 
 def random_string(length=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -41,7 +41,7 @@ class BlockFinishPayload(TypedDict):
     """the error message of the block, if the block has no error, this field should be None.
     """
 
-class RunResponse:
+class BlockJob:
 
     __outputs_callbacks: set[Callable[[str, Any], None]]
     __events: set[Callable[[Dict[str, Any]], None]]
@@ -688,7 +688,7 @@ class Context:
         return await f
         
 
-    def run_block(self, block: str, *, inputs: Dict[str, Any], additional_inputs_def: list[HandleDefDict] | None = None, additional_outputs_def: list[HandleDefDict] | None = None, strict: bool = False) -> RunResponse:
+    def run_block(self, block: str, *, inputs: Dict[str, Any], additional_inputs_def: list[HandleDefDict] | None = None, additional_outputs_def: list[HandleDefDict] | None = None, strict: bool = False) -> BlockJob:
         """
         :param block: the id of the block to run. format: `self::<block_name>` or `<package_name>::<block_name>`.
         :param inputs: the inputs of the block. if the block has no inputs, this parameter can be dict. 
@@ -823,4 +823,4 @@ class Context:
         self.__mainframe.add_report_callback(event_callback)
         self.__mainframe.add_request_response_callback(self.session_id, request_id, response_callback)
 
-        return RunResponse(event_callbacks, outputs_callbacks, future)
+        return BlockJob(event_callbacks, outputs_callbacks, future)

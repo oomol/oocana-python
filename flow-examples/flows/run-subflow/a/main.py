@@ -2,10 +2,8 @@ from oocana import Context
 
 async def main(inputs, context: Context):
 
-    run_res = context.run_block("self::basic", inputs={"input": "111"})
-    run_res.add_event_callback(lambda payload: print("event callback", payload))
-    run_res.add_output_callback(lambda handle, value: print("output callback", handle, value))
-    res = await run_res.finish()
-    assert res.get("error") is None
+    block_job = context.run_block("self::basic", inputs={"input": "111"})
+    block_job.add_output_callback(lambda output: print("output callback", output))
+    await block_job.finish()
 
     return {"a": "a"}

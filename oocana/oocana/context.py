@@ -15,7 +15,7 @@ import logging
 import random
 import string
 
-__all__ = ["Context", "HandleDefDict", "BlockJob"]
+__all__ = ["Context", "HandleDefDict", "BlockJob", "BlockExecuteException"]
 
 def random_string(length=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -28,6 +28,14 @@ class ToNode(TypedDict):
 class ToFlow(TypedDict):
     output_handle: str
 
+class BlockExecuteException(Exception):
+    """Exception raised when a block execution fails."""
+    def __init__(self, message: str):
+        super().__init__(message)
+        self.message = message
+
+    def __str__(self):
+        return f"BlockExecuteException: {self.message}"
 
 class BlockJob:
 
@@ -788,7 +796,7 @@ class Context:
                 if error is None:
                     future.set_result(None)
                 else:
-                    future.set_exception(RuntimeError(f"run block {block} failed: {error}"))
+                    future.set_exception(BlockExecuteException(f"run block {block} failed: {error}"))
 
             loop.call_soon_threadsafe(set_future)
 

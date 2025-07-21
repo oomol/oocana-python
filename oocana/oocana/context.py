@@ -15,7 +15,7 @@ import logging
 import random
 import string
 
-__all__ = ["Context", "HandleDefDict", "BlockJob", "BlockFinishPayload"]
+__all__ = ["Context", "HandleDefDict", "BlockJob"]
 
 def random_string(length=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -28,25 +28,13 @@ class ToNode(TypedDict):
 class ToFlow(TypedDict):
     output_handle: str
 
-class BlockFinishPayload(TypedDict):
-    """
-    A payload that represents the block finish message.
-    """
-
-    result: Dict[str, Any] | None
-    """the result of the block, should be a dict, if the block has no result (which means has error), this field should be None.
-    """
-
-    error: str | None
-    """the error message of the block, if the block has no error, this field should be None.
-    """
 
 class BlockJob:
 
     __outputs_callbacks: set[Callable[[str, Any], None]]
-    __finish_future: asyncio.Future[BlockFinishPayload]
+    __finish_future: asyncio.Future[None]
 
-    def __init__(self, outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future[BlockFinishPayload]) -> None:
+    def __init__(self, outputs_callbacks: set[Callable[[str, Any], None]], future: asyncio.Future) -> None:
         self.__outputs_callbacks = outputs_callbacks
         self.__finish_future = future
 
@@ -59,7 +47,13 @@ class BlockJob:
             raise ValueError("output_callback should be a callable function.")
         self.__outputs_callbacks.add(fn)
 
-    def finish(self) -> asyncio.Future[BlockFinishPayload]:
+    def finish(self) -> asyncio.Future[None]:
+        """Wait for the block to finish and return the future.
+        
+        Returns:
+            asyncio.Future: A future that will be resolved when the block finishes.
+            If the block finishes with an error, the future will throw a Exception.
+        """
         return self.__finish_future
 
 class HandleDefDict(TypedDict):
@@ -731,7 +725,7 @@ class Context:
 
         # run_block will always run in a coroutine, so we can use asyncio.Future to wait for the result.
         loop = asyncio.get_running_loop()
-        future: asyncio.Future[BlockFinishPayload] = loop.create_future()
+        future: asyncio.Future[None] = loop.create_future()
 
         def response_callback(payload: Dict[str, Any]):
             """
@@ -741,13 +735,10 @@ class Context:
             if payload.get("request_id") != request_id:
                 return
 
-            def set_future_with_error():
-                if not future.done():
-                    future.set_result({
-                        "result": None,
-                        "error": payload.get("error", "Unknown error occurred while running the block.")
-                    })
-            loop.call_soon_threadsafe(set_future_with_error)
+            error = payload.get("error")
+            # only handle error 
+            if error is not None:
+                set_future_and_clean(error)
 
         def event_callback(payload: Dict[str, Any]):
 
@@ -772,20 +763,10 @@ class Context:
                     callback(payload.get("handle"), payload.get("output"))
             elif payload.get("type") == "SubflowBlockFinished":
                 error = payload.get("error")
-
-                self.__mainframe.remove_report_callback(event_callback)
-                self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
-
-                def set_future_with_error():
-                    if not future.done():
-                        future.set_result({
-                            "result": None,
-                            "error": error
-                        })
-                loop.call_soon_threadsafe(set_future_with_error)
-
+                set_future_and_clean(error)
             elif payload.get("type") == "BlockFinished":
                 result = payload.get("result")
+                error = payload.get("error")
                 if result is not None and not isinstance(result, dict):
                     pass
                 elif result is not None:
@@ -793,14 +774,21 @@ class Context:
                         for callback in outputs_callbacks:
                             callback(handle, value)
 
-                self.__mainframe.remove_report_callback(event_callback)
-                self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
+                set_future_and_clean(error)
 
-                def set_future_result():
-                    if not future.done():
-                        future.set_result({"result": payload.get("result"), "error": payload.get("error")})
+        def set_future_and_clean(error: None | str = None):
+            self.__mainframe.remove_report_callback(event_callback)
+            self.__mainframe.remove_request_response_callback(self.session_id, request_id, response_callback)
 
-                loop.call_soon_threadsafe(set_future_result)
+            def set_future():
+                if future.done():
+                    return
+                if error is None:
+                    future.set_result(None)
+                else:
+                    future.set_exception(RuntimeError(f"run block {block} failed: {error}"))
+
+            loop.call_soon_threadsafe(set_future)
 
 
         self.__mainframe.add_report_callback(event_callback)

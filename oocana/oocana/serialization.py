@@ -1,7 +1,7 @@
-from typing import TypedDict, Literal
+from typing import TYPE_CHECKING, TypedDict, Literal
 from os import remove
 from os.path import exists, join
-from .context import Context
+
 __all__ = ["CompressionOptions", "setup_dataframe_serialization", "compression_options", "compression_suffix"]
 
 SUPPORTED_COMPRESSION_METHODS = ["zip", "gzip", "bz2", "zstd", "xz", "tar"]
@@ -16,7 +16,11 @@ class CompressionOptions(TypedDict):
     For more information or other compression options, see https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_pickle.html
     """
 
-def setup_dataframe_serialization(context: Context, compression: CompressionOptions | None = None) -> None:
+if TYPE_CHECKING:
+    from .context import Context
+
+
+def setup_dataframe_serialization(context: 'Context', compression: CompressionOptions | None = None) -> None:
     """
     Setup the DataFrame serialization for the compression module. This function need to be called before using DataFrame serialization. 
     This function ensures that DataFrames are serialized to pickle files
@@ -46,7 +50,7 @@ def setup_dataframe_serialization(context: Context, compression: CompressionOpti
 
 COMPRESSION_OPTIONS_FILE = "__compression_options.json"
 
-def compression_options(context: Context) -> CompressionOptions | None:
+def compression_options(context: 'Context') -> CompressionOptions | None:
     """
     Retrieve the compression options from the session directory.
     If no options are set, return None.
@@ -64,7 +68,7 @@ def compression_options(context: Context) -> CompressionOptions | None:
         print(f"An unexpected error occurred while reading compression options: {e}. Returning None.")
         return None
     
-def compression_suffix(context: Context) -> str:
+def compression_suffix(context: 'Context') -> str:
     """
     Get the file suffix based on the compression method.
     If no compression is specified, return an empty string.

@@ -24,8 +24,8 @@ def setup_dataframe_serialization(context: Context, compression: CompressionOpti
     """
     try:
         if compression is None:
-            if exists(context.pkg_data_dir.join(COMPRESSION_OPTIONS_FILE)):
-                remove(context.pkg_data_dir.join(COMPRESSION_OPTIONS_FILE))
+            if exists(join(context.pkg_data_dir, COMPRESSION_OPTIONS_FILE)):
+                remove(join(context.pkg_data_dir, COMPRESSION_OPTIONS_FILE))
             return
         elif compression["method"] not in SUPPORTED_COMPRESSION_METHODS:
             raise ValueError(f"Unsupported compression method: {compression['method']}. Supported methods are: {SUPPORTED_COMPRESSION_METHODS}.")
@@ -53,7 +53,7 @@ def compression_options(context: Context) -> CompressionOptions | None:
     """
     import json
     try:
-        with open(context.pkg_data_dir.join(COMPRESSION_OPTIONS_FILE), "r") as f:
+        with open(join(context.pkg_data_dir, COMPRESSION_OPTIONS_FILE), "r") as f:
             return json.load(f)
     except FileNotFoundError:
         return None

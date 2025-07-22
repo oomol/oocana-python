@@ -47,6 +47,7 @@ class HandleDef:
     def is_var_handle(self) -> bool:
         return self.check_handle_type("oomol/var")
     
+    # TODO: need a field to indicate if the handle is a serializable var
     def is_serializable_var(self) -> bool:
         return self.is_var_handle()
     

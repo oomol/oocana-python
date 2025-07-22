@@ -10,7 +10,6 @@ from io import BytesIO
 from .throttler import throttle
 from .preview import PreviewPayload, DataFrame, PreviewPayloadInternal, ShapeDataFrame
 from .data import EXECUTOR_NAME
-from .serialization import compression_suffix, compression_options
 import os.path
 import logging
 import random
@@ -350,6 +349,7 @@ class Context:
 
             bin_file = None
             if output_def.is_serializable_var() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
+                from .serialization import compression_suffix, compression_options
                 suffix = compression_suffix(context=self)
                 compression = compression_options(context=self)
                 bin_file = f"{self.session_dir}/binary/{self.session_id}/{self.job_id}/{handle}{suffix}"

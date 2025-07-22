@@ -35,7 +35,7 @@ def setup_dataframe_serialization(compression: CompressionOptions | None = None)
         elif compression is not None and compression["method"] == "zstd":
             # If zstd compression is specified, ensure that the zstandard library is available.
             try:
-                import zstandard as zstd
+                import zstandard as zstd  # type: ignore
             except ImportError:
                 raise ImportError("To use zstd compression, please install the zstandard library.")
         

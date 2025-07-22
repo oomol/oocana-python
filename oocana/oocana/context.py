@@ -348,6 +348,7 @@ class Context:
             ref = self.__store_ref(handle)
             self.__store[ref] = value
 
+            bin_file = None
             if output_def.is_serializable_var() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
                 suffix = compression_suffix()
                 compression = compression_options()

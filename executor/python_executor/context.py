@@ -38,6 +38,23 @@ def createContext(
                     continue
                 if ref in store:
                     inputs[k] = store.get(ref)
+                elif input_def.is_serializable_var() and isinstance(wrap_var["serialize_path"], str):
+                    # if the var is serializable, try to load it from the serialize path
+                    serialize_path = wrap_var["serialize_path"]
+                    if os.path.exists(serialize_path):
+                        try:
+                            import pandas as pd  # type: ignore
+                            try:
+                                inputs[k] = pd.read_pickle(serialize_path)
+                            except Exception as e:
+                                logger.error(f"Failed to load DataFrame from {serialize_path}: {e}")
+                                continue
+                            logger.info(f"Loaded DataFrame from {serialize_path}")
+                        except ImportError:
+                            logger.error("To use DataFrame serialization, please install pandas with `poetry install pandas`.")
+                            continue
+                    else:
+                        logger.error(f"serialize path {serialize_path} for oomol/var is not found")
                 else:
                     logger.error(f"object {ref} not found in store")
             elif is_bin_value(v):

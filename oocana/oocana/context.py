@@ -10,6 +10,7 @@ from io import BytesIO
 from .throttler import throttle
 from .preview import PreviewPayload, DataFrame, PreviewPayloadInternal, ShapeDataFrame
 from .data import EXECUTOR_NAME
+from .serialization import compression_suffix, compression_options
 import os.path
 import logging
 import random
@@ -346,9 +347,27 @@ class Context:
         if output_def.is_var_handle() and not self.__is_basic_type(value):
             ref = self.__store_ref(handle)
             self.__store[ref] = value
+
+            if output_def.is_serializable_var() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
+                suffix = compression_suffix()
+                compression = compression_options()
+                bin_file = f"{self.session_dir}/binary/{self.session_id}/{self.job_id}/{handle}{suffix}"
+                os.makedirs(os.path.dirname(bin_file), exist_ok=True)
+                try:
+                    copy_value = value.copy()  # copy the value to avoid blocking the main thread
+                    # to this in other thread to avoid blocking
+                    # value.to_pickle(bin_file, compression=compression)
+                    import threading
+                    def write_pickle():
+                        value.to_pickle(bin_file, compression=compression)
+                    thread = threading.Thread(target=write_pickle)
+                    thread.start()
+                except IOError as e:
+                    pass
             var: VarValueDict = {
                 "__OOMOL_TYPE__": "oomol/var",
-                "value": asdict(ref)
+                "value": asdict(ref),
+                "serialize_path": bin_file if 'bin_file' in locals() else None,
             }
             return var
         

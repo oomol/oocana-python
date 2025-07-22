@@ -47,6 +47,9 @@ class HandleDef:
     def is_var_handle(self) -> bool:
         return self.check_handle_type("oomol/var")
     
+    def is_serializable_var(self) -> bool:
+        return self.is_var_handle()
+    
     def is_secret_handle(self) -> bool:
         return self.check_handle_type("oomol/secret")
 

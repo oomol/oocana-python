@@ -350,8 +350,8 @@ class Context:
 
             bin_file = None
             if output_def.is_serializable_var() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
-                suffix = compression_suffix()
-                compression = compression_options()
+                suffix = compression_suffix(context=self)
+                compression = compression_options(context=self)
                 bin_file = f"{self.session_dir}/binary/{self.session_id}/{self.job_id}/{handle}{suffix}"
                 os.makedirs(os.path.dirname(bin_file), exist_ok=True)
                 try:

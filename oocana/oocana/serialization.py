@@ -42,7 +42,7 @@ def setup_dataframe_serialization(context: 'Context', compression: CompressionOp
                 raise ImportError("To use zstd compression, please install the zstandard library.")
         
         # write compression options to a file if exist then overwrite it
-        with open(COMPRESSION_OPTIONS_FILE, "w") as f:
+        with open(join(context.pkg_data_dir, COMPRESSION_OPTIONS_FILE), "w") as f:
             import json
             json.dump(compression, f)
         

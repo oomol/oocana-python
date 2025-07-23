@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 def setup_dataframe_serialization(context: 'Context', compression: CompressionOptions | None = None) -> None:
     """
     Setup the DataFrame serialization for the compression operation. This function needs to be called before using DataFrame serialization. 
-    This function ensures that DataFrames are serialized to special file based on the specified compression method.
-    The configuration is store in the `__compression_options.json` file in the pkg_data_dir. so it can be persisted across sessions.
+    This function ensures that DataFrames are serialized to a special file based on the specified compression method.
+    The configuration is stored in the `__compression_options.json` file in the pkg_data_dir. So it can be persisted across sessions
     and stored in the session directory for later retrieval.
     """
     try:

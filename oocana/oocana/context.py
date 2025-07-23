@@ -14,11 +14,18 @@ import os.path
 import logging
 import random
 import string
+import hashlib
 
 __all__ = ["Context", "HandleDefDict", "BlockJob", "BlockExecuteException"]
 
 def random_string(length=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+def string_hash(text: str) -> str:
+    """
+    Generates a deterministic hash for a given string.
+    """
+    return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
 class ToNode(TypedDict):
     node_id: str
@@ -347,21 +354,22 @@ class Context:
             ref = self.__store_ref(handle)
             self.__store[ref] = value
 
-            bin_file = None
+            serialize_path = None
             # only cache root flow
             if len(self.__block_info.stacks) < 2 and output_def.is_serializable_var() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
                 from .serialization import compression_suffix, compression_options
                 suffix = compression_suffix(context=self)
                 compression = compression_options(context=self)
-                bin_file = f"{self.session_dir}/binary/{self.session_id}/{self.job_id}/{handle}{suffix}"
-                os.makedirs(os.path.dirname(bin_file), exist_ok=True)
+                flow_node = self.__block_info.stacks[-1].get("flow", "unknown") + "-" + self.node_id
+                serialize_path = f"{self.pkg_data_dir}/.cache/{string_hash(flow_node)}/{handle}{suffix}"
+                os.makedirs(os.path.dirname(serialize_path), exist_ok=True)
                 try:
                     copy_value = value.copy()  # copy the value to avoid blocking the main thread
                     # to this in other thread to avoid blocking
                     # value.to_pickle(bin_file, compression=compression)
                     import threading
                     def write_pickle():
-                        copy_value.to_pickle(bin_file, compression=compression)
+                        copy_value.to_pickle(serialize_path, compression=compression)
                     thread = threading.Thread(target=write_pickle)
                     thread.start()
                 except IOError as e:
@@ -369,7 +377,7 @@ class Context:
             var: VarValueDict = {
                 "__OOMOL_TYPE__": "oomol/var",
                 "value": asdict(ref),
-                "serialize_path": bin_file if 'bin_file' in locals() else None,
+                "serialize_path": serialize_path if 'bin_file' in locals() else None,
             }
             return var
         

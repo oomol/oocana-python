@@ -375,7 +375,7 @@ class Context:
             var: VarValueDict = {
                 "__OOMOL_TYPE__": "oomol/var",
                 "value": asdict(ref),
-                "serialize_path": serialize_path if 'bin_file' in locals() else None,
+                "serialize_path": serialize_path,
             }
             return var
         

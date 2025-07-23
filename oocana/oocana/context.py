@@ -365,8 +365,6 @@ class Context:
                 os.makedirs(os.path.dirname(serialize_path), exist_ok=True)
                 try:
                     copy_value = value.copy()  # copy the value to avoid blocking the main thread
-                    # to this in other thread to avoid blocking
-                    # value.to_pickle(bin_file, compression=compression)
                     import threading
                     def write_pickle():
                         copy_value.to_pickle(serialize_path, compression=compression)

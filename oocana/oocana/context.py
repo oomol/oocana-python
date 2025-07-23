@@ -360,7 +360,7 @@ class Context:
                     # value.to_pickle(bin_file, compression=compression)
                     import threading
                     def write_pickle():
-                        value.to_pickle(bin_file, compression=compression)
+                        copy_value.to_pickle(bin_file, compression=compression)
                     thread = threading.Thread(target=write_pickle)
                     thread.start()
                 except IOError as e:

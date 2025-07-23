@@ -75,5 +75,5 @@ class OutputHandleDef(HandleDef):
         if "value" not in kwargs:
             object.__setattr__(self, "value", None)
 
-    def is_serializable_var(self) -> bool:
+    def need_serialize_var_for_cache(self) -> bool:
         return self.is_var_handle() and self.__serialize_for_cache is True

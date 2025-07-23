@@ -47,10 +47,6 @@ class HandleDef:
     def is_var_handle(self) -> bool:
         return self.check_handle_type("oomol/var")
     
-    # TODO: need a field to indicate if the handle is a serializable var
-    def is_serializable_var(self) -> bool:
-        return self.is_var_handle()
-    
     def is_secret_handle(self) -> bool:
         return self.check_handle_type("oomol/secret")
 
@@ -66,3 +62,18 @@ class InputHandleDef(HandleDef):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+@dataclass(frozen=True, kw_only=True)
+class OutputHandleDef(HandleDef):
+
+    __serialize_for_cache: Optional[bool] = None
+    """If True, the handle will be serialized for cache. If False, the handle will not be serialized for cache."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if "value" not in kwargs:
+            object.__setattr__(self, "value", None)
+
+    def is_serializable_var(self) -> bool:
+        return self.is_var_handle() and self.__serialize_for_cache is True

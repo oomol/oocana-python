@@ -2,7 +2,7 @@ import asyncio
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .mainframe import Mainframe
-from .handle_data import HandleDef
+from .handle_data import HandleDef, OutputHandleDef
 from typing import Dict, Any, TypedDict, Optional, Callable, Mapping
 from types import MappingProxyType
 from base64 import b64encode
@@ -160,7 +160,7 @@ class Context:
     __inputs: Dict[str, Any]
 
     __block_info: BlockInfo
-    __outputs_def: Dict[str, HandleDef]
+    __outputs_def: Dict[str, OutputHandleDef]
     # Only dict can support some field type like `Optional[FieldSchema]`(this key can not in dict). Dataclass will always convert it to None if the field is not set which will cause some issues.
     __outputs_def_dict: Dict[str, HandleDefDict]
     __inputs_def: Dict[str, HandleDefDict]
@@ -187,7 +187,7 @@ class Context:
         outputs_defs_cls = {}
         if outputs_def is not None:
             for k, v in outputs_def.items():
-                outputs_defs_cls[k] = HandleDef(**v)
+                outputs_defs_cls[k] = OutputHandleDef(**v)
         self.__outputs_def = outputs_defs_cls
         self.__inputs_def = inputs_def
         self.__session_dir = session_dir

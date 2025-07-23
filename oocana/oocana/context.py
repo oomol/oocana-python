@@ -348,7 +348,8 @@ class Context:
             self.__store[ref] = value
 
             bin_file = None
-            if output_def.is_serializable_var() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
+            # only cache root flow
+            if len(self.__block_info.stacks) < 2 and output_def.is_serializable_var() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
                 from .serialization import compression_suffix, compression_options
                 suffix = compression_suffix(context=self)
                 compression = compression_options(context=self)

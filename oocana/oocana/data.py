@@ -23,6 +23,7 @@ class BinValueDict(TypedDict):
 class VarValueDict(TypedDict):
     value: dict
     __OOMOL_TYPE__: Literal["oomol/var"]
+    serialize_path: str | None # better to use NotRequired here, but it is not supported in python 3.10 and type_extensions requires high version, For compatibility, use None instead of NotRequired.
 
 class JobDict(TypedDict):
     session_id: str

@@ -60,6 +60,14 @@ class InputHandleDef(HandleDef):
     """default value for input handle, can be None.
     """
 
+    serialize_for_cache = False
+    """If True, the handle will be serialized for cache. If False, the handle will not be serialized for cache. only work for var handle and the var is pandas DataFrame."""
+
+    def is_serializable_var(self) -> bool:
+        """Check if the input handle is a serializable variable."""
+        return self.is_var_handle() and self.serialize_for_cache is True
+    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

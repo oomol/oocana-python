@@ -1,7 +1,7 @@
 import unittest
 from oocana import HandleDef, InputHandleDef, OutputHandleDef
 from typing import Any, Optional, TypedDict
-from dataclasses import asdict
+
 missing_handle = {
 }
 
@@ -57,7 +57,7 @@ serializable_var_output_handle = {
     "json_schema": {
         "contentMediaType": "oomol/var"
     },
-    "__serialize_for_cache": True
+    "_serialize_for_cache": True
 }
 
 class HandleTestResult(TypedDict):

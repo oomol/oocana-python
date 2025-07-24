@@ -80,7 +80,7 @@ class InputHandleDef(HandleDef):
     serialize_for_cache = False
     """If True, the handle will be serialized for cache. If False, the handle will not be serialized for cache. only work for var handle and the var is pandas DataFrame."""
 
-    __has_value: bool = False
+    _has_value: bool = False
     """If True, the handle has a value. If False, the handle does not have a value."""
 
     def is_serializable_var(self) -> bool:
@@ -89,15 +89,15 @@ class InputHandleDef(HandleDef):
     
     def has_value(self) -> bool:
         """Check if the input handle has a value."""
-        return self.__has_value
+        return self._has_value
     
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if "value" not in kwargs:
-            object.__setattr__(self, "__has_value", False)
+            object.__setattr__(self, "_has_value", False)
         else:
-            object.__setattr__(self, "__has_value", True)
+            object.__setattr__(self, "_has_value", True)
 
 
 @dataclass(frozen=True, kw_only=True)

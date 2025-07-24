@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.13](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.12...oocana-python-executor@0.16.13) (2025-07-23)
+
+
+### Features
+
+* support serialize dataframe ([#406](https://github.com/oomol/oocana-python/issues/406)) ([4fc3322](https://github.com/oomol/oocana-python/commit/4fc3322a514a9356e6d3ecee1ff206a0a3509466))
+
 ## [0.16.12](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.11...oocana-python-executor@0.16.12) (2025-07-10)
 
 

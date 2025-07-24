@@ -1,6 +1,6 @@
 [project]
 name = "oocana-python-executor"
-version = "0.16.12"
+version = "0.16.13"
 authors = [
     {name = "l1shen", email = "lishen1635@gmail.com"},
     {name = "yleaf", email = "11785335+leavesster@users.noreply.github.com"},

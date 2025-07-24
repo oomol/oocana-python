@@ -208,6 +208,42 @@ class TestHandleData(unittest.TestCase):
             "need_serialize_var_for_cache": True
         })
 
+    def test_var_handle(self):
+        self.handle_test(HandleDef(**var_handle), {
+            "handle": "test",
+            "description": None,
+            "kind": None,
+            "is_additional_handle": False,
+            "is_var_handle": True,
+            "is_secret_handle": False,
+            "is_bin_handle": False
+        })
+
+        self.input_handle_test(InputHandleDef(**var_handle), {
+            "handle": "test",
+            "description": None,
+            "kind": None,
+            "nullable": None,
+            "value": None,
+            "is_additional_handle": False,
+            "is_var_handle": True,
+            "is_secret_handle": False,
+            "is_bin_handle": False,
+            "is_serializable_var": False,
+            "has_value": False
+        })
+
+        self.output_handle_test(OutputHandleDef(**var_handle), {
+            "handle": "test",
+            "description": None,
+            "kind": None,
+            "is_additional_handle": False,
+            "is_var_handle": True,
+            "is_secret_handle": False,
+            "is_bin_handle": False,
+            "need_serialize_var_for_cache": False
+        })
+
     def test_secret_handle(self):
         self.handle_test(HandleDef(**secret_handle), {
             "handle": "test",

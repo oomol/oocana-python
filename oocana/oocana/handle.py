@@ -108,8 +108,6 @@ class OutputHandleDef(HandleDef):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if "value" not in kwargs:
-            object.__setattr__(self, "value", None)
 
     def need_serialize_var_for_cache(self) -> bool:
         return self.is_var_handle() and object.__getattribute__(self, "__serialize_for_cache") is True

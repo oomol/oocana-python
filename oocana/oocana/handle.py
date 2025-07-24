@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Optional
 from .schema import FieldSchema, ContentMediaType
 
-__all__ = ["HandleDef", "InputHandleDef"]
+__all__ = ["HandleDef", "InputHandleDef", "OutputHandleDef"]
 
 @dataclass(frozen=True, kw_only=True)
 class HandleDef:

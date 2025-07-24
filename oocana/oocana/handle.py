@@ -110,4 +110,4 @@ class OutputHandleDef(HandleDef):
         super().__init__(**kwargs)
 
     def need_serialize_var_for_cache(self) -> bool:
-        return self.is_var_handle() and object.__getattribute__(self, "__serialize_for_cache") is True
+        return self.is_var_handle() and hasattr(self, "__serialize_for_cache") and object.__getattribute__(self, "__serialize_for_cache") is True

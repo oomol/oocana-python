@@ -66,6 +66,10 @@ class HandleDef(DataDict):
 
     def is_bin_handle(self) -> bool:
         return self.check_handle_type("oomol/bin")
+    
+    def is_additional_handle(self) -> bool:
+        """Check if the handle is an additional handle."""
+        return hasattr(self, "is_additional") and self.is_additional is True
 
 @dataclass(frozen=True, kw_only=True)
 class InputHandleDef(HandleDef):
@@ -90,14 +94,13 @@ class InputHandleDef(HandleDef):
     def has_value(self) -> bool:
         """Check if the input handle has a value."""
         return self._has_value
-    
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        if "value" not in kwargs:
-            object.__setattr__(self, "_has_value", False)
-        else:
+        if "value" in kwargs:
             object.__setattr__(self, "_has_value", True)
+        else:
+            object.__setattr__(self, "_has_value", False)
 
 
 @dataclass(frozen=True, kw_only=True)

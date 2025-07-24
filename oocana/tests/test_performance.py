@@ -1,6 +1,6 @@
 import unittest
 import timeit
-from oocana import handle_data  # 假设 handle_data 包含 HandleDef dataclass
+from oocana import handle  # 假设 handle_data 包含 HandleDef dataclass
 
 
 class TestPerformance(unittest.TestCase):
@@ -12,7 +12,7 @@ class TestPerformance(unittest.TestCase):
                 "contentMediaType": "oomol/bin"
             },
         }
-        handle_def = handle_data.HandleDef(**d)
+        handle_def = handle.HandleDef(**d)
         assert(handle_def.handle == "test")
 
 

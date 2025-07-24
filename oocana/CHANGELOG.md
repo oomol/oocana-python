@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.2](https://github.com/oomol/oocana-python/compare/oocana@0.18.1...oocana@0.18.2) (2025-07-24)
+
+
+### Code Refactoring
+
+* improve data class ([#408](https://github.com/oomol/oocana-python/issues/408)) ([5689c6c](https://github.com/oomol/oocana-python/commit/5689c6c68e32ce76c9b5ee2a57f7e899c4e7b27d))
+
 ## [0.18.1](https://github.com/oomol/oocana-python/compare/oocana@0.18.0...oocana@0.18.1) (2025-07-23)
 
 

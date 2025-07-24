@@ -5,8 +5,25 @@ from .schema import FieldSchema, ContentMediaType
 __all__ = ["HandleDef", "InputHandleDef", "OutputHandleDef"]
 
 @dataclass(frozen=True, kw_only=True)
-class HandleDef:
-    """The base handle for output def, can be directly used for output def 
+class DataDict:
+    
+    def get(self, key: str, default: Any = None) -> Any:
+        """obj.get('key', default)"""
+        return getattr(self, key, default)
+    
+    def __getitem__(self, key: str) -> Any:
+        """obj['key']"""
+        if hasattr(self, key):
+            return getattr(self, key)
+        raise KeyError(f"'{key}' not found")
+    
+    def __contains__(self, key: str) -> bool:
+        """'key' in obj"""
+        return hasattr(self, key)
+
+@dataclass(frozen=True, kw_only=True)
+class HandleDef(DataDict):
+    """The base handle for def which is output and input handle's common part.
     """
     handle: str
     """The name of the handle. it should be unique in handle list."""

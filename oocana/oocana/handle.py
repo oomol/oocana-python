@@ -103,7 +103,7 @@ class InputHandleDef(HandleDef):
 @dataclass(frozen=True, kw_only=True)
 class OutputHandleDef(HandleDef):
 
-    __serialize_for_cache: Optional[bool]
+    __serialize_for_cache: Optional[bool] = None
     """If True, the handle will be serialized for cache. If False, the handle will not be serialized for cache."""
 
     def __init__(self, **kwargs):

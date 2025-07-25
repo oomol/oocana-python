@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.3](https://github.com/oomol/oocana-python/compare/oocana@0.18.2...oocana@0.18.3) (2025-07-25)
+
+
+### Features
+
+* expose setup_dataframe_serialization and CompressionOptions ([#410](https://github.com/oomol/oocana-python/issues/410)) ([139f682](https://github.com/oomol/oocana-python/commit/139f682cfee0260e0f61ef2d593cc206cddac642))
+
+
+### Code Refactoring
+
+* use new generate field name ([#412](https://github.com/oomol/oocana-python/issues/412)) ([b088896](https://github.com/oomol/oocana-python/commit/b08889632ade4b318f07894858cfabd9d3aff821))
+
 ## [0.18.2](https://github.com/oomol/oocana-python/compare/oocana@0.18.1...oocana@0.18.2) (2025-07-24)
 
 

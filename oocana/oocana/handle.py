@@ -62,8 +62,9 @@ class HandleDef(DataDict):
             return False
         return self.json_schema.contentMediaType == type
 
-    def json_schema_to_dict(self) -> dict:
-        return self._raw_json_schema if self._raw_json_schema else {}
+    def json_schema_to_dict(self) -> Optional[dict]:
+        """Return the raw JSON schema as a dictionary, or None if no schema exists."""
+        return self._raw_json_schema if self._raw_json_schema else None
 
     def is_var_handle(self) -> bool:
         return self.check_handle_type("oomol/var")

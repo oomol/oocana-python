@@ -81,7 +81,7 @@ class InputHandleDef(HandleDef):
     nullable: Optional[bool] = None
     """If the handle value can be None. If True, the handle can be None, otherwise it must have a value."""
 
-    serialize_for_cache = False
+    _deserialize_from_cache = False
     """If True, the handle will be serialized for cache. If False, the handle will not be serialized for cache. only work for var handle and the var is pandas DataFrame."""
 
     _has_value: bool = field(init=False, repr=False, default=False)
@@ -89,7 +89,7 @@ class InputHandleDef(HandleDef):
 
     def is_serializable_var(self) -> bool:
         """Check if the input handle is a serializable variable."""
-        return self.is_var_handle() and self.serialize_for_cache is True
+        return self.is_var_handle() and self._deserialize_from_cache is True
     
     def has_value(self) -> bool:
         """Check if the input handle has a value."""

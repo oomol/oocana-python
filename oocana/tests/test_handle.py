@@ -49,7 +49,7 @@ serializable_var_input_handle = {
     "json_schema": {
         "contentMediaType": "oomol/var"
     },
-    "serialize_for_cache": True
+    "_deserialize_from_cache": True
 }
 
 serializable_var_output_handle = {

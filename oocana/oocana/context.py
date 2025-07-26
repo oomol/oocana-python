@@ -3,7 +3,7 @@ from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .mainframe import Mainframe
 from .handle import HandleDef, OutputHandleDef
-from typing import Dict, Any, TypedDict, Optional, Callable, Mapping
+from typing import Dict, Any, TypedDict, Optional, Callable, Mapping, Literal
 from types import MappingProxyType
 from base64 import b64encode
 from io import BytesIO
@@ -101,6 +101,10 @@ class HandleDefDict(TypedDict):
     """
 
 class QueryBlockResponse(TypedDict):
+
+    type: Literal["task", "subflow"]
+    """the type of the block, can be "task" or "subflow"."""
+
     description: str | None
     """the description of the block, if the block has no description, this field should be
     None.

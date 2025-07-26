@@ -585,6 +585,10 @@ class Context:
         invoke                  invoke                    invoke
         :param float | int progress: the progress of the block, the value should be in [0, 100].
         """
+        self.__mainframe.send(self.job_info, {
+            "type": "BlockProgress",
+            "progress": progress,
+        })
         self.__mainframe.report(
             self.block_info,
             {

@@ -9,4 +9,6 @@ def main(props, context: Context):
         else:
             print("my_input is not a object", i)
 
+    context.report_progress(50)
+
     context.output("my_output", 11)

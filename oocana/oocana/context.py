@@ -47,10 +47,12 @@ class BlockExecuteException(Exception):
 class BlockJob:
 
     __outputs_callbacks: set[Callable[[Dict[str, Any]], None]]
+    __progress_callbacks: set[Callable[[float | int], None]]
     __finish_future: asyncio.Future[None]
 
-    def __init__(self, outputs_callbacks: set[Callable[[Dict[str, Any]], None]], future: asyncio.Future[None]) -> None:
+    def __init__(self, outputs_callbacks: set[Callable[[Dict[str, Any]], None]], progress_callbacks: set[Callable[[float | int], None]], future: asyncio.Future[None]) -> None:
         self.__outputs_callbacks = outputs_callbacks
+        self.__progress_callbacks = progress_callbacks
         self.__finish_future = future
 
     def add_output_callback(self, fn: Callable[[Dict[str, Any]], None]):
@@ -62,6 +64,16 @@ class BlockJob:
         if not callable(fn):
             raise ValueError("output_callback should be a callable function.")
         self.__outputs_callbacks.add(fn)
+
+    def add_progress_callback(self, fn: Callable[[float | int], None]):
+        """Register a callback function to handle the progress of the block.
+        :param fn: the callback function, it should accept a float or int as the first parameter, the progress value will be passed to the callback function.
+
+        Note: the callback function is running in mqtt's callback thread, so it currently does not support run context.sendXX message directly.
+        """
+        if not callable(fn):
+            raise ValueError("progress_callback should be a callable function.")
+        self.__progress_callbacks.add(fn)
 
     def finish(self) -> asyncio.Future[None]:
         """Wait for the block to finish and return the future.
@@ -766,6 +778,7 @@ class Context:
         })
 
         outputs_callbacks: set[Callable[[Dict[str, Any]], None]] = set()
+        progress_callbacks: set[Callable[[float | int], None]] = set()
 
         # run_block will always run in a coroutine, so we can use asyncio.Future to wait for the result.
         loop = asyncio.get_running_loop()
@@ -789,6 +802,10 @@ class Context:
             for output_callback in outputs_callbacks:
                 output_callback(payload)
 
+        def run_progress_callback(progress: float | int):
+            for progress_callback in progress_callbacks:
+                progress_callback(progress)
+
         def event_callback(payload: Dict[str, Any]):
 
             if payload.get("session_id") != self.session_id:
@@ -810,6 +827,14 @@ class Context:
                 output = {}
                 output[payload.get("handle")] = payload.get("output")
                 run_output_callback(output)
+            elif payload.get("type") == "BlockProgress":
+                progress = payload.get("rate")
+                if progress is not None:
+                    run_progress_callback(progress)
+            elif payload.get("type") == "SubflowBlockProgress":
+                progress = payload.get("progress")
+                if progress is not None:
+                    run_progress_callback(progress)
             elif payload.get("type") == "SubflowBlockFinished":
                 error = payload.get("error")
                 set_future_and_clean(error)
@@ -823,7 +848,7 @@ class Context:
 
                 set_future_and_clean(error)
 
-        job = BlockJob(outputs_callbacks, future)
+        job = BlockJob(outputs_callbacks=outputs_callbacks, progress_callbacks=progress_callbacks, future=future)
 
         def set_future_and_clean(error: None | str = None):
             self.__mainframe.remove_report_callback(event_callback)

@@ -828,7 +828,7 @@ class Context:
                 output[payload.get("handle")] = payload.get("output")
                 run_output_callback(output)
             elif payload.get("type") == "BlockProgress":
-                progress = payload.get("rate")
+                progress = payload.get("rate") # TODO: unique event field
                 if progress is not None:
                     run_progress_callback(progress)
             elif payload.get("type") == "SubflowBlockProgress":

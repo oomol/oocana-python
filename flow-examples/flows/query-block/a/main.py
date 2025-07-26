@@ -6,6 +6,8 @@ async def main(inputs, context: Context):
     assert run_res is not None
 
     assert isinstance(run_res, dict), "Expected run result to be a dictionary"
+    assert "type" in run_res, "Expected 'type' key to be present in the run result"
+    assert run_res["type"] == "task", "Expected type to be 'task'"
     assert "inputs_def" in run_res, "Expected 'inputs_def' key to be present in the run result"
     assert "outputs_def" in run_res, "Expected 'outputs_def' key to be present in the run result"
     assert "additional_outputs" in run_res, "Expected 'additional_outputs' key to be present in the run result"

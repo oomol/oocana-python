@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.18.4](https://github.com/oomol/oocana-python/compare/oocana@0.18.3...oocana@0.18.4) (2025-07-26)
+
+
+### Features
+
+* add json_schema_dict api to expose raw json schema ([#413](https://github.com/oomol/oocana-python/issues/413)) ([3a44e07](https://github.com/oomol/oocana-python/commit/3a44e07c0cd880722713dc61b67f7f3a8dec4a33))
+* query block response add type field ([#416](https://github.com/oomol/oocana-python/issues/416)) ([e646237](https://github.com/oomol/oocana-python/commit/e646237d89e849474cd8c304be7d0eadb77b765e))
+* run block add progress callback ([#417](https://github.com/oomol/oocana-python/issues/417)) ([f7c431f](https://github.com/oomol/oocana-python/commit/f7c431f70918158e03db446a2db79ddc441d8aa5))
+* send progress message to oocana ([#415](https://github.com/oomol/oocana-python/issues/415)) ([1da8829](https://github.com/oomol/oocana-python/commit/1da8829648ec75549fabc418932dc007c774e587))
+
 ## [0.18.3](https://github.com/oomol/oocana-python/compare/oocana@0.18.2...oocana@0.18.3) (2025-07-25)
 
 

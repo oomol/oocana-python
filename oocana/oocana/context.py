@@ -837,7 +837,7 @@ class Context:
                     run_progress_callback(progress)
             elif payload.get("type") == "SubflowBlockFinished":
                 error = payload.get("error")
-                if error is not None:
+                if error is None:
                     run_progress_callback(100)
                 set_future_and_clean(error)
             elif payload.get("type") == "BlockFinished":
@@ -848,7 +848,7 @@ class Context:
                 elif result is not None:
                     run_output_callback(result)
                 
-                if error is not None:
+                if error is None:
                     run_progress_callback(100)
 
                 set_future_and_clean(error)

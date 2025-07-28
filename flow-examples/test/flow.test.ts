@@ -7,9 +7,10 @@ import { readdir } from "node:fs/promises";
 import type { AnyEventData } from "remitter";
 import { homedir, tmpdir } from "node:os";
 
-const __dirname = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-console.log("__dirname", __dirname);
-process.env["PATH"] = `${path.join(__dirname, "..", "executor", "bin")}:${process.env["PATH"]}}`;
+const flow_examples = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const packages = path.join(flow_examples, "packages");
+const workspace = path.join(flow_examples, "workspace");
+process.env["PATH"] = `${path.join(flow_examples, "..", "executor", "bin")}:${process.env["PATH"]}}`;
 
 describe(
   "Flow Tests",
@@ -20,7 +21,7 @@ describe(
     let files: Set<string> = new Set();
 
     beforeAll(async () => {
-      files = new Set(await readdir(path.join(__dirname, "flows")));
+      files = new Set(await readdir(path.join(workspace, "flows")));
       console.log("files", files);
     });
 
@@ -41,7 +42,7 @@ describe(
     });
 
     it("run run-subflow flow", async () => {
-      files.delete("run-block");
+      files.delete("run-subflow");
       const { code } = await run("run-subflow");
       expect(code).toBe(0);
     });
@@ -204,12 +205,10 @@ async function run(
   });
 
   const task = await cli.runFlow({
-    flowPath: path.join(__dirname, "flows", flow, "flow.oo.yaml"),
-    searchPaths: [
-      path.join(__dirname, "blocks"),
-      path.join(__dirname, "packages"),
-    ].join(","),
+    flowPath: path.join(workspace, "flows", flow, "flow.oo.yaml"),
+    searchPaths: [packages, path.join(workspace, "blocks")].join(","),
     bindPaths: [`src=${homedir()}/.oocana,dst=/root/.oocana`, `src=${tmpdir()},dst=${tmpdir()}`],
+    excludePackages: [workspace],
     sessionId: flow,
     tempRoot: tmpdir(),
     debug: true,

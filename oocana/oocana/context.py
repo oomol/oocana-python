@@ -293,8 +293,12 @@ class Context:
     
     @property
     def node_id(self) -> str:
-        return self.__block_info.stacks[-1].get("node_id", None)
-    
+        # fix: run block don't have node_id
+        if len(self.__block_info.stacks) > 0:
+            return self.__block_info.stacks[-1].get("node_id", "unknown")
+        else:
+            return "none"
+
     @property
     def oomol_llm_env(self) -> OOMOL_LLM_ENV:
         """this is a dict contains the oomol llm environment variables
@@ -551,8 +555,6 @@ class Context:
             if isinstance(df, ShapeDataFrame):
                 df.to_csv(path_or_buf=csv_file)
                 payload = { "type": "table", "data": csv_file }
-            else:
-                print("dataframe is not support shape property")
         
         return payload
 

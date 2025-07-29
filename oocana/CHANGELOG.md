@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.5](https://github.com/oomol/oocana-python/compare/oocana@0.18.4...oocana@0.18.5) (2025-07-29)
+
+
+### Bug Fixes
+
+* add run block compatible ([#421](https://github.com/oomol/oocana-python/issues/421)) ([1025b6d](https://github.com/oomol/oocana-python/commit/1025b6d0bc76788382ac75f8ecf8624a59ef6b1a))
+
+
+### Code Refactoring
+
+* use progress field name ([#419](https://github.com/oomol/oocana-python/issues/419)) ([c73a1ee](https://github.com/oomol/oocana-python/commit/c73a1eee80c8f1875fa9b2c15054769dbab02f48))
+
 ## [0.18.4](https://github.com/oomol/oocana-python/compare/oocana@0.18.3...oocana@0.18.4) (2025-07-26)
 
 

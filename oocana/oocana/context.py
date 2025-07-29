@@ -2,7 +2,7 @@ import asyncio
 from dataclasses import asdict
 from .data import BlockInfo, StoreKey, JobDict, BlockDict, BinValueDict, VarValueDict
 from .mainframe import Mainframe
-from .handle import HandleDef, OutputHandleDef
+from .handle import OutputHandleDef
 from typing import Dict, Any, TypedDict, Optional, Callable, Mapping, Literal
 from types import MappingProxyType
 from base64 import b64encode
@@ -830,10 +830,6 @@ class Context:
                 output[payload.get("handle")] = payload.get("output")
                 run_output_callback(output)
             elif payload.get("type") == "BlockProgress":
-                progress = payload.get("progress")
-                if progress is not None:
-                    run_progress_callback(progress)
-            elif payload.get("type") == "SubflowBlockProgress":
                 progress = payload.get("progress")
                 if progress is not None:
                     run_progress_callback(progress)

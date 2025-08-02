@@ -64,9 +64,9 @@ jobs:
           cd flow-examples
           npm install
           npm run test
-      - name: Setup tmate session
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate session
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3
       - name: upload logs
         uses: actions/upload-artifact@v4
         with:

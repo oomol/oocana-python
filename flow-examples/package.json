@@ -2,7 +2,7 @@
   "name": "test",
   "private": true,
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run --bail 1"
   },
   "dependencies": {
     "@oomol/oocana": "latest"
@@ -11,6 +11,6 @@
     "@oomol/oocana-types": "latest",
     "remitter": "^0.4.2",
     "tsc": "^2.0.4",
-    "vitest": "^2.1.8"
+    "vitest": "^3.2.4"
   }
 }

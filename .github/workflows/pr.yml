@@ -54,6 +54,8 @@ jobs:
           mosquitto -p 47688 -d
           pdm test
       - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
       - name: test flow examples
         timeout-minutes: 5
         run: |
@@ -62,6 +64,9 @@ jobs:
           cd flow-examples
           npm install
           npm run test
+      # - name: Setup tmate session
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3
       - name: upload logs
         uses: actions/upload-artifact@v4
         with:

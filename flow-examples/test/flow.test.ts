@@ -218,6 +218,8 @@ async function run(
     envs: {
       VAR: "1",
     },
+    projectData: tmpdir(),
+    pkgDataRoot: tmpdir(),
   });
 
   cli.events.on("BlockFinished", event => {

@@ -2,7 +2,7 @@
   "name": "test",
   "private": true,
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run --bail 1"
   },
   "dependencies": {
     "@oomol/oocana": "latest"

@@ -45,10 +45,7 @@ class HandleDef(DataDict):
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
-            if key == 'json_schema' and isinstance(value, dict):
-                object.__setattr__(self, key, value)
-            else:   # For other attributes, we can use the default behavior of object.__setattr__
-                object.__setattr__(self, key, value)
+            object.__setattr__(self, key, value)
         if "handle" not in kwargs:
             raise ValueError("missing attr key: 'handle'")
         json_schema = self.json_schema

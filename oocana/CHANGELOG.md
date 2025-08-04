@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.6](https://github.com/oomol/oocana-python/compare/oocana@0.18.5...oocana@0.18.6) (2025-08-04)
+
+
+### Bug Fixes
+
+* dataclass should not modify raw dict ([#425](https://github.com/oomol/oocana-python/issues/425)) ([61ba0bb](https://github.com/oomol/oocana-python/commit/61ba0bbb3fcaedd5098efd1b599c13f8ae62a9e2))
+
+
+### Code Refactoring
+
+* remove not exist event ([#422](https://github.com/oomol/oocana-python/issues/422)) ([9d37930](https://github.com/oomol/oocana-python/commit/9d37930b864a26fa2c95f2c5111d3b0d2cb51a55))
+
 ## [0.18.5](https://github.com/oomol/oocana-python/compare/oocana@0.18.4...oocana@0.18.5) (2025-07-29)
 
 

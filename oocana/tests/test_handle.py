@@ -216,7 +216,11 @@ class TestHandleData(unittest.TestCase):
                 "type": "object",
                 "properties": {
                     "name": { "type": "string" },
-                    "age": { "type": "number" }
+                    "age": { "type": "number" },
+                    "items": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    }
                 },
             }
         }

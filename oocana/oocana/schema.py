@@ -110,9 +110,9 @@ class ObjectFieldSchema(FieldSchema):
         for key, value in kwargs.items():
             object.__setattr__(self, key, value)
 
-        properties = self.properties
-        if properties is not None:
-            for key, value in properties.items():
+        if self.properties is not None:
+            properties = {}
+            for key, value in self.properties.items():
                 if not isinstance(value, FieldSchema):
                     properties[key] = FieldSchema.generate_schema(value)
 

@@ -208,6 +208,22 @@ class TestHandleData(unittest.TestCase):
             "need_serialize_var_for_cache": True
         })
 
+    def test_json_schema(self):
+        """Test that json schema can be converted to dict."""
+        d = {
+            "handle": "test",
+            "json_schema": {
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "age": { "type": "number" }
+                },
+            }
+        }
+        handle_def = HandleDef(**d)
+        self.assertEqual(handle_def.json_schema_to_dict(), d["json_schema"])
+        self.assertIsInstance(d["json_schema"]["properties"]["name"], dict)
+
     def test_var_handle(self):
         self.handle_test(HandleDef(**var_handle), {
             "handle": "test",

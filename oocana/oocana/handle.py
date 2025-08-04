@@ -53,7 +53,7 @@ class HandleDef(DataDict):
             raise ValueError("missing attr key: 'handle'")
         json_schema = self.json_schema
         if json_schema is not None and not isinstance(json_schema, FieldSchema):
-            object.__setattr__(self, "_raw_json_schema",json_schema)
+            object.__setattr__(self, "_raw_json_schema", json_schema)
             object.__setattr__(self, "json_schema", FieldSchema.generate_schema(json_schema))
 
     def check_handle_type(self, type: ContentMediaType) -> bool:

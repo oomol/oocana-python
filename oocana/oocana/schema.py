@@ -115,4 +115,6 @@ class ObjectFieldSchema(FieldSchema):
             for key, value in self.properties.items():
                 if not isinstance(value, FieldSchema):
                     properties[key] = FieldSchema.generate_schema(value)
-
+                else:
+                    properties[key] = value
+            object.__setattr__(self, "properties", properties)

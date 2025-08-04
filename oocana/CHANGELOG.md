@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.7](https://github.com/oomol/oocana-python/compare/oocana@0.18.6...oocana@0.18.7) (2025-08-04)
+
+
+### Code Refactoring
+
+* reduce deep copy ([#426](https://github.com/oomol/oocana-python/issues/426)) ([021b086](https://github.com/oomol/oocana-python/commit/021b086e3cd69a4a8904b78b4ce2372f9d6d1197))
+
 ## [0.18.6](https://github.com/oomol/oocana-python/compare/oocana@0.18.5...oocana@0.18.6) (2025-08-04)
 
 

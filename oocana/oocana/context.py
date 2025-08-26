@@ -580,11 +580,14 @@ class Context:
         if id is not None:
             payload_internal["id"] = id #type: ignore
 
-        self.__mainframe.report(
-            self.block_info,
+        request_id = random_string(16)
+        self.__mainframe.send(
+            self.job_info,
             {
-                "type": "BlockPreview",
+                "type": "BlockRequest",
+                "action": "Preview",
                 "payload": payload_internal,  # type: ignore
+                "request_id": request_id,
             },
         )
 

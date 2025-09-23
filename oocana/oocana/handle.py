@@ -75,6 +75,9 @@ class HandleDef(DataDict):
     def is_bin_handle(self) -> bool:
         return self.check_handle_type("oomol/bin")
     
+    def is_credential_handle(self) -> bool:
+        return self.check_handle_type("oomol/credential")
+    
     def is_additional_handle(self) -> bool:
         """Check if the handle is an additional handle."""
         return hasattr(self, "is_additional") and self.is_additional is True

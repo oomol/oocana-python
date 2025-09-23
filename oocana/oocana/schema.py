@@ -4,9 +4,9 @@ from .data import BinValueDict, VarValueDict
 
 __all__ = ["FieldSchema", "PrimitiveFieldSchema", "VarFieldSchema", "SecretFieldSchema", "ArrayFieldSchema", "ObjectFieldSchema", "ContentMediaType", "is_bin_value", "is_var_value", "is_array_dict", "is_object_dict", "is_var_dict", "is_primitive_dict", "is_secret_dict"]
 
-OomolType = Literal["oomol/var", "oomol/secret", "oomol/bin"]
+OomolType = Literal["oomol/var", "oomol/secret", "oomol/bin", "oomol/credential"]
 
-ContentMediaType: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var"]
+ContentMediaType: TypeAlias = Literal["oomol/bin", "oomol/secret", "oomol/var", "oomol/credential"]
 
 def is_bin_value(d: BinValueDict | Any):
     if isinstance(d, dict) is False:

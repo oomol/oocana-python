@@ -2,6 +2,7 @@ from .mainframe import Mainframe
 from .data import JobDict
 import random
 import string
+import math
 
 class InternalAPI:
 
@@ -9,15 +10,15 @@ class InternalAPI:
         self._client = client
         self._job_id = job_id
 
+    # keep this method async for future use
     async def update_node_weight(self, node_id: str, weight: int | float) -> None:
         """
         Update the weight of a node.
-
         :param node_id: The ID of the node to update.
         :param weight: The new weight for the node.
         """
-        if not isinstance(weight, (int, float)) or weight < 0:
-            raise ValueError("Weight must be a non-negative number.")
+        if not isinstance(weight, (int, float)) or not math.isfinite(weight) or weight < 0:
+            raise ValueError("Weight must be a non-negative finite number.")
 
         self._client.send(self._job_id, {
             "type": "BlockRequest",

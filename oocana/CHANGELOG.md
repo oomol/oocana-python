@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.18.8](https://github.com/oomol/oocana-python/compare/oocana@0.18.7...oocana@0.18.8) (2025-09-23)
+
+
+### Features
+
+* add query auth ([#428](https://github.com/oomol/oocana-python/issues/428)) ([361dde9](https://github.com/oomol/oocana-python/commit/361dde971a541027cb488473daec2f9aa87110ed))
+* support credential input ([#433](https://github.com/oomol/oocana-python/issues/433)) ([6c664d5](https://github.com/oomol/oocana-python/commit/6c664d56feaaf4661a753a5e1b8e5b291f85121c))
+* support update node weight ([#432](https://github.com/oomol/oocana-python/issues/432)) ([293b11e](https://github.com/oomol/oocana-python/commit/293b11ea8d36b2c25374f4fdc44defcf623d013d))
+
 ## [0.18.7](https://github.com/oomol/oocana-python/compare/oocana@0.18.6...oocana@0.18.7) (2025-08-26)
 
 

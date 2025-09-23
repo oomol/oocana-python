@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.14](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.13...oocana-python-executor@0.16.14) (2025-09-23)
+
+
+### Features
+
+* support credential input ([#433](https://github.com/oomol/oocana-python/issues/433)) ([6c664d5](https://github.com/oomol/oocana-python/commit/6c664d56feaaf4661a753a5e1b8e5b291f85121c))
+
 ## [0.16.13](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.12...oocana-python-executor@0.16.13) (2025-07-23)
 
 

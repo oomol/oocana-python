@@ -1,5 +1,5 @@
 from typing import Any, Dict
-from oocana.handle import InputHandleDef
+from oocana import InputHandleDef
 class CredentialInput:
     def __init__(self, type: str, value: str):
         self.type = type
@@ -32,7 +32,7 @@ def replace_credential(
         return inputs
 
     assert isinstance(inputs, dict)
-    
+
     for k, v in inputs.items():
         current_input_def = input_def.get(k) if input_def else None
         if current_input_def is None:

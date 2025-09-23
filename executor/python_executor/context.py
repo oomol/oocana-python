@@ -1,4 +1,6 @@
 import logging
+
+from .credential import replace_credential
 from oocana import Mainframe, Context, StoreKey, BlockInfo, BinValueDict, VarValueDict, InputHandleDef, is_bin_value, is_var_value
 from typing import Dict
 from .secret import replace_secret
@@ -24,6 +26,7 @@ def createContext(
             inputs_def_handles[k] = InputHandleDef(**v)
 
         inputs = replace_secret(inputs, inputs_def_handles, node_props.get("inputs_def_patch"))
+        inputs = replace_credential(inputs, inputs_def_handles)
 
         for k, v in inputs.items():
             input_def = inputs_def_handles.get(k)

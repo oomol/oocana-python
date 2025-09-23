@@ -10,16 +10,13 @@ from io import BytesIO
 from .throttler import throttle
 from .preview import PreviewPayload, DataFrame, PreviewPayloadInternal, ShapeDataFrame
 from .data import EXECUTOR_NAME
+from .internal import random_string, InternalAPI
 import os.path
 import logging
-import random
-import string
 import hashlib
 
 __all__ = ["Context", "HandleDefDict", "BlockJob", "BlockExecuteException"]
 
-def random_string(length=8):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 def string_hash(text: str) -> str:
     """
@@ -194,6 +191,7 @@ class Context:
     ) -> None:
 
         self.__block_info = blockInfo
+        self.internal: InternalAPI = InternalAPI(mainframe, blockInfo.job_info())
 
         self.__mainframe = mainframe
         self.__store = store

@@ -16,8 +16,8 @@ def generate_credential_input(credential_path: str) -> CredentialInput | None:
         # logger warning("Credential path format is incorrect. Expected to start with '${{OO_CREDENTIAL:' and end with '}}'.")
         return None
     
-    if credential_path.count(",") != 3:
-        # logger warning("Credential path format is incorrect. Expected exactly three commas.")
+    if credential_path.count(",") != 2:
+        # logger warning("Credential path format is incorrect. Expected exactly two commas.")
         return None
 
     credential_path = credential_path.removeprefix("${{OO_CREDENTIAL:").removesuffix("}}")

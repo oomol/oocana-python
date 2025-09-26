@@ -3,7 +3,7 @@ from python_executor.credential import replace_credential, CredentialInput, gene
 from oocana import InputHandleDef
 from typing import cast
 
-ORIGIN_VALUE = "Custom,credential_id"
+ORIGIN_VALUE = "Custom,credential_name,credential_id"
 
 class TestCredential(unittest.TestCase):
 
@@ -33,7 +33,7 @@ class TestCredential(unittest.TestCase):
         cred_input = v.get("c")
         self.assertIsInstance(cred_input, CredentialInput)
         self.assertEqual(cred_input.type, "Custom")
-        self.assertEqual(cred_input.value, "credential_id")
+        self.assertEqual(cred_input.id, "credential_id")
 
 
     def test_credential_without_content_media(self):
@@ -70,20 +70,20 @@ class TestCredential(unittest.TestCase):
 
     def test_generate_credential_input_valid(self):
         """Test valid credential input generation"""
-        result = generate_credential_input("${{OO_CREDENTIAL:AWS,my_credential_id}}")
+        result = generate_credential_input("${{OO_CREDENTIAL:AWS,my_credential_name,my_credential_id}}")
         self.assertIsInstance(result, CredentialInput)
         result = cast(CredentialInput, result)
         self.assertEqual(result.type, "AWS")
-        self.assertEqual(result.value, "my_credential_id")
+        self.assertEqual(result.id, "my_credential_id")
 
     def test_generate_credential_input_invalid_format(self):
         """Test invalid credential input format"""
         # Missing prefix
-        result = generate_credential_input("AWS,my_credential_id")
+        result = generate_credential_input("AWS,my_credential_name,my_credential_id")
         self.assertIsNone(result)
 
         # Missing suffix
-        result = generate_credential_input("${{OO_CREDENTIAL:AWS,my_credential_id")
+        result = generate_credential_input("${{OO_CREDENTIAL:AWS,my_credential_name,my_credential_id")
         self.assertIsNone(result)
 
         # Wrong prefix
@@ -96,6 +96,10 @@ class TestCredential(unittest.TestCase):
 
         # Missing comma
         result = generate_credential_input("${{OO_CREDENTIAL:AWS}}")
+        self.assertIsNone(result)
+
+        # Only two parameters (missing third)
+        result = generate_credential_input("${{OO_CREDENTIAL:AWS,my_credential}}")
         self.assertIsNone(result)
 
 if __name__ == '__main__':

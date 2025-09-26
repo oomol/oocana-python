@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.15](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.14...oocana-python-executor@0.16.15) (2025-09-26)
+
+
+### Code Refactoring
+
+* use three component ([#434](https://github.com/oomol/oocana-python/issues/434)) ([d21f47f](https://github.com/oomol/oocana-python/commit/d21f47f499cfc5e6ca2f225c4ba86ee386c028f1))
+
 ## [0.16.14](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.13...oocana-python-executor@0.16.14) (2025-09-23)
 
 

@@ -23,7 +23,7 @@ def generate_credential_input(credential_path: str) -> CredentialInput | None:
     credential_path = credential_path.removeprefix("${{OO_CREDENTIAL:").removesuffix("}}")
     if credential_path:
         try:
-            type, name, id = credential_path.split(",", maxsplit=2)
+            type, _name, id = credential_path.split(",", maxsplit=2)
             return CredentialInput(type, id)
         except ValueError:
             return None

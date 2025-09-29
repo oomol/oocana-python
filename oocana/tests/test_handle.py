@@ -97,6 +97,7 @@ class TestHandleData(unittest.TestCase):
         self.assertEqual(input_def.is_serializable_var(), expected["is_serializable_var"])
         self.assertEqual(input_def.value, expected["value"])
         self.assertEqual(input_def.has_value(), expected["has_value"])
+        self.assertEqual(input_def.is_credential_handle(), expected["is_credential_handle"] if "is_credential_handle" in expected else False)
 
     def output_handle_test(self, output_def: OutputHandleDef, expected: OutputHandleTestResult):
         self.handle_test(output_def, expected)

@@ -26,9 +26,7 @@ class TestCredential(unittest.TestCase):
         v = replace_credential({
             "c": f'${{{{OO_CREDENTIAL:{ORIGIN_VALUE}}}}}'
         }, {
-            "c": InputHandleDef(handle="c", json_schema={
-                "contentMediaType": "oomol/credential"
-            }, value=None)
+            "c": InputHandleDef(**{"handle": "c", "json_schema": {"contentMediaType": "oomol/credential"}})
         })
         cred_input = v.get("c")
         self.assertIsInstance(cred_input, CredentialInput)
@@ -54,6 +52,14 @@ class TestCredential(unittest.TestCase):
 
         # 'a' should remain unchanged since no input_def for it
         self.assertEqual(cred_input_a, f'${{{{OO_CREDENTIAL:{ORIGIN_VALUE}}}}}')
+    
+    def test_credential_no_handle_def(self):
+        """Test credential replacement when no handle definition is provided"""
+        v = replace_credential({
+            "c": f'${{{{OO_CREDENTIAL:{ORIGIN_VALUE}}}}}'
+        }, None)
+        # Should remain unchanged because no input_def is provided
+        self.assertEqual(v.get("c"), f'${{{{OO_CREDENTIAL:{ORIGIN_VALUE}}}}}')
 
     def test_credential_in_other_string(self):
         """Test credential pattern inside other string (should not be replaced)"""

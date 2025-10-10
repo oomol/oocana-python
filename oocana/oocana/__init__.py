@@ -7,3 +7,4 @@ from .extra import *  # noqa: F403
 from .schema import *  # noqa: F403
 from .mainframe import Mainframe as Mainframe  # noqa: F403
 from .serialization import setup_dataframe_serialization, CompressionOptions  # noqa: F403
+from .credential import CredentialInput

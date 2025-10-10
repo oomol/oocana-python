@@ -1,9 +1,6 @@
 from typing import Any, Dict
-from oocana import InputHandleDef
-class CredentialInput:
-    def __init__(self, type: str, id: str):
-        self.type = type
-        self.id = id
+from oocana import InputHandleDef, CredentialInput
+
 
 def generate_credential_input(credential_path: str) -> CredentialInput | None:
     """Generate a CredentialInput from a credential path string.

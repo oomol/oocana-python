@@ -11,6 +11,7 @@ from .throttler import throttle
 from .preview import PreviewPayload, DataFrame, PreviewPayloadInternal, ShapeDataFrame
 from .data import EXECUTOR_NAME
 from .internal import random_string, InternalAPI
+from .credential import CredentialInput
 import os.path
 import logging
 import hashlib
@@ -680,7 +681,7 @@ class Context:
 
         return await f
     
-    async def query_auth(self, id: str) -> Dict[str, Any]:
+    async def query_auth(self, credential: CredentialInput) -> Dict[str, Any]:
         request_id = random_string(16)
         loop = asyncio.get_running_loop()
         f: asyncio.Future[Dict[str, Any]] = loop.create_future()
@@ -699,7 +700,7 @@ class Context:
         self.__mainframe.send(self.job_info, {
             "type": "BlockRequest",
             "action": "QueryAuth",
-            "id": id,
+            "id": credential.id,
             "session_id": self.session_id,
             "job_id": self.job_id,
             "request_id": request_id,

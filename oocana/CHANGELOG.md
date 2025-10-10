@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.9](https://github.com/oomol/oocana-python/compare/oocana@0.18.8...oocana@0.18.9) (2025-10-10)
+
+
+### Code Refactoring
+
+* query auth use CredentialInput instead of str ([#437](https://github.com/oomol/oocana-python/issues/437)) ([7d95acc](https://github.com/oomol/oocana-python/commit/7d95acc15a63b3a8f7453cccc92f3bec8994f5dd))
+
 ## [0.18.8](https://github.com/oomol/oocana-python/compare/oocana@0.18.7...oocana@0.18.8) (2025-09-23)
 
 

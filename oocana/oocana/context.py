@@ -700,7 +700,7 @@ class Context:
         self.__mainframe.send(self.job_info, {
             "type": "BlockRequest",
             "action": "QueryAuth",
-            "id": credential.id,
+            "payload": credential.id,
             "session_id": self.session_id,
             "job_id": self.job_id,
             "request_id": request_id,

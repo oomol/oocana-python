@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.11](https://github.com/oomol/oocana-python/compare/oocana@0.18.10...oocana@0.18.11) (2025-11-07)
+
+
+### Features
+
+* expose oomol token ([#441](https://github.com/oomol/oocana-python/issues/441)) ([c3ba1b0](https://github.com/oomol/oocana-python/commit/c3ba1b0051d94e01c3106ce99410a8b8587a264c))
+
 ## [0.18.10](https://github.com/oomol/oocana-python/compare/oocana@0.18.9...oocana@0.18.10) (2025-10-10)
 
 

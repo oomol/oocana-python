@@ -426,6 +426,13 @@ class Context:
                     f"Output handle key: [{handle}] is defined as binary, but the file is not written."
                 )
         return value
+    
+    async def oomol_token(self) -> str:
+        """
+        get the oomol token from the mainframe.
+        :return: the oomol token
+        """
+        return os.getenv("OOMOL_TOKEN", "")
 
     def output(self, key: str, value: Any, *, to_node: list[ToNode] | None = None, to_flow: list[ToFlow] | None = None):
         """

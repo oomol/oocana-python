@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.17](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.16...oocana-python-executor@0.16.17) (2025-11-25)
+
+
+### Code Refactoring
+
+* enable scroll in plotly iframe ([#443](https://github.com/oomol/oocana-python/issues/443)) ([60afa5e](https://github.com/oomol/oocana-python/commit/60afa5e0cf4c8a65fa25202b2ad54c9fe5da46a7))
+
 ## [0.16.16](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.15...oocana-python-executor@0.16.16) (2025-10-10)
 
 

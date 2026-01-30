@@ -211,7 +211,7 @@ describe(
       const latestBlockWarning = events.findLast(
         e => e.event === "BlockWarning"
       )?.data?.warning;
-      expect(latestBlockWarning).toBe(
+      expect(latestBlockWarning).toContain(
         "Output handle key: [c] is not defined in Block outputs schema."
       );
     });

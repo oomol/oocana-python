@@ -1,0 +1,50 @@
+nodes:
+  - node_id: +python#1
+    title: "Python #1"
+    task:
+      inputs_def:
+        - handle: input
+          description: Input
+          json_schema:
+            {}
+          nullable: true
+      outputs_def:
+        - handle: output
+          description: Output
+          json_schema:
+            {}
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#1.py
+    inputs_from:
+      - handle: input
+        value:
+  - node_id: end
+    title: "end"
+    task:
+      inputs_def:
+        - handle: input
+          description: Input
+          json_schema:
+            {}
+        - handle: input1
+          json_schema:
+            {}
+          nullable: true
+      outputs_def:
+        - handle: output
+          description: Output
+          json_schema:
+            {}
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#2.py
+    inputs_from:
+      - handle: input
+        from_node:
+          - node_id: +python#1
+            output_handle: output
+      - handle: input1
+        value:

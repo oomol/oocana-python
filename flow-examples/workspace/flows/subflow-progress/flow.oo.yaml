@@ -1,0 +1,24 @@
+nodes:
+  - node_id: progress#1
+    subflow: self::progress
+    inputs_from:
+      - handle: input
+        value: "1111"
+  - node_id: end
+    task:
+      inputs_def:
+        - handle: output
+          json_schema: {}
+          nullable: false
+      outputs_def:
+        - handle: output
+          json_schema: {}
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#1.py
+    inputs_from:
+      - handle: output
+        from_node:
+          - node_id: progress#1
+            output_handle: output

@@ -186,6 +186,94 @@ describe(
       const { code } = await run("pkg-dir");
       expect(code).toBe(0);
     });
+
+    it("run progress flow", async () => {
+      files.delete("progress");
+      const { code, events } = await run("progress");
+      expect(code).toBe(0);
+
+      const progressEvents = events.filter(e => e.event === "BlockProgress");
+      expect(progressEvents.length).greaterThanOrEqual(4);
+
+      const latestFinished = events.findLast(e => e.event === "BlockFinished");
+      const lastNode = latestFinished?.data.stacks?.[0].node_id;
+      expect(lastNode).toBe("end");
+
+      // Validate the return value: {"count": 3}
+      expect(latestFinished?.data.result?.count).toBe(3);
+    });
+
+    it("run warning flow", async () => {
+      files.delete("warning");
+      const { code, events } = await run("warning");
+      expect(code).toBe(0);
+
+      const latestBlockWarning = events.findLast(
+        e => e.event === "BlockWarning"
+      )?.data?.warning;
+      expect(latestBlockWarning).toContain(
+        "Output handle key: [c] is not defined in Block outputs schema."
+      );
+    });
+
+    it("run nullable flow", async () => {
+      files.delete("nullable");
+      const { code, events } = await run("nullable");
+      expect(code).toBe(0);
+
+      const latestFinished = events.findLast(e => e.event === "BlockFinished");
+      const lastNode = latestFinished?.data.stacks?.[0].node_id;
+      expect(lastNode).toBe("end");
+    });
+
+    it("run subflow-progress flow", async () => {
+      files.delete("subflow-progress");
+      const { code, events } = await run("subflow-progress");
+      expect(code).toBe(0);
+
+      const progressEvents = events.filter(e => e.event === "BlockProgress");
+
+      expect(
+        progressEvents.every(
+          e => e.data.progress >= 0 && e.data.progress <= 100
+        )
+      ).toBe(true);
+
+      expect(progressEvents.length).greaterThanOrEqual(8);
+
+      const latestFinished = events.findLast(e => e.event === "BlockFinished");
+      const lastNode = latestFinished?.data.stacks?.[0].node_id;
+      expect(lastNode).toBe("end");
+    });
+
+    it("run from flow", async () => {
+      files.delete("from");
+      const { code, events } = await run("from");
+      expect(code).toBe(0);
+
+      const latestFinished = events.findLast(e => e.event === "BlockFinished");
+      const lastNode = latestFinished?.data.stacks?.[0].node_id;
+      expect(lastNode).toBe("end");
+
+      // Validate the computed result: input(2) + output(3) + value1(4) = 9
+      expect(latestFinished?.data.result?.output).toBe(9);
+    });
+
+    it("run additional-block flow", async () => {
+      files.delete("additional-block");
+      const { code, events } = await run("additional-block");
+      expect(code).toBe(0);
+
+      const latestFinished = events.findLast(e => e.event === "BlockFinished");
+      const lastNode = latestFinished?.data.stacks?.[0].node_id;
+      expect(lastNode).toBe("end");
+
+      // Validate the dynamic I/O merged result contains both "hello" and "world"
+      // Note: iteration order of inputs_def is not guaranteed, so we check for substrings
+      const output = latestFinished?.data.result?.output;
+      expect(output).toContain("hello");
+      expect(output).toContain("world");
+    });
   }
 );
 
@@ -206,8 +294,11 @@ async function run(
 
   const task = await cli.runFlow({
     flowPath: path.join(workspace, "flows", flow, "flow.oo.yaml"),
-    searchPaths: [packages, path.join(workspace, "blocks")].join(","),
-    bindPaths: [`src=${homedir()}/.oocana,dst=/root/.oocana`, `src=${tmpdir()},dst=${tmpdir()}`],
+    searchPaths: [packages, path.join(workspace, "blocks")],
+    bindPaths: [
+      { src: `${homedir()}/.oocana`, dst: "/root/.oocana" },
+      { src: tmpdir(), dst: tmpdir() },
+    ],
     excludePackages: [workspace],
     sessionId: flow,
     tempRoot: tmpdir(),

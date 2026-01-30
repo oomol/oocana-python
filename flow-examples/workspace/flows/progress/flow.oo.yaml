@@ -1,0 +1,12 @@
+nodes:
+  - node_id: end
+    task:
+      inputs_def: []
+      outputs_def:
+        - handle: count
+          json_schema:
+            type: number
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#1.py

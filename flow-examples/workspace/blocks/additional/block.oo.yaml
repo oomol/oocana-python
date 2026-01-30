@@ -1,0 +1,15 @@
+executor:
+  name: python
+  options:
+    entry: __init__.py
+inputs_def:
+  - handle: input
+    json_schema:
+      type: string
+      ContentMediaType: oomol/secret
+outputs_def:
+  - handle: output
+    json_schema: {}
+title: additional-block
+additional_inputs: true
+additional_outputs: true

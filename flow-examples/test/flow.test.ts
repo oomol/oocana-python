@@ -192,6 +192,9 @@ describe(
       const { code, events } = await run("progress");
       expect(code).toBe(0);
 
+      const progressEvents = events.filter(e => e.event === "BlockProgress");
+      expect(progressEvents.length).greaterThanOrEqual(4);
+
       const latestBlockOutput = events.findLast(e => e.event === "BlockOutput")
         ?.data?.output;
       expect(latestBlockOutput).toBe(3);
@@ -252,6 +255,9 @@ describe(
       const latestFinished = events.findLast(e => e.event === "BlockFinished");
       const lastNode = latestFinished?.data.stacks?.[0].node_id;
       expect(lastNode).toBe("end");
+
+      // Validate the computed result: input(2) + output(3) + value1(4) = 9
+      expect(latestFinished?.data.result?.output).toBe(9);
     });
 
     it("run additional-block flow", async () => {
@@ -262,6 +268,9 @@ describe(
       const latestFinished = events.findLast(e => e.event === "BlockFinished");
       const lastNode = latestFinished?.data.stacks?.[0].node_id;
       expect(lastNode).toBe("end");
+
+      // Validate the dynamic I/O merged result: "hello" + "world" = "helloworld"
+      expect(latestFinished?.data.result?.output).toBe("helloworld");
     });
   }
 );

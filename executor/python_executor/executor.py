@@ -17,6 +17,7 @@ import uuid
 
 logger = logging.getLogger(EXECUTOR_NAME)
 service_store: dict[str, Literal["launching", "running"]] = {}
+# 用于去重 oocana 重复发送的 job_id，job_id 一旦添加就不能移除
 job_set = set()
 
 # 日志目录 ~/.oocana/sessions/{session_id}
@@ -100,6 +101,8 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
             return
         
         # https://github.com/oomol/oocana-rust/issues/310 临时解决方案
+        # job_id 必须永久保留在 job_set 中，不能在 block 完成后清理
+        # 因为 oocana 可能会重复发送相同的 job_id，需要通过 job_set 来去重
         job_id = message.get("job_id")
         if job_id in job_set:
             logger.warning(f"job {job_id} already running, ignore")

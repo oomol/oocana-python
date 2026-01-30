@@ -14,10 +14,12 @@ from .matplot.oomol_matplot_helper import import_helper, add_matplot_module
 from typing import Literal
 from .topic import prepare_report_topic, service_config_topic, run_action_topic, ServiceTopicParams, ReportStatusPayload, exit_report_topic, status_report_topic
 import uuid
+import threading
 
 logger = logging.getLogger(EXECUTOR_NAME)
 service_store: dict[str, Literal["launching", "running"]] = {}
-job_set = set()
+service_events: dict[str, threading.Event] = {}
+job_set: set[str] = set()
 
 # 日志目录 ~/.oocana/sessions/{session_id}
 # executor 的日志都会记录在 [python-executor-{identifier}.log | python-executor.log]
@@ -122,11 +124,15 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
         service_hash = message.get("service_hash")
         if service_hash in service_store:
             del service_store[service_hash]
+        if service_hash in service_events:
+            del service_events[service_hash]
 
     def service_status(message: ReportStatusPayload):
         service_hash = message.get("service_hash")
         if service_hash in service_store:
             service_store[service_hash] = "running"
+            if service_hash in service_events:
+                service_events[service_hash].set()
 
     def report_message(message):
         type = message.get("type")
@@ -152,6 +158,7 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
     async def spawn_service(message: ServiceExecutePayload, service_hash: str):
         logger.info(f"create new service {message.get('dir')}")
         service_store[service_hash] = "launching"
+        service_events[service_hash] = threading.Event()
 
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
@@ -205,8 +212,17 @@ async def run_executor(address: str, session_id: str, tmp_dir: str, package: str
             elif status == "running":
                 run_service_block(message)
             elif status == "launching":
-                logger.info(f"service {service_hash} is launching, set message back to fs to wait next time")
-                fs.put(message)  
+                event = service_events.get(service_hash)
+                if event:
+                    logger.info(f"service {service_hash} is launching, waiting for ready")
+                    event.wait(timeout=30)
+                    if service_store.get(service_hash) == "running":
+                        run_service_block(message)
+                    else:
+                        logger.warning(f"service {service_hash} launch timeout or failed")
+                else:
+                    logger.info(f"service {service_hash} is launching, set message back to fs to wait next time")
+                    fs.put(message)  
         else:
             if not_current_session(message):
                 continue

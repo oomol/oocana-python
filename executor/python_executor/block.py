@@ -23,7 +23,12 @@ class ExecutorOptionsDict(TypedDict):
 class ExecutorDict(TypedDict):
     options: Optional[ExecutorOptionsDict]
 
-tmp_files = set()
+# tmp_files tracks temporary Python files generated from inline 'source' scripts.
+# Intentionally NOT cleaned because:
+# 1. Preserves source mapping for debugging (stack traces show actual code)
+# 2. Scoped to block's .scriptlets directory, cleaned with workspace
+# 3. Cleaning during execution could break running imports
+tmp_files: set[str] = set()
 
 @dataclass
 class ExecutePayload:

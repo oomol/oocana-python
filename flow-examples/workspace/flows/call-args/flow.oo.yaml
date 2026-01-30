@@ -1,0 +1,35 @@
+nodes:
+  - node_id: no_params
+    task: ../../blocks/no_params
+
+  - node_id: context_only
+    task: ../../blocks/context_only
+    inputs_from:
+      - handle: input
+        from_node:
+          - node_id: no_params
+            output_handle: output
+
+  - node_id: inputs_only
+    task: ../../blocks/inputs_only
+    inputs_from:
+      - handle: input
+        from_node:
+          - node_id: context_only
+            output_handle: output
+
+  - node_id: two_params
+    task: ../../blocks/two_params
+    inputs_from:
+      - handle: input
+        from_node:
+          - node_id: inputs_only
+            output_handle: output
+
+  - node_id: async_two_params
+    task: ../../blocks/async_two_params
+    inputs_from:
+      - handle: input
+        from_node:
+          - node_id: two_params
+            output_handle: output

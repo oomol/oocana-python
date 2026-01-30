@@ -1,0 +1,16 @@
+nodes:
+  - node_id: end
+    task:
+      inputs_def:
+        - handle: in
+          value: input value
+      outputs_def:
+        - handle: a
+        - handle: b
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+python#1.py
+    inputs_from:
+      - handle: in
+        value: aaaa

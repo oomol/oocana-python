@@ -295,7 +295,10 @@ async function run(
   const task = await cli.runFlow({
     flowPath: path.join(workspace, "flows", flow, "flow.oo.yaml"),
     searchPaths: [packages, path.join(workspace, "blocks")],
-    bindPaths: [`src=${homedir()}/.oocana,dst=/root/.oocana`, `src=${tmpdir()},dst=${tmpdir()}`],
+    bindPaths: [
+      { src: `${homedir()}/.oocana`, dst: "/root/.oocana" },
+      { src: tmpdir(), dst: tmpdir() },
+    ],
     excludePackages: [workspace],
     sessionId: flow,
     tempRoot: tmpdir(),

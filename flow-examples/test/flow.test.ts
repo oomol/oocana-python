@@ -195,13 +195,12 @@ describe(
       const progressEvents = events.filter(e => e.event === "BlockProgress");
       expect(progressEvents.length).greaterThanOrEqual(4);
 
-      const latestBlockOutput = events.findLast(e => e.event === "BlockOutput")
-        ?.data?.output;
-      expect(latestBlockOutput).toBe(3);
-
       const latestFinished = events.findLast(e => e.event === "BlockFinished");
       const lastNode = latestFinished?.data.stacks?.[0].node_id;
       expect(lastNode).toBe("end");
+
+      // Validate the return value: {"count": 3}
+      expect(latestFinished?.data.result?.count).toBe(3);
     });
 
     it("run warning flow", async () => {

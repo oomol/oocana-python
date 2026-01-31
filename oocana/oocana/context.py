@@ -16,7 +16,21 @@ import os.path
 import logging
 import hashlib
 
-__all__ = ["Context", "HandleDefDict", "BlockJob", "BlockExecuteException"]
+__all__ = [
+    "Context",
+    "HandleDefDict",
+    "BlockJob",
+    "BlockExecuteException",
+    # TypedDict exports for type checking
+    "ToNode",
+    "ToFlow",
+    "QueryBlockResponse",
+    "FlowDownstream",
+    "NodeDownstream",
+    "Downstream",
+    "OOMOL_LLM_ENV",
+    "HostInfo",
+]
 
 
 def string_hash(text: str) -> str:

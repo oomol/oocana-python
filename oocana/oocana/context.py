@@ -10,20 +10,13 @@ from io import BytesIO
 from .throttler import throttle
 from .preview import PreviewPayload, DataFrame, PreviewPayloadInternal, ShapeDataFrame
 from .data import EXECUTOR_NAME
-from .internal import random_string, InternalAPI
+from .internal import random_string, InternalAPI, string_hash
 from .credential import CredentialInput
 import os.path
 import logging
-import hashlib
 
 __all__ = ["Context", "HandleDefDict", "BlockJob", "BlockExecuteException"]
 
-
-def string_hash(text: str) -> str:
-    """
-    Generates a deterministic hash for a given string.
-    """
-    return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
 class ToNode(TypedDict):
     node_id: str

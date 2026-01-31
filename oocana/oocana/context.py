@@ -15,6 +15,7 @@ from .credential import CredentialInput
 import os.path
 import logging
 import hashlib
+import warnings
 
 __all__ = ["Context", "HandleDefDict", "BlockJob", "BlockExecuteException"]
 
@@ -241,7 +242,15 @@ class Context:
     @property
     def pkg_dir(self) -> str:
         """Deprecated, use pkg_data_dir instead.
+
+        .. deprecated:: 0.18.0
+            Use :attr:`pkg_data_dir` instead.
         """
+        warnings.warn(
+            "pkg_dir is deprecated, use pkg_data_dir instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
         return self.__pkg_data_dir
 
     @property
@@ -647,10 +656,16 @@ class Context:
         self.__mainframe.report(self.block_info, {"type": "BlockWarning", "warning": warning})
 
     def send_error(self, error: str):
-        '''
-        deprecated, use error(error) instead.
-        consider to remove in the future.
-        '''
+        """Send an error message.
+
+        .. deprecated:: 0.18.0
+            Use :meth:`error` instead.
+        """
+        warnings.warn(
+            "send_error is deprecated, use error() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
         self.error(error)
 
     def error(self, error: str):

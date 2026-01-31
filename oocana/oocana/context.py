@@ -291,12 +291,16 @@ class Context:
         return self.__block_info.block_dict()
     
     @property
-    def node_id(self) -> str:
-        # fix: run block don't have node_id
+    def node_id(self) -> Optional[str]:
+        """Get the node_id from the current execution stack.
+
+        Returns:
+            The node_id if available, or None when running in contexts
+            without a node_id (e.g., run_block).
+        """
         if len(self.__block_info.stacks) > 0:
-            return self.__block_info.stacks[-1].get("node_id", "unknown")
-        else:
-            return "none"
+            return self.__block_info.stacks[-1].get("node_id")
+        return None
 
     @property
     def oomol_llm_env(self) -> OOMOL_LLM_ENV:
@@ -379,7 +383,7 @@ class Context:
                 from .serialization import compression_suffix, compression_options
                 suffix = compression_suffix(context=self)
                 compression = compression_options(context=self)
-                flow_node = self.__block_info.stacks[-1].get("flow", "unknown") + "-" + self.node_id
+                flow_node = self.__block_info.stacks[-1].get("flow", "unknown") + "-" + (self.node_id or "unknown")
                 serialize_path = f"{self.pkg_data_dir}/.cache/{string_hash(flow_node)}/{handle}{suffix}"
                 os.makedirs(os.path.dirname(serialize_path), exist_ok=True)
                 try:

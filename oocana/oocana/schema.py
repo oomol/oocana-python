@@ -67,27 +67,16 @@ class FieldSchema:
 class PrimitiveFieldSchema(FieldSchema):
     type: Literal["string", "number", "boolean"]
     contentMediaType: None = None
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            object.__setattr__(self, key, value)
 
 
 @dataclass(frozen=True, kw_only=True)
 class VarFieldSchema(FieldSchema):
     contentMediaType: Literal["oomol/var"] = "oomol/var"
 
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            object.__setattr__(self, key, value)
-
 @dataclass(frozen=True, kw_only=True)
 class SecretFieldSchema(FieldSchema):
     type: Literal["string"] = "string"
     contentMediaType: Literal["oomol/secret"] = "oomol/secret"
-
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            object.__setattr__(self, key, value)
 
 @dataclass(frozen=True, kw_only=True)
 class ArrayFieldSchema(FieldSchema):
@@ -95,8 +84,7 @@ class ArrayFieldSchema(FieldSchema):
     items: Optional['FieldSchema'] = None
 
     def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            object.__setattr__(self, key, value)
+        super().__init__(**kwargs)
         items = self.items
         if items is not None and not isinstance(items, FieldSchema):
             object.__setattr__(self, "items", FieldSchema.generate_schema(items))
@@ -107,8 +95,7 @@ class ObjectFieldSchema(FieldSchema):
     properties: Optional[Dict[str, 'FieldSchema']] = None
 
     def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            object.__setattr__(self, key, value)
+        super().__init__(**kwargs)
 
         if self.properties is not None:
             properties = {}

@@ -259,6 +259,19 @@ describe(
       expect(latestFinished?.data.result?.output).toBe(9);
     });
 
+    it("run call-args flow", async () => {
+      files.delete("call-args");
+      const { code, events } = await run("call-args");
+      expect(code).toBe(0);
+
+      const finishedEvents = events.filter(e => e.event === "BlockFinished");
+      expect(finishedEvents.length).toBe(5);
+
+      // Verify the chain executed in order
+      const lastFinished = finishedEvents[finishedEvents.length - 1];
+      expect(lastFinished?.data.stacks?.[0].node_id).toBe("async_two_params");
+    });
+
     it("run additional-block flow", async () => {
       files.delete("additional-block");
       const { code, events } = await run("additional-block");

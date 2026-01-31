@@ -1,0 +1,6 @@
+executor:
+  name: python
+  options:
+    entry: __init__.py
+outputs_def:
+  - handle: output

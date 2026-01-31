@@ -78,6 +78,25 @@ def output_return_object(obj, context: Context):
     else:
         context.finish(error=f"return object needs to be a dictionary, but get type: {type(obj)}")
 
+
+def get_call_args(fn, context: Context) -> tuple:
+    """
+    Determine the arguments to pass to a block function based on its signature.
+    Returns a tuple of positional arguments.
+    """
+    signature = inspect.signature(fn)
+    params_count = len(signature.parameters)
+
+    if params_count == 0:
+        return ()
+    elif params_count == 1:
+        first_param = list(signature.parameters.values())[0]
+        if first_param.annotation is Context:
+            return (context,)
+        return (context.inputs,)
+    else:
+        return (context.inputs, context)
+
 logger = logging.getLogger(EXECUTOR_NAME)
 
 async def run_block(message, mainframe: Mainframe, session_dir: str, tmp_dir: str, package_name: str, pkg_dir: str):
@@ -145,28 +164,15 @@ async def run_block(message, mainframe: Mainframe, session_dir: str, tmp_dir: st
         return
 
     try:
-        signature = inspect.signature(fn)
-        params_count = len(signature.parameters)
+        args = get_call_args(fn, context)
         result = None
         traceback_str = None
 
         try:
             if inspect.iscoroutinefunction(fn):
-                if params_count == 0:
-                    result = await fn()
-                elif params_count == 1:
-                    only_context_param = list(signature.parameters.values())[0].annotation is Context
-                    result = await fn(context) if only_context_param else await fn(context.inputs)
-                else:
-                    result = await fn(context.inputs, context)
+                result = await fn(*args)
             else:
-                if params_count == 0:
-                    result = fn()
-                elif params_count == 1:
-                    only_context_param = list(signature.parameters.values())[0].annotation is Context
-                    result = fn(context) if only_context_param else fn(context.inputs)
-                else:
-                    result = fn(context.inputs, context)
+                result = fn(*args)
         except ExitFunctionException as e:
             if e.args[0] is not None:
                 context.finish(error="block call exit with message: " + str(e.args[0]))

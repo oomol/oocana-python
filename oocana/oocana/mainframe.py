@@ -128,47 +128,86 @@ class Mainframe:
                 self._logger.info("notify ready success in {} {}".format(session_id, job_id))
                 return replay
             
-    def add_request_response_callback(self, session_id: str, request_id: str, callback: Callable[[Any], Any]):
-        """Add a callback to be called when an error occurs while running a block."""
+    def _add_callback(
+        self,
+        callbacks_dict: dict[str, list[Callable]],
+        key: str,
+        topic: str,
+        callback: Callable[[Any], Any]
+    ) -> None:
+        """Generic method to add a callback with subscription management.
+
+        Args:
+            callbacks_dict: The dictionary storing callbacks (keyed by identifier)
+            key: The key to use in the callbacks dict
+            topic: The MQTT topic to subscribe to
+            callback: The callback function to add
+        """
         if not callable(callback):
             raise ValueError("Callback must be callable")
-        
-        if request_id not in self.__request_response_callbacks:
-            self.__request_response_callbacks[request_id] = []
-            self.subscribe(f"session/{session_id}/request/{request_id}/response", lambda payload: [cb(payload) for cb in self.__request_response_callbacks[request_id].copy()])
 
-        self.__request_response_callbacks[request_id].append(callback)
+        if key not in callbacks_dict:
+            callbacks_dict[key] = []
+            self.subscribe(topic, lambda payload: [cb(payload) for cb in callbacks_dict[key].copy()])
+
+        callbacks_dict[key].append(callback)
+
+    def _remove_callback(
+        self,
+        callbacks_dict: dict[str, list[Callable]],
+        key: str,
+        topic: str,
+        callback: Callable[[Any], Any],
+        error_context: str
+    ) -> None:
+        """Generic method to remove a callback with subscription cleanup.
+
+        Args:
+            callbacks_dict: The dictionary storing callbacks
+            key: The key in the callbacks dict
+            topic: The MQTT topic to unsubscribe from
+            callback: The callback function to remove
+            error_context: Context string for warning message
+        """
+        if key in callbacks_dict and callback in callbacks_dict[key]:
+            callbacks_dict[key].remove(callback)
+            if len(callbacks_dict[key]) == 0:
+                del callbacks_dict[key]
+                self.unsubscribe(topic)
+        else:
+            self._logger.warning(f"Callback not found in {error_context}")
+
+    def add_request_response_callback(self, session_id: str, request_id: str, callback: Callable[[Any], Any]):
+        """Add a callback to be called when a request response is received."""
+        topic = f"session/{session_id}/request/{request_id}/response"
+        self._add_callback(self.__request_response_callbacks, request_id, topic, callback)
 
     def remove_request_response_callback(self, session_id: str, request_id: str, callback: Callable[[Any], Any]):
-        """Remove a previously added run block error callback."""
-        if request_id in self.__request_response_callbacks and callback in self.__request_response_callbacks[request_id]:
-            self.__request_response_callbacks[request_id].remove(callback)
-            if len(self.__request_response_callbacks[request_id]) == 0:
-                del self.__request_response_callbacks[request_id]
-                self.unsubscribe(f"session/{session_id}/request/{request_id}/response")
-        else:
-            self._logger.warning("Callback not found in request/response callbacks for session {} and request {}.".format(session_id, request_id))
+        """Remove a previously added request response callback."""
+        topic = f"session/{session_id}/request/{request_id}/response"
+        self._remove_callback(
+            self.__request_response_callbacks,
+            request_id,
+            topic,
+            callback,
+            f"request/response callbacks for session {session_id} and request {request_id}"
+        )
 
     def add_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
         """Add a callback to be called when a session message is received."""
-        if not callable(callback):
-            raise ValueError("Callback must be callable")
-        
-        if session_id not in self.__session_callbacks:
-            self.__session_callbacks[session_id] = []
-            self.subscribe(f"session/{session_id}", lambda payload: [cb(payload) for cb in self.__session_callbacks[session_id].copy()])
-
-        self.__session_callbacks[session_id].append(callback)
+        topic = f"session/{session_id}"
+        self._add_callback(self.__session_callbacks, session_id, topic, callback)
 
     def remove_session_callback(self, session_id: str, callback: Callable[[dict], Any]):
         """Remove a previously added session callback."""
-        if session_id in self.__session_callbacks and callback in self.__session_callbacks[session_id]:
-            self.__session_callbacks[session_id].remove(callback)
-            if len(self.__session_callbacks[session_id]) == 0:
-                del self.__session_callbacks[session_id]
-                self.unsubscribe(f"session/{session_id}")
-        else:
-            self._logger.warning("Callback not found in session callbacks for session: {}".format(session_id))
+        topic = f"session/{session_id}"
+        self._remove_callback(
+            self.__session_callbacks,
+            session_id,
+            topic,
+            callback,
+            f"session callbacks for session: {session_id}"
+        )
 
 
     def add_report_callback(self, fn):

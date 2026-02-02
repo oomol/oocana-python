@@ -354,6 +354,15 @@ class Context:
     
     def __is_basic_type(self, value: Any) -> bool:
         return isinstance(value, (int, float, str, bool))
+
+    def __is_dataframe_like(self, value: Any) -> bool:
+        """Check if value is DataFrame-like by duck-typing.
+        Supports pandas DataFrame and subclasses (GeoDataFrame, etc.)
+        """
+        return (
+            hasattr(value, 'to_pickle') and callable(getattr(value, 'to_pickle', None)) and
+            hasattr(value, 'copy') and callable(getattr(value, 'copy', None))
+        )
     
     def __wrap_output_value(self, handle: str, value: Any):
         """
@@ -382,7 +391,7 @@ class Context:
 
             serialize_path = None
             # only cache root flow
-            if len(self.__block_info.stacks) < 2 and output_def.need_serialize_var_for_cache() and value.__class__.__name__ == 'DataFrame' and callable(getattr(value, 'to_pickle', None)):
+            if len(self.__block_info.stacks) < 2 and output_def.need_serialize_var_for_cache() and self.__is_dataframe_like(value):
                 from .serialization import compression_suffix, compression_options
                 suffix = compression_suffix(context=self)
                 compression = compression_options(context=self)

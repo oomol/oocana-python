@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.18](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.17...oocana-python-executor@0.16.18) (2026-02-02)
+
+
+### Code Refactoring
+
+* extract get_call_args to eliminate duplicate parameter matching ([#448](https://github.com/oomol/oocana-python/issues/448)) ([09d4e32](https://github.com/oomol/oocana-python/commit/09d4e32a9252657b255cd4ecb8ae44995afa23ca))
+
 ## [0.16.17](https://github.com/oomol/oocana-python/compare/oocana-python-executor@0.16.16...oocana-python-executor@0.16.17) (2025-11-25)
 
 

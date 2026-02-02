@@ -192,6 +192,7 @@ class Context:
     __package_name: str | None = None
     _logger: Optional[logging.Logger] = None
     __pkg_data_dir: str
+    __oomol_llm_env_warned: bool = False
 
     # TODO: remove the pkg_dir parameter, use pkg_data_dir instead.
     def __init__(
@@ -317,11 +318,14 @@ class Context:
             "models": os.getenv("OOMOL_LLM_MODELS", "").split(","),
         }
 
-        for key, value in oomol_llm_env.items():
-            if value == "" or value == []:
-                self.send_warning(
-                    f"OOMOL_LLM_ENV variable {key} is ({value}), this may cause some features not working properly."
-                )
+        # Only warn once on first access to avoid repeated side effects
+        if not self.__oomol_llm_env_warned:
+            self.__oomol_llm_env_warned = True
+            for key, value in oomol_llm_env.items():
+                if value == "" or value == []:
+                    self.send_warning(
+                        f"OOMOL_LLM_ENV variable {key} is ({value}), this may cause some features not working properly."
+                    )
 
         return oomol_llm_env
 

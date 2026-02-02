@@ -5,7 +5,7 @@ import simplejson as json
 
 EXECUTOR_NAME = "python"
 
-__all__ = ["dumps", "BinValueDict", "VarValueDict", "JobDict", "BlockDict", "StoreKey", "BlockInfo", "EXECUTOR_NAME", "JobDict", "BinValueDict", "VarValueDict"]
+__all__ = ["dumps", "BinValueDict", "VarValueDict", "JobDict", "BlockDict", "StoreKey", "BlockInfo", "EXECUTOR_NAME"]
 
 def dumps(obj, **kwargs):
     return json.dumps(obj, cls=DataclassJSONEncoder, ignore_nan=True, **kwargs)

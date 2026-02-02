@@ -69,28 +69,28 @@ def compression_options(context: 'Context') -> CompressionOptions | None:
         print(f"An unexpected error occurred while reading compression options: {e}. Returning None.")
         return None
     
+# Mapping from compression method to file suffix
+COMPRESSION_SUFFIXES = {
+    "zip": ".zip",
+    "gzip": ".gz",
+    "bz2": ".bz2",
+    "zstd": ".zst",
+    "xz": ".xz",
+    "tar": ".tar",
+}
+
 def compression_suffix(context: 'Context') -> str:
     """
     Get the file suffix based on the compression method.
-    If no compression is specified, return an empty string.
+    If no compression is specified, return ".pkl" (pickle format).
     """
     compression = compression_options(context)
 
-    if compression is None or compression["method"] is None:
+    if compression is None:
         return ".pkl"
-    
-    method = compression["method"]
-    if method == "zip":
-        return ".zip"
-    elif method == "gzip":
-        return ".gz"
-    elif method == "bz2":
-        return ".bz2"
-    elif method == "zstd":
-        return ".zst"
-    elif method == "xz":
-        return ".xz"
-    elif method == "tar":
-        return ".tar"
-    else:
-        return ".pkl"  # Default case if method is not recognized
+
+    method = compression.get("method")
+    if method is None:
+        return ".pkl"
+
+    return COMPRESSION_SUFFIXES.get(method, ".pkl")

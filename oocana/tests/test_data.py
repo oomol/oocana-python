@@ -1,6 +1,6 @@
 import unittest
 from oocana import data
-from json import dumps as json_dumps
+from json import dumps as json_dumps, loads as json_loads
 
 class TestData(unittest.TestCase):
 
@@ -63,13 +63,15 @@ class TestData(unittest.TestCase):
 
         block_info = data.BlockInfo(**block_info_dict)
         serialize_block_info = data.dumps(block_info)
-        self.assertEqual(serialize_block_info, '{"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"], "block_path": "block_path_one"}')
+        # Compare as dicts to avoid field order dependency
+        expected = {"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"], "block_path": "block_path_one"}
+        self.assertEqual(json_loads(serialize_block_info), expected)
 
         list_serialize_block_info = data.dumps([block_info])
-        self.assertEqual(list_serialize_block_info, '[{"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"], "block_path": "block_path_one"}]')
+        self.assertEqual(json_loads(list_serialize_block_info), [expected])
 
         key_serialize_block_info = data.dumps({"key": block_info})
-        self.assertEqual(key_serialize_block_info, '{"key": {"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"], "block_path": "block_path_one"}}')
+        self.assertEqual(json_loads(key_serialize_block_info), {"key": expected})
 
         with self.assertRaises(TypeError):
             json_dumps(block_info)
@@ -85,7 +87,9 @@ class TestData(unittest.TestCase):
 
         block_info = data.BlockInfo(**block_info_dict)
         serialize_block_info = data.dumps(block_info.block_dict())
-        self.assertEqual(serialize_block_info, '{"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"]}')
+        # Compare as dicts to avoid field order dependency
+        expected = {"session_id": "session_id_one", "job_id": "job_id_one", "stacks": ["stack1", "stack2"]}
+        self.assertEqual(json_loads(serialize_block_info), expected)
 
         with self.assertRaises(TypeError):
             json_dumps(block_info)

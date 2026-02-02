@@ -3,6 +3,8 @@ from .data import JobDict
 import random
 import string
 import math
+import hashlib
+
 
 class InternalAPI:
 
@@ -30,3 +32,10 @@ class InternalAPI:
 
 def random_string(length=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+
+def string_hash(text: str) -> str:
+    """
+    Generates a deterministic hash for a given string.
+    """
+    return hashlib.sha256(text.encode('utf-8')).hexdigest()

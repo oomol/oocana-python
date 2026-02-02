@@ -4,6 +4,7 @@ from paho.mqtt.enums import CallbackAPIVersion
 import operator
 from urllib.parse import urlparse
 import uuid
+import threading
 from .data import BlockDict, JobDict, dumps, EXECUTOR_NAME
 import logging
 from typing import Optional, Callable, Any
@@ -104,15 +105,30 @@ class Mainframe:
             "debug_port": debug_port,
         }), qos=1)
 
-    def notify_block_ready(self, session_id: str, job_id: str) -> dict:
+    def notify_block_ready(self, session_id: str, job_id: str, timeout: Optional[float] = None) -> dict:
+        """
+        Notify that a block is ready and wait for input message.
 
+        Args:
+            session_id: The session ID
+            job_id: The job ID
+            timeout: Optional timeout in seconds. If None, wait indefinitely.
+
+        Returns:
+            The input message payload as a dict
+
+        Raises:
+            TimeoutError: If timeout is specified and no message is received within the timeout
+        """
         topic = f"inputs/{session_id}/{job_id}"
         replay = None
+        event = threading.Event()
 
         def on_message_once(_client, _userdata, message):
             nonlocal replay
             self.client.unsubscribe(topic)
             replay = loads(message.payload)
+            event.set()
 
         self.client.subscribe(topic, qos=1)
         self.client.message_callback_add(topic, on_message_once)
@@ -123,10 +139,14 @@ class Mainframe:
             "job_id": job_id,
         }), qos=1)
 
-        while True:
-            if replay is not None:
-                self._logger.info("notify ready success in {} {}".format(session_id, job_id))
-                return replay
+        if event.wait(timeout=timeout):
+            self._logger.info("notify ready success in {} {}".format(session_id, job_id))
+            return replay  # type: ignore
+        else:
+            # Timeout occurred, clean up subscription
+            self.client.unsubscribe(topic)
+            self.client.message_callback_remove(topic)
+            raise TimeoutError(f"Timeout waiting for block ready response in session {session_id}, job {job_id}")
             
     def add_request_response_callback(self, session_id: str, request_id: str, callback: Callable[[Any], Any]):
         """Add a callback to be called when an error occurs while running a block."""

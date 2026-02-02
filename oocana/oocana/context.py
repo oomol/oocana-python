@@ -511,16 +511,9 @@ class Context:
             wrap_result = {}
             if isinstance(result, dict):
                 for key, value in result.items():
-                    try:
-                        wrap_result[key] = self.__wrap_output_value(key, value)
-                    except ValueError as e:
-                        self.send_warning(
-                            f"Output handle key: [{key}] is not defined in Block outputs schema. {e}"
-                        )
-                    except IOError as e:
-                        self.send_warning(
-                            f"Output handle key: [{key}] is not defined in Block outputs schema. {e}"
-                        )
+                    wrap_value, success = self._wrap_output_with_warning(key, value)
+                    if success:
+                        wrap_result[key] = wrap_value
 
                 self.__mainframe.send(self.job_info, {"type": "BlockFinished", "result": wrap_result})
             else:

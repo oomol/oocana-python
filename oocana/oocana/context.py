@@ -308,8 +308,8 @@ class Context:
     @property
     def oomol_fusion_api_url(self) -> str:
         """
-        get the oomol fusion api url from the context.
-         :return: the oomol fusion api url
+        Get the OOMOL Fusion API URL from the context.
+        :return: The OOMOL Fusion API URL.
         """
         return os.getenv("OOMOL_FUSION_API_URL", "")
 

@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.18.12](https://github.com/oomol/oocana-python/compare/oocana@0.18.11...oocana@0.18.12) (2026-03-17)
+
+
+### Features
+
+* add fusion api url ([#471](https://github.com/oomol/oocana-python/issues/471)) ([084e1a5](https://github.com/oomol/oocana-python/commit/084e1a53e333d41e8031b8f826821ca7895e3bc7))
+* **oocana:** export TypedDict types for type checking ([#465](https://github.com/oomol/oocana-python/issues/465)) ([0d88b34](https://github.com/oomol/oocana-python/commit/0d88b348e5ef4f53d909d2d05610906c58e10de6))
+
+
+### Bug Fixes
+
+* **oocana:** extract _wrap_output_with_warning to reduce duplication ([#454](https://github.com/oomol/oocana-python/issues/454)) ([bd456f2](https://github.com/oomol/oocana-python/commit/bd456f2158344678ed4a03d37e78ddd7cde91853))
+* **oocana:** remove duplicate entries from __all__ in data.py ([#463](https://github.com/oomol/oocana-python/issues/463)) ([3556a2b](https://github.com/oomol/oocana-python/commit/3556a2b848dd8bf750096ee8927e8e8e20ce0ca3))
+
+
+### Code Refactoring
+
+* **oocana:** move string_hash function to internal.py ([#459](https://github.com/oomol/oocana-python/issues/459)) ([a1ae5a0](https://github.com/oomol/oocana-python/commit/a1ae5a0873fd2ac8d99e38891045f8997777c24d))
+
 ## [0.18.11](https://github.com/oomol/oocana-python/compare/oocana@0.18.10...oocana@0.18.11) (2025-11-07)
 
 

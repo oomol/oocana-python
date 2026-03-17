@@ -304,6 +304,14 @@ class Context:
             return self.__block_info.stacks[-1].get("node_id", "unknown")
         else:
             return "none"
+        
+    @property
+    def oomol_fusion_api_url(self) -> str:
+        """
+        get the oomol fusion api url from the context.
+         :return: the oomol fusion api url
+        """
+        return os.getenv("OOMOL_FUSION_API_URL", "")
 
     @property
     def oomol_llm_env(self) -> OOMOL_LLM_ENV:

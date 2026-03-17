@@ -170,8 +170,10 @@ class OOMOL_LLM_ENV(TypedDict):
     """{basUrl}/v1 openai compatible endpoint
     """
     base_url_v1: str
+    fusion_api_url: str
     api_key: str
     models: list[str]
+    oomol_env: str
 
 class HostInfo(TypedDict):
     gpu_vendor: str
@@ -315,6 +317,8 @@ class Context:
             "base_url_v1": os.getenv("OOMOL_LLM_BASE_URL_V1", ""),
             "api_key": os.getenv("OOMOL_LLM_API_KEY", ""),
             "models": os.getenv("OOMOL_LLM_MODELS", "").split(","),
+            "fusion_api_url": os.getenv("OOMOL_FUSION_API_URL", ""),
+            "oomol_env": os.getenv("OOMOL_ENV", "prod"),
         }
 
         for key, value in oomol_llm_env.items():

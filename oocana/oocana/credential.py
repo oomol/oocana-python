@@ -1,4 +1,16 @@
+from dataclasses import dataclass
+
+__all__ = ["CredentialInput"]
+
+
+@dataclass(frozen=True)
 class CredentialInput:
-    def __init__(self, type: str, id: str):
-        self.type = type
-        self.id = id
+    """
+    Represents a credential input for authentication queries.
+
+    Attributes:
+        type: The type of credential (e.g., 'oauth', 'api_key')
+        id: The unique identifier for the credential
+    """
+    type: str
+    id: str

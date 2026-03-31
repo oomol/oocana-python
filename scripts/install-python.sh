@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -xeuo pipefail
 
+chmod 777 -R /tmp
 apt update && apt install -y curl
 curl -LsSf https://astral.sh/uv/install.sh | sh
 

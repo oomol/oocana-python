@@ -17,12 +17,24 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OVMLAYER_LOG: /tmp/ovmlayer.log
+      OVMLAYER_REPOSITORY: ${{ vars.OVMLAYER_REPOSITORY || 'ovmlayer-next' }}
+      OVMLAYER_USE_RUNTIME_SETUP: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - name: Generate GitHub App Token for oomol/${{ env.OVMLAYER_REPOSITORY }}
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.OOMOL_DOWNLOADER_APP_ID }}
+          private-key: ${{ secrets.OOMOL_DOWNLOADER_APP_PRIVATE_KEY }}
+          owner: oomol
+          repositories: ${{ env.OVMLAYER_REPOSITORY }}
       - uses: oomol/oocana-rust/.github/actions/ovmlayer@main
         with:
+          repository: ${{ env.OVMLAYER_REPOSITORY }}
           rootfs: https://github.com/oomol/ovmlayer-rootfs/releases/download/base-rootfs%400.4.0/amd64-rootfs.tar
-          token: ${{ secrets.ACCESS_REPO }}
+          token: ${{ steps.app-token.outputs.token }}
+          use-runtime-setup: ${{ env.OVMLAYER_USE_RUNTIME_SETUP }}
       - name: setup oocana-python action without layer
         uses: ./.github/actions/oocana-python
         with:
@@ -36,7 +48,7 @@ jobs:
           path: "oocana-python"
       - name: upload log
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ovmlayer-log
           path: /tmp/ovmlayer.log

@@ -36,7 +36,7 @@ def createContext(
                 wrap_var: VarValueDict = v
                 try:
                     ref = StoreKey(**wrap_var["value"])
-                except:  # noqa: E722
+                except (KeyError, TypeError, ValueError):
                     logger.warning(f"not valid object ref: {wrap_var}")
                     continue
                 if ref in store:
